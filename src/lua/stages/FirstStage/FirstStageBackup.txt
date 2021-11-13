@@ -1,0 +1,79 @@
+
+
+testInt = 0
+
+map = {
+    characters = {},
+    scenario = {},
+    cameras = {}
+}
+
+function firstStageSetup()
+
+    obj1 = BaseObj:new(
+        textures.red_square,
+        800,600
+    )
+    obj1.numAnimationStages = 0
+    obj1.scale = 1
+    obj1.numFramesPerAnimationStage = 100
+    obj1.name = "Object1"
+
+    camera1 = CameraObj:anchorTo(obj1, "Camera1")
+    camera1.currentCam = true
+    map.cameras[#map.cameras+1] = camera1
+
+    map.characters[#map.characters+1] = obj1
+
+    obj2 = BaseObj:new(
+        textures.red_square,
+        900,600
+    )
+    obj2.numAnimationStages = 0
+    obj2.scale = 1
+    obj2.numFramesPerAnimationStage = 200
+    obj2.name = "Object2"
+    map.characters[#map.characters+1] = obj2
+
+    camera2 = CameraObj:anchorTo(obj2, "Camera2")
+    camera2.currentCam = false
+    map.cameras[#map.cameras+1] = camera2
+
+end
+
+function firstStage()
+
+    --for index, obj in pairs(map.characters) do
+    --    obj:updateRenderObjCommon()
+    --end
+
+    if (globalFrameCounter % 100) == 0 then
+        map.characters[1].posX = map.characters[1].posX - 1
+        map.characters[1].posY = map.characters[1].posY - 1
+    end
+
+    for I, V in pairs(keysPressed) do
+        if V == "A" then
+            map.cameras[1]:enableCamera()
+            map.cameras[2]:disableCamera()
+        end
+        if V == "D" then
+            map.cameras[2]:enableCamera()
+            map.cameras[1]:disableCamera()
+        end
+    end
+
+    for index, camera in pairs(map.cameras) do
+
+        camera:updateCameraPos()
+        camera:render()
+    end
+
+    quitButton()
+
+    --print("Hello from stage 1")
+    testInt = testInt + 1
+    if testInt == 5000 then
+        --stageSelect("Second Stage")
+    end 
+end
