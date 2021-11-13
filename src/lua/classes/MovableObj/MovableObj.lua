@@ -48,7 +48,7 @@ do
         self.forceUp = 0
         self.forceDown = 0
 
-        self.forceCap = 50
+        self.forceCap = 10  ---Number of pixels the object will move after letting go
         self.isMovableObj = true
 
         return self

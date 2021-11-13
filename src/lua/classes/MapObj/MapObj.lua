@@ -229,6 +229,7 @@ do --open
             cam:renderTable(self.backGround)
             cam:renderTable(self.middleGround)
             cam:renderTable(self.foreGround)
+            cam:renderReorder()
         end
 
         if hasCameras == false then
@@ -254,7 +255,7 @@ do --open
     end
 
     --[[
-        Make Movable Objects Move, check collisions, make scripts work, etc
+        Make Movable Objects Move, check collisions, make scripts work, reorder renderItems, etc
 
         ---NOTE:
         Directional collisions only checked on the middle and background,
@@ -262,9 +263,10 @@ do --open
         sprites whose collisions dont matter
     ]]--
     function MapObj:act()
-        --if obj.isMovableObj ~= nil
 
         for i, obj in pairs(self.foreGround) do
+
+            --test movement
             if obj.isMovableObj == true then
                 obj:keyboardMove()
                 obj:mouseMove()
@@ -282,6 +284,8 @@ do --open
         end
 
         for i, obj in pairs(self.middleGround) do
+
+            ----test movement
             if obj.isMovableObj == true then
                 obj:keyboardMove()
                 obj:mouseMove()
@@ -298,6 +302,8 @@ do --open
         end
 
         for i, obj in pairs(self.backGround) do
+
+            --test movement
             if obj.isMovableObj == true then
                 obj:keyboardMove()
                 obj:mouseMove()
@@ -312,8 +318,14 @@ do --open
             ---DO other scripts here too
 
         end
+
+        --occasionally reorder the scenario for better performance
+        if (globalFrameCounter % 10000) == 1 then
+            reorderRenderItems()
+        end
+
     end
 
-
+    
 
 end --close

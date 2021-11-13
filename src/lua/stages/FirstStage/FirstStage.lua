@@ -21,12 +21,16 @@ do
 
         obj2 = BaseObj:new( "Object2", textures.blue_square, 1, 80, 150 )
         obj2.hasCollision = true
+        obj2.hitBox = HitBoxObj:new(
+            0, (obj2.texture.height - obj2.texture.height/3)*obj2.scale, obj2.texture.width*obj2.scale, (obj2.texture.height/3)*obj2.scale, obj2
+        )
         
         firstLevelMap:addNamedItemToMiddleGround("Object2", obj2)
 
+        reorderRenderItems()
+
     end
 
-    testInt = 0
     function firstStage()
 
         firstLevelMap:act()

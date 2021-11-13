@@ -168,5 +168,21 @@ do --open
         self.currentCam = false
     end
 
+    --[[
+        Generate render objects the camera can see in order of posY in the currentCameraRenderItems.
+        Usually called after renderTable
+    ]]
+    function CameraObj:renderReorder()
+        itemsToRender = {}
+        for i, rendObj in pairs(renderItems) do
+            if rendObj.allowRender == true then
+                itemsToRender[#itemsToRender+1] = rendObj
+            end
+        end
+
+        table.sort(itemsToRender, function(a,b) return a.posY < b.posY end)
+        currentCameraRenderItems = itemsToRender
+
+    end
 
 end --close

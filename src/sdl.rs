@@ -159,8 +159,8 @@ pub fn get_render_items(mut lua: Lua) -> (Lua, Vec::<SpriteObj>){
     let mut destinations = Vec::<SpriteObj>::new();
 
     {
-        let obj_table_size: u32 = lua.execute("return #renderItems").unwrap();
-        let mut obj_tables: hlua::LuaTable<_> = lua.get("renderItems").unwrap();
+        let obj_table_size: u32 = lua.execute("return #currentCameraRenderItems").unwrap();
+        let mut obj_tables: hlua::LuaTable<_> = lua.get("currentCameraRenderItems").unwrap();
 
         for index in 0..obj_table_size{
             let mut obj: hlua::LuaTable<_> = obj_tables.get(index+1).unwrap();

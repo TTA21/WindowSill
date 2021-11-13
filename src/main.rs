@@ -1,6 +1,13 @@
 mod sdl;
 mod lua;
 
+use std::{
+    thread,
+    time::{Duration, Instant},
+};
+
+const wait_time: std::time::Duration = Duration::from_millis(1);   ///60fps = 16.666666666666668 millis
+
 /*
     @main_loop()
     Reponsible for every frame, if this loop breaks the game ends.
@@ -11,7 +18,7 @@ fn main_loop(
     window_vars: sdl::WindowVars,
     mut sdl2_instance: sdl::Sdl2Instance,
 ){
-
+    
     let mut error_enum = 0; //If any error, error_enum > 0, error value depends on error type
     let mut game_continue = true;
 
@@ -56,6 +63,8 @@ fn main_loop(
 
     while game_continue == true {
 
+        let start = Instant::now();
+
         //Game Loop
 
         //Get the currentStageFunction name for the stage selection
@@ -84,6 +93,16 @@ fn main_loop(
     
         //Check if the game should quit
         game_continue = lua.get::<bool, _>("shouldGameContinue").unwrap();
+
+        let runtime = start.elapsed();
+        if let Some(remaining) = wait_time.checked_sub(runtime) {
+            //eprintln!(
+            //    "schedule slice has time left over; sleeping for {:?}",
+            //    remaining
+            //);
+            thread::sleep(remaining);
+        }
+
     }
 
     if error_enum == 0 {

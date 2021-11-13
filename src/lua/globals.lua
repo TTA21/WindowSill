@@ -1,5 +1,6 @@
 globalIdCounter = 0     ---Used to create unique id's
 renderItems = {}        ---used by the engine, do not mess with it directly
+currentCameraRenderItems = {}
 
 currentStageFunction = "stageSelect"    ---Leads to the function in another file in '/stages'
                                         ---ONLY FUNCTION 'stageSelect' CAN CHANGE THIS VARIABLE

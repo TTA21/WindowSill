@@ -68,8 +68,13 @@ do--open
         self.localFrameCounter = localFrameCounter or 0
 
         self.allowRender = allowRender or true
+
+        self:createRenderObj()
         
-        
+        return self
+    end
+
+    function BaseObj:createRenderObj()
         renderObj = RenderObj:new(
             self.texture.identifier,
             self.posX,       ---for now    
@@ -84,8 +89,6 @@ do--open
         self.renderObjId = renderObj.objId
         renderItems[#renderItems+1] = renderObj
         self.renderItemIndex = findRenderObjById(self.renderObjId)
-    
-        return self
     end
 
     --[[
