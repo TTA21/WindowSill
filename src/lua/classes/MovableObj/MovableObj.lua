@@ -95,25 +95,25 @@ do
     function BaseObj:exertForce()
 
         if math.floor(self.forceUp) > 0 then
-            if (globalFrameCounter % math.floor(10-self.movementMultiplier) ) == 0 then
+            if (globalFrameCounter % math.abs(math.floor(5-self.movementMultiplier)) ) == 0 then
                 self.posY = self.posY - 1
             end
         end
 
         if math.floor(self.forceDown) > 0 then
-            if (globalFrameCounter % math.floor(10-self.movementMultiplier) ) == 0 then
+            if (globalFrameCounter % math.abs(math.floor(5-self.movementMultiplier)) ) == 0 then
                 self.posY = self.posY + 1
             end
         end
 
         if math.floor(self.forceLeft) > 0 then
-            if (globalFrameCounter % math.floor(10-self.movementMultiplier) ) == 0 then
+            if (globalFrameCounter % math.abs(math.floor(5-self.movementMultiplier)) ) == 0 then
                 self.posX = self.posX - 1
             end
         end
 
         if math.floor(self.forceRight) > 0 then
-            if (globalFrameCounter % math.floor(10-self.movementMultiplier) ) == 0 then
+            if (globalFrameCounter % math.abs(math.floor(5-self.movementMultiplier)) ) == 0 then
                 self.posX = self.posX + 1
             end
         end

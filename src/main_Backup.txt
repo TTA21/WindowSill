@@ -6,10 +6,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-//const wait_time: std::time::Duration = Duration::from_millis(1);   ///60fps = 16.666666666666668 millis
-
-const render_time: u128 = 17; //in millis
-const calc_time: std::time::Duration = Duration::from_millis(1);
+const wait_time: std::time::Duration = Duration::from_millis(1);   ///60fps = 16.666666666666668 millis
 
 /*
     @main_loop()
@@ -63,49 +60,47 @@ fn main_loop(
 
     lua.execute::<()>("setup()").unwrap();
 
-    let mut render_start = Instant::now();
-    let mut calc_start = Instant::now();
 
     while game_continue == true {
 
-        let render_runtime = render_start.elapsed();
-        let calc_runtime = calc_start.elapsed();
+        let start = Instant::now();
 
         //Game Loop
-        if calc_runtime.as_millis() > calc_time.as_millis() {
-            calc_start = Instant::now();
-            //Get the currentStageFunction name for the stage selection
-            let main_function = lua.get::<String, _>("currentStageFunction").unwrap();
 
-            //main_function refers to the current stage's main function
-            lua.execute::<()>(&(main_function + "()")).unwrap();
+        //Get the currentStageFunction name for the stage selection
+        let main_function = lua.get::<String, _>("currentStageFunction").unwrap();
 
-            //Get keyboard and mouse data
-            let ret = sdl::get_input(sdl2_instance.event_pump);
-            sdl2_instance.event_pump = ret.0;
+        //main_function refers to the current stage's main function
+        lua.execute::<()>(&(main_function + "()")).unwrap();
 
-            //Send the input data to the Lua VM
-            lua = sdl::send_keyboard_state_to_lua(lua, ret.1);
-            lua = sdl::send_mouse_state_to_lua(lua, ret.2);
+        //Get keyboard and mouse data
+        let ret = sdl::get_input(sdl2_instance.event_pump);
+        sdl2_instance.event_pump = ret.0;
 
-            if ret.3 {break};
-        
-            //Check if the game should quit
-            game_continue = lua.get::<bool, _>("shouldGameContinue").unwrap();
-            if let Some(remaining) = calc_time.checked_sub(calc_runtime) {
-                thread::sleep(remaining);
-            }
-        }
+        //Send the input data to the Lua VM
+        lua = sdl::send_keyboard_state_to_lua(lua, ret.1);
+        lua = sdl::send_mouse_state_to_lua(lua, ret.2);
 
-        if render_runtime.as_millis() > render_time {
-            render_start = Instant::now();
-            //Get the suff to render
-            let ret = sdl::get_render_items(lua);
-            lua = ret.0;
-            let sprite_objs = ret.1;
+        if ret.3 {break};
 
-            //Render the sprites
-            sdl2_instance.canvas = sdl::render_frame(sdl2_instance.canvas, &sprite_data, sprite_objs);
+        //Get the suff to render
+        let ret = sdl::get_render_items(lua);
+        lua = ret.0;
+        let sprite_objs = ret.1;
+
+        //Render the sprites
+        sdl2_instance.canvas = sdl::render_frame(sdl2_instance.canvas, &sprite_data, sprite_objs);
+    
+        //Check if the game should quit
+        game_continue = lua.get::<bool, _>("shouldGameContinue").unwrap();
+
+        let runtime = start.elapsed();
+        if let Some(remaining) = wait_time.checked_sub(runtime) {
+            //eprintln!(
+            //    "schedule slice has time left over; sleeping for {:?}",
+            //    remaining
+            //);
+            thread::sleep(remaining);
         }
 
     }
