@@ -1,35 +1,46 @@
-do--open
+do  ---open
 
     --BaseObj | Class Declaration
 
     --Every object that can be rendered is expected to be derived form this base class
 
-    --[[
-        obj1 = BaseObj:new(
-            textures.bardo_asset,
-            111,222
-        )
-        obj1.numAnimationStages = 3
-    ]]--
+    BaseObj = object:clone()
 
-    BaseObj = {}
-    BaseObj.__index = BaseObj
+    ---Data Declaration
+    BaseObj.texture = {}
+    BaseObj.posX = 0
+    BaseObj.posY = 0
+    BaseObj.scale = 1
 
-    function BaseObj:new(
+    BaseObj.hitBox = {}
+    
+    BaseObj.alpha = 100
+    BaseObj.animStage = 0
+
+    BaseObj.globalId = -1
+
+    BaseObj.name = "Default Name"
+    BaseObj.hasCollision = false
+
+    BaseObj.numAnimationStages = 0
+    BaseObj.animStage = 0
+    BaseObj.numFramesPerAnimationStage = 100
+    BaseObj.localFrameCounter = 0
+
+    BaseObj.allowRender = false
+
+    ---Function Declaration
+
+    function BaseObj:defineBase(
         name,               ---Self explanatory
         texture,            ---Texture object
         scale,              ---Width & Height of the sprite times scale. 1 for normal
-        --renderObjId,        ---RederObj.ObjId
-        --renderItemIndex,    ---renderItems[RenderItemIndex]
         posX,               ---Based on the map, not the screen
         posY,               ---Based on the map, not the screen
         hitBox,             ---Contains offset for proper hitboxing
-        
         alpha,              ---Opacity, 0 for see through, 100 for fully opaque
         animStage,          ---Frame of the animation sprite
-    
         --globalId,           ---Every Object has an unique id
-        
         hasCollision,       ---Self explanatory, uses hitbox values
     
         numAnimationStages,             ---How many frames sprite has
@@ -38,20 +49,26 @@ do--open
         localFrameCounter,              ---Used for the animations
 
         allowRender
+        --renderObj
     )
-        local self = setmetatable({}, BaseObj)
-        self.__index = self
-    
         self.texture = texture or {}
-        self.RenderItemIndex = RenderItemIndex or -1
         self.posX = posX or 0
         self.posY = posY or 0
         self.scale = scale or 1
 
-        self.hitBox = hitBoxObj or 
-            HitBoxObj:new(
-                0, 0, texture.width * self.scale, texture.height * self.scale, self
+        if hitBoxObj then
+            self.hitBox = hitBoxObj
+        else
+            hitBox = HitBoxObj:clone()
+            hitBox:defineHitBox(
+                0, 0, 
+                texture.width * self.scale, 
+                texture.height * self.scale, 
+                self
             )
+            self.hitBox = hitBox
+        end
+
         
         self.alpha = alpha or 100
         self.animStage = animStage or 0
@@ -69,16 +86,12 @@ do--open
 
         self.allowRender = allowRender or true
 
-        self:createRenderObj()
-        
-        return self
-    end
+        self.renderObj = RenderObj:clone()
 
-    function BaseObj:createRenderObj()
-        renderObj = RenderObj:new(
-            self.texture.identifier,
-            self.posX,       ---for now    
-            self.posY,       ---for now  
+        self.renderObj:new(
+            self.texture,
+            self.posX,          
+            self.posY,        
             self.texture.width,      
             self.texture.height,     
             self.scale,      
@@ -86,9 +99,7 @@ do--open
             self.animStage,
             self.allowRender
         )
-        self.renderObjId = renderObj.objId
-        renderItems[#renderItems+1] = renderObj
-        self.renderItemIndex = findRenderObjById(self.renderObjId)
+        renderItems[#renderItems+1] = self.renderObj
     end
 
     --[[
@@ -101,13 +112,14 @@ do--open
     ]]--
     function BaseObj:updateRenderObjCommon(x,y)
 
-        renderItems[self.renderItemIndex].textureId = self.texture.identifier
-        renderItems[self.renderItemIndex].posX = x or self.posX
-        renderItems[self.renderItemIndex].posY = y or self.posY
-        renderItems[self.renderItemIndex].scale = self.scale
-        renderItems[self.renderItemIndex].alpha = self.alpha
-        renderItems[self.renderItemIndex].animStage = self.animStage
-        renderItems[self.renderItemIndex].allowRender = self.allowRender
+        --self.renderObj.textureId = self.texture.identifier
+        self.renderObj:changeSprite(self.texture)
+        self.renderObj.posX = x or self.posX
+        self.renderObj.posY = y or self.posY
+        self.renderObj.scale = self.scale
+        self.renderObj.alpha = self.alpha
+        self.renderObj.animStage = self.animStage
+        self.renderObj.allowRender = self.allowRender
 
         if self.localFrameCounter < self.numFramesPerAnimationStage then
             self.localFrameCounter = self.localFrameCounter + 1
@@ -126,37 +138,13 @@ do--open
 
     function BaseObj:enableRender()
         self.allowRender = true
-        renderItems[self.renderItemIndex].allowRender = true
+        self.renderObj.allowRender = true
     end
 
     function BaseObj:disableRender()
         self.allowRender = false
-        renderItems[self.renderItemIndex].allowRender = false
+        self.renderObj.allowRender = false
     end
 
 
-end--close
-
---[[
----test stuff
-            obj1 = BaseObj:new(
-                textures.bardo_asset,
-                111,222
-            )
-            obj1.numAnimationStages = 3
-
-            for index, obj in pairs(renderItems) do
-                print(index, ",", obj.posX, ",", obj.posY, obj.allowRender);
-            end
-
-            for i = 0, 50, 1 do
-                obj1:updateRenderObjCommon()
-                print(obj1.posX, obj1.posY, obj1.allowRender, obj1.localFrameCounter, obj1.animStage)
-                
-            end
-
-            for index, obj in pairs(renderItems) do
-                print(index, ",", obj.posX, ",", obj.posY, obj.allowRender, ",", obj.animStage);
-            end
-
-]]
+end ---close

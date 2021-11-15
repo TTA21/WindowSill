@@ -1,4 +1,4 @@
-do --open
+do  --open
 
     --[[
         xxxxxxxxx
@@ -12,38 +12,29 @@ do --open
 
     --A camera can anchor to anything that has a posX and posY
 
-    CameraObj = {} --[[ = {
-        width = windowOptions.width,    ---Size of the screen
-        height = windowOptions.height,  ---Size of the screen
+    CameraObj = object:clone()
 
+    ---Data Declaration
 
-        anchor,  --Lua passes tables by refernece, cool right?
+    CameraObj.width = windowOptions.width
+    CameraObj.height = windowOptions.height
 
-        pointA = {
-            X=0,Y=0,    --relative to map
-        },
-        pointB = {
-            X=width+pointA.X, Y=height+pointA.Y,
-        },
+    CameraObj.anchor = nil
 
-        cameraId = -1,  --similar to BaseObj's globalId idea
+    CameraObj.pointA = {}
 
-        currentCam = false,  ---there can be multiple cameras
+    CameraObj.pointB = {}
 
-        name = "Default Camera Name",   ---For ease of use
+    CameraObj.cameraId = -1
 
-    }]]--
-    CameraObj.__index = CameraObj
+    CameraObj.currentCam = false
+    CameraObj.name = "Give This Camera A Name Please"
 
-    --[[
-        Camera constructor achors itself to an object that posseses a posX or posY
-    ]]--
+    ---Function Declarations
+
     function CameraObj:anchorTo(
         anchor, cameraName
     )
-        local self = setmetatable({}, CameraObj)
-        self.__index = self
-    
         self.width = windowOptions.width
         self.height = windowOptions.height
 
@@ -64,8 +55,6 @@ do --open
 
         self.currentCam = false
         self.name = cameraName or "Give This Camera A Name Please"
-    
-        return self
     end
 
     --[[
@@ -184,5 +173,6 @@ do --open
         currentCameraRenderItems = itemsToRender
 
     end
+
 
 end --close

@@ -1,24 +1,26 @@
-do ---open
-    --GameObj | Class Declaration
 
-    --[[
-        obj1 = RenderObj:new(
-            textures.bardo.identifier, 
-            400, 
-            300, 
-            width = textures.bardo.width, 
-            height = textures.bardo.height,
-            allowRender = true
-        );
-        renderItems[#renderItems+1] = obj1
-    ]]--
+do  --open
 
-    --To be placed in gameObjs for rendering ONLY
-    RenderObj = {}
-    RenderObj.__index = RenderObj
+    ---A RenderObj serves as the data packet to the SDL renderer to render something,
+    ---Every RenderObj is a sprite with position and dimension
+    RenderObj = object:clone()
+
+    ---Data Declaration
+    RenderObj.objId = -1
+    RenderObj.texture = {}
+    RenderObj.posX = 0
+    RenderObj.posY = 0
+    RenderObj.width = 0
+    RenderObj.height = 0
+    RenderObj.scale = 1
+    RenderObj.alpha = 100
+    RenderObj.animStage = 0
+    RenderObj.allowRender = false
+
+    ---Function Declarations
 
     function RenderObj:new(
-        textureId,  ---Textures 'identifier' number, EX textures.bardo_asset.identifier
+        texture,    ---The texture is the sprite, its named texture because SDL calls it so
         posX,       ---Position in the screen to be rendered
         posY,       ---Position in the screen to be rendered
         width,      ---Can be found in the texture object, EX textures.bardo_asset.width
@@ -28,12 +30,11 @@ do ---open
         animStage,  ---Frame of the sprite
         allowRender ---Allows render to show this sprite
     )
-        local self = setmetatable({}, RenderObj)
-        self.__index = self
 
         self.objId = globalIdCounter
         globalIdCounter = globalIdCounter + 1
-        self.textureId = textureId or -1
+        self.texture = texture or {}
+        self.textureId = texture.identifier or nil
         self.posX = posX or 0
         self.posY = posY or 0
         self.width = width or 0
@@ -42,8 +43,12 @@ do ---open
         self.alpha = alpha or 100
         self.animStage = animStage or 0
         self.allowRender = allowRender or false
+    end
 
-        return self
+    ---Serves to change the texture Id aswell
+    function RenderObj:changeSprite(texture)
+        self.texture = texture or {}
+        self.textureId = texture.identifier or 1
     end
 
     --[[
@@ -95,5 +100,4 @@ do ---open
         table.sort(renderItems, function(a,b) return a.posY < b.posY end)
     end
 
-
-end ---close
+end --close

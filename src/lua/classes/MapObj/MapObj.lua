@@ -198,7 +198,9 @@ do --open
     ]]--
     function MapObj:addCameraAnchoredTo(name, obj)
 
-        self.cameras[name] = CameraObj:anchorTo(obj)
+        cameraObj = CameraObj:clone()
+        cameraObj:anchorTo(obj, name)
+        self.cameras[name] = cameraObj
         self:switchToCamera(name)
 
     end
@@ -210,7 +212,7 @@ do --open
 
     function MapObj:switchToCamera(name)
         for i, cam in pairs(self.cameras) do
-            cam:disableCamera()
+                cam:disableCamera()
         end
 
         self.cameras[name]:enableCamera()
@@ -271,7 +273,7 @@ do --open
         for i, obj in pairs(self.foreGround) do
 
             --test movement
-            if obj.isMovableObj == true then
+            if obj:isa(MovableObj) then
                 obj:keyboardMove()
 
                 obj:moveToPos()
@@ -291,7 +293,7 @@ do --open
         for i, obj in pairs(self.middleGround) do
 
             ----test movement
-            if obj.isMovableObj == true then
+            if obj:isa(MovableObj) then
                 obj:keyboardMove()
 
                 obj:moveToPos()
@@ -310,7 +312,7 @@ do --open
         for i, obj in pairs(self.backGround) do
 
             --test movement
-            if obj.isMovableObj == true then
+            if obj:isa(MovableObj) then
                 obj:keyboardMove()
 
                 obj:moveToPos()

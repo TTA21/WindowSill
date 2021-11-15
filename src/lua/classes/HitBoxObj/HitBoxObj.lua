@@ -1,4 +1,5 @@
-do
+
+do --open
 
     ---Note Movable obj will have access to keyboard and mouse, and will have attached hitbox
     ---will also have collision
@@ -14,10 +15,21 @@ do
             sss     S = shadow, S is the hitbox, s can clip through things, S cannot
             SSS
     ]]--
-    HitBoxObj = {}
-    HitBoxObj.__index = HitBoxObj
 
-    function HitBoxObj:new(
+    HitBoxObj = object:clone()
+
+    ---Data Declaration
+
+    HitBoxObj.posX = 0
+    HitBoxObj.posY = 0
+    HitBoxObj.hitBoxWidth =  0
+    HitBoxObj.hitBoxHeight = 0
+    HitBoxObj.anchor = {}
+    HitBoxObj.scale = 1
+
+    ---Function Declaration
+
+    function HitBoxObj:defineHitBox(
         posX,           ---Relative to Sprite
         posY,           ---Relative to Sprite
         hitBoxWidth,    ---Relative to Sprite
@@ -26,9 +38,6 @@ do
         scale           ---Relative to Sprite
     )
 
-        local self = setmetatable({}, HitBoxObj)
-        self.__index = self
-
         self.posX = posX or 0
         self.posY = posY or 0
         self.hitBoxWidth = hitBoxWidth or 0
@@ -36,7 +45,6 @@ do
         self.anchor = anchor or {}
         self.scale = scale or 1
 
-        return self
     end
 
     --[[
@@ -77,4 +85,4 @@ do
         return checkCollisionDirection(normalizedBox1, normalizedBox2)
     end
 
-end
+end --close

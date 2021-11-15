@@ -1,44 +1,49 @@
-do
+do  --open
 
-    
+    MovableObj = BaseObj:clone()
 
-    --[[
-        MovableObj uses the more 'sophisticated' Hitbox to do collisions, it also accepts
-        keyboard movement, it is meant as a base class for NPC's and the player character
+    ---Data Declaration
 
-        Also if no hitbox is given, the hitbox will be the lower third of the sprite
-    ]]--
-    
-    MovableObj = {}
-    MovableObj.__index = MovableObj
+    MovableObj.hitBox = {}
+        
+    MovableObj.allowMovementByKeyboard = false
+    MovableObj.movementMultiplier = 1
 
-    function MovableObj:new(
-        name,               ---Self explanatory
-        texture,            ---Texture object
-        scale,              ---Width & Height of the sprite times scale. 1 for normal
-        --renderObjId,        ---RederObj.ObjId
-        --renderItemIndex,    ---renderItems[RenderItemIndex]
-        posX,               ---Based on the map, not the screen
-        posY,               ---Based on the map, not the screen
-        hitBoxObj,          ---Contains offset for proper hitboxing
+    MovableObj.forceLeft = 0
+    MovableObj.forceRight = 0
+    MovableObj.forceUp = 0
+    MovableObj.forceDown = 0
+
+    MovableObj.gotoX = 0                        ---Goto this position
+    MovableObj.gotoY = 0
+    MovableObj.currentlyMovingByScript = false
+
+    MovableObj.forceCap = 10  ---Number of pixels the object will move after letting go
+
+    ---Function Declaration
+
+    function MovableObj:defineMovable(
         allowMovementByKeyboard,     ---WASD
-        allowMovementByMouse,        ---Point and click to move in a direction
-        movementMultiplier          ---1 = normal speed, 2 = double speed
+        movementMultiplier,          ---1 = normal speed, 2 = double speed
+        hasCollision,
+        hitBox             ---Contains offset for proper hitboxing
     )
+        self.hasCollision = hasCollision or false
 
-        --local self = setmetatable(BaseObj:new(name, texture, scale, posX, posY, 0, 0), MovableObj)
-        local self = setmetatable({}, {__index = BaseObj:new(name, texture, scale, posX, posY, 0, 0)})
-        self.__index = self
-
-        self.hitBoxWidth = nil  ---wont need the basic suff
-        self.hitBoxHeight = nil ---wont need the basic suff
-
-        self.hitBox = hitBoxObj or 
-            HitBoxObj:new(
-                0, (texture.height - texture.height/3)*self.scale, texture.width*self.scale, (texture.height/3)*scale, self
+        if hitBoxObj then
+            self.hitBox = hitBoxObj
+        else
+            hitBox = HitBoxObj:clone()
+            hitBox:defineHitBox(
+                0, 
+                (self.texture.height - self.texture.height/3)*self.scale, 
+                self.texture.width*self.scale, 
+                (self.texture.height/3)*self.scale, 
+                self
             )
+            self.hitBox = hitBox
+        end
             
-
         self.allowMovementByKeyboard = allowMovementByKeyboard or false
         self.allowMovementByMouse = allowMovementByMouse or false
         self.movementMultiplier = movementMultiplier or 1
@@ -53,17 +58,14 @@ do
         self.currentlyMovingByScript = false
 
         self.forceCap = 10  ---Number of pixels the object will move after letting go
-        self.isMovableObj = true
-
-        return self
-
+        
     end
 
     --[[
         Extremely Basic movement, it is expected of the game dev to create a hero class to
         implement more complex design for their game
     ]]--
-    function BaseObj:keyboardMove()
+    function MovableObj:keyboardMove()
         if self.allowMovementByKeyboard == true and self.currentlyMovingByScript == false then
             for I, V in pairs(keysPressed) do
                 if V == "Up" or V == "W" then
@@ -96,7 +98,7 @@ do
     --[[
         Takes force values and translates them to movement
     ]]--
-    function BaseObj:exertForce()
+    function MovableObj:exertForce()
 
         if math.floor(self.forceUp) > 0 then
             if (globalFrameCounter % math.abs(math.floor(5-self.movementMultiplier)) ) == 0 then
@@ -126,7 +128,7 @@ do
     --[[
         Force must run out eventually, call it after force has been exerted
     ]]--
-    function BaseObj:exertResistance()
+    function MovableObj:exertResistance()
 
 
         if math.floor(self.forceUp) > 0 then
@@ -149,7 +151,7 @@ do
     --[[
         Directions are the returning array from checkCollisionDirection
     ]]
-    function BaseObj:dealWithCollision(directions)
+    function MovableObj:dealWithCollision(directions)
 
         if directions.upHit == false then
             self.forceUp = 0
@@ -169,7 +171,7 @@ do
     --[[
         Called by the dev, the object tries to go to the position on the map +- 1 pixel
     ]]
-    function BaseObj:setGotoPos(posX, posY)
+    function MovableObj:setGotoPos(posX, posY)
         self.gotoX = posX
         self.gotoY = posY
         self.currentlyMovingByScript = true
@@ -179,7 +181,7 @@ do
         Meant to be called by the map loop, moves in the direction of the desired coordinates
         set by 'setGotoPos' +- 1 pixel
     ]]
-    function BaseObj:moveToPos()
+    function MovableObj:moveToPos()
         if self.currentlyMovingByScript then
             currentPos = getCenterOfHitbox(self)
             desiredPos = getCenterOfHitbox({
@@ -224,5 +226,4 @@ do
         end
     end
 
-
-end
+end --close
