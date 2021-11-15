@@ -8,7 +8,7 @@ use std::{
 
 //const wait_time: std::time::Duration = Duration::from_millis(1);   ///60fps = 16.666666666666668 millis
 
-const render_time: u128 = 17; //in millis
+const render_time: u128 = 15; //in millis
 const calc_time: std::time::Duration = Duration::from_millis(1);
 
 /*
@@ -92,8 +92,9 @@ fn main_loop(
         
             //Check if the game should quit
             game_continue = lua.get::<bool, _>("shouldGameContinue").unwrap();
-            if let Some(remaining) = calc_time.checked_sub(calc_runtime) {
-                thread::sleep(remaining);
+
+            if let Some(remaining) = calc_runtime.checked_sub(calc_time) {
+                thread::sleep(calc_time);
             }
         }
 
