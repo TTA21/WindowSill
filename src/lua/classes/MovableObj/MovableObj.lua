@@ -5,6 +5,7 @@ do  --open
     ---Data Declaration
 
     MovableObj.hitBox = {}
+    MovableObj.diretionalTextures = {}
         
     MovableObj.allowMovementByKeyboard = false
     MovableObj.movementMultiplier = 1
@@ -26,9 +27,35 @@ do  --open
         allowMovementByKeyboard,     ---WASD
         movementMultiplier,          ---1 = normal speed, 2 = double speed
         hasCollision,
+        diretionalTextures,         ---One sprite aniation for left, right, up and down
         hitBox             ---Contains offset for proper hitboxing
     )
         self.hasCollision = hasCollision or false
+
+        if diretionalTextures then
+            self.diretionalTextures = diretionalTextures
+            self.diretionalTextures = {
+                up_still = diretionalTextures.up_still or self.texture,
+                down_still = diretionalTextures.down_still or self.texture,
+                left_still = diretionalTextures.left_still or self.texture,
+                right_still = diretionalTextures.right_still or self.texture,
+                up = diretionalTextures.up or self.texture,
+                down = diretionalTextures.down or self.texture,
+                left = diretionalTextures.left or self.texture,
+                right = diretionalTextures.right or self.texture
+            }
+        else
+            self.diretionalTextures = {
+                up_still = self.texture,
+                down_still = self.texture,
+                left_still = self.texture,
+                right_still = self.texture,
+                up = self.texture,
+                down = self.texture,
+                left = self.texture,
+                right = self.texture
+            }
+        end
 
         if hitBoxObj then
             self.hitBox = hitBoxObj
@@ -57,6 +84,8 @@ do  --open
         self.gotoY = self.posY
         self.currentlyMovingByScript = false
 
+        self.lastMoveDirection = 1  --0 up, 1 down, 2 left, 3 right
+
         self.forceCap = 10  ---Number of pixels the object will move after letting go
         
     end
@@ -68,29 +97,34 @@ do  --open
     function MovableObj:keyboardMove()
         if self.allowMovementByKeyboard == true and self.currentlyMovingByScript == false then
             for I, V in pairs(keysPressed) do
-                if V == "Up" or V == "W" then
-                    if self.forceUp < self.forceCap then
-                        self.forceUp = self.forceUp + self.movementMultiplier
-                    end
-                end
-        
-                if V == "Down" or V == "S" then
-                    if self.forceDown < self.forceCap then
-                        self.forceDown = self.forceDown + self.movementMultiplier
-                    end
-                end
-                
                 if V == "Left" or V == "A" then
+                    self.lastMoveDirection = 2
                     if self.forceLeft < self.forceCap then
                         self.forceLeft = self.forceLeft + self.movementMultiplier
                     end
                 end
         
                 if V == "Right" or V == "D" then
+                    self.lastMoveDirection = 3
                     if self.forceRight < self.forceCap then
                         self.forceRight = self.forceRight + self.movementMultiplier
                     end
                 end
+
+                if V == "Up" or V == "W" then
+                    self.lastMoveDirection = 0
+                    if self.forceUp < self.forceCap then
+                        self.forceUp = self.forceUp + self.movementMultiplier
+                    end
+                end
+        
+                if V == "Down" or V == "S" then
+                    self.lastMoveDirection = 1
+                    if self.forceDown < self.forceCap then
+                        self.forceDown = self.forceDown + self.movementMultiplier
+                    end
+                end
+                
             end
         end
     end
@@ -123,6 +157,8 @@ do  --open
                 self.posX = self.posX + 1
             end
         end
+
+        self:updateSprite()
     end
 
     --[[
@@ -149,24 +185,68 @@ do  --open
     end
 
     --[[
-        Directions are the returning array from checkCollisionDirection
+        Changes sprite based on the force the object is exerting
     ]]
-    function MovableObj:dealWithCollision(directions)
-
-        if directions.upHit == false then
-            self.forceUp = 0
+    function MovableObj:updateSprite()
+        if  (self.forceUp > 1) or 
+            (self.forceDown > 1) or  
+            (self.forceLeft > 1) or 
+            (self.forceRight > 1)
+            then
+                
+                if not (self.forceLeft > 1 or self.forceRight > 1) then
+                    ---Moving Up
+                    if self.lastMoveDirection == 0 then
+                        if self.texture.identifier ~= self.diretionalTextures.up.identifier then
+                            self:changeSprite(self.diretionalTextures.up, 100)
+                        end
+                    end
+                    ---Moving Down
+                    if self.lastMoveDirection == 1 then
+                        if self.texture.identifier ~= self.diretionalTextures.down.identifier then
+                            self:changeSprite(self.diretionalTextures.down, 100)
+                        end
+                    end
+                end
+                ---Moving Left
+                if self.lastMoveDirection == 2 then
+                    if self.texture.identifier ~= self.diretionalTextures.left.identifier then
+                        self:changeSprite(self.diretionalTextures.left, 100)
+                    end
+                end
+                ---Moving Right
+                if self.lastMoveDirection == 3 then
+                    if self.texture.identifier ~= self.diretionalTextures.right.identifier then
+                        self:changeSprite(self.diretionalTextures.right, 100)
+                    end
+                end
+            else
+                ---Standing Up
+                if self.lastMoveDirection == 0 then
+                    if self.texture.identifier ~= self.diretionalTextures.up_still.identifier then
+                        self:changeSprite(self.diretionalTextures.up_still, 1000)
+                    end
+                end
+                ---Standing Down
+                if self.lastMoveDirection == 1 then
+                    if self.texture.identifier ~= self.diretionalTextures.down_still.identifier then
+                        self:changeSprite(self.diretionalTextures.down_still, 1000)
+                    end
+                end
+                ---Standing Left
+                if self.lastMoveDirection == 2 then
+                    if self.texture.identifier ~= self.diretionalTextures.left_still.identifier then
+                        self:changeSprite(self.diretionalTextures.left_still, 1000)
+                    end
+                end
+                ---Standing Right
+                if self.lastMoveDirection == 3 then
+                    if self.texture.identifier ~= self.diretionalTextures.right_still.identifier then
+                        self:changeSprite(self.diretionalTextures.right_still, 1000)
+                    end
+                end
         end
-        if directions.downHit == false then
-            self.forceDown = 0
-        end
-        if directions.leftHit == false then
-            self.forceLeft = 0
-        end
-        if directions.rightHit == false then
-            self.forceRight = 0
-        end
-
-    end 
+    end
 
     --[[
         Called by the dev, the object tries to go to the position on the map +- 1 pixel

@@ -76,13 +76,13 @@ function checkCollisionDirection(obj1, obj2)
 
     left_Tx = obj1.posX ---Tax, Tdx
     left_Jx = obj2.posX ---Jax, Jdx
-    right_Tx = (obj1.posX + obj1.hitBoxWidth)   --Tcx, Tbx
-    right_Jx = (obj2.posX + obj2.hitBoxWidth)   --Jcx, Jbx
+    right_Tx = (obj1.posX + obj1.hitBoxWidth)+1   --Tcx, Tbx
+    right_Jx = (obj2.posX + obj2.hitBoxWidth)+1   --Jcx, Jbx
 
     top_Ty = obj1.posY  ---Tay, Tcy
     top_Jy = obj2.posY  ---Jay, Jcy
-    bottom_Ty = (obj1.posY + obj1.hitBoxHeight)     --Tdy, Tby
-    bottom_Jy = (obj2.posY + obj2.hitBoxHeight)     --Jdy, Jby
+    bottom_Ty = (obj1.posY + obj1.hitBoxHeight)+1     --Tdy, Tby
+    bottom_Jy = (obj2.posY + obj2.hitBoxHeight)+1     --Jdy, Jby
 
     --print("BoxA", (left_Tx - right_Tx), "x", (top_Ty - bottom_Ty))
 

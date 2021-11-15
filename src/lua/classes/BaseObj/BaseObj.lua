@@ -79,7 +79,12 @@ do  ---open
         self.name = name or "Bob"
         self.hasCollision = hasCollision or true
     
-        self.numAnimationStages = numAnimationStages or 0
+        if texture then
+            self.numAnimationStages = numAnimationStages or texture.numAnimationStages
+        else
+            self.numAnimationStages = numAnimationStages or 0
+        end
+        
         self.animStage = animStage or 0
         self.numFramesPerAnimationStage = numFramesPerAnimationStage or 100
         self.localFrameCounter = localFrameCounter or 0
@@ -145,6 +150,38 @@ do  ---open
         self.allowRender = false
         self.renderObj.allowRender = false
     end
+
+    --[[
+        Directions are the returning array from checkCollisionDirection
+    ]]
+    function BaseObj:dealWithCollision(directions)
+
+        if directions.upHit == false then
+            self.forceUp = 0
+        end
+        if directions.downHit == false then
+            self.forceDown = 0
+        end
+        if directions.leftHit == false then
+            self.forceLeft = 0
+        end
+        if directions.rightHit == false then
+            self.forceRight = 0
+        end
+
+    end 
+
+    --[[
+        Directions are the returning array from checkCollisionDirection
+    ]]
+    function BaseObj:changeSprite(sprite, framesPerAnim)
+
+        self.animStage = 0
+        self.texture = sprite
+        self.numAnimationStages = sprite.numAnimationStages
+        self.numFramesPerAnimationStage = framesPerAnim or self.numFramesPerAnimationStage
+
+    end 
 
 
 end ---close
