@@ -153,3 +153,13 @@ function checkNearby(obj1, obj2, range)
     
     return false
 end
+
+--[[
+    Gets the position of the center of the hitbox
+]]
+function getCenterOfHitbox(obj)
+    return {
+        posX = obj.posX + (obj.hitBox.hitBoxWidth)/2,
+        posY = obj.posY + (obj.hitBox.hitBoxHeight)/2
+    }
+end

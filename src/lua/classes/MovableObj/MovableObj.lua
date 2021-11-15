@@ -48,6 +48,10 @@ do
         self.forceUp = 0
         self.forceDown = 0
 
+        self.gotoX = self.posX  ---Goto this position
+        self.gotoY = self.posY
+        self.currentlyMovingByScript = false
+
         self.forceCap = 10  ---Number of pixels the object will move after letting go
         self.isMovableObj = true
 
@@ -60,7 +64,7 @@ do
         implement more complex design for their game
     ]]--
     function BaseObj:keyboardMove()
-        if self.allowMovementByKeyboard == true then
+        if self.allowMovementByKeyboard == true and self.currentlyMovingByScript == false then
             for I, V in pairs(keysPressed) do
                 if V == "Up" or V == "W" then
                     if self.forceUp < self.forceCap then
@@ -162,11 +166,63 @@ do
 
     end 
 
-    --TODO
-    function BaseObj:mouseMove()
-        if self.allowMovementByMouse == true then
+    --[[
+        Called by the dev, the object tries to go to the position on the map +- 1 pixel
+    ]]
+    function BaseObj:setGotoPos(posX, posY)
+        self.gotoX = posX
+        self.gotoY = posY
+        self.currentlyMovingByScript = true
+    end
+
+    --[[
+        Meant to be called by the map loop, moves in the direction of the desired coordinates
+        set by 'setGotoPos' +- 1 pixel
+    ]]
+    function BaseObj:moveToPos()
+        if self.currentlyMovingByScript then
+            currentPos = getCenterOfHitbox(self)
+            desiredPos = getCenterOfHitbox({
+                posX = self.gotoX,
+                posY = self.gotoY,
+                hitBox = {
+                    hitBoxWidth = self.hitBox.hitBoxWidth,
+                    hitBoxHeight = self.hitBox.hitBoxHeight
+                }
+            })
+
+            if currentPos.posX > (desiredPos.posX) then
+                if self.forceLeft < self.forceCap then
+                    self.forceLeft = self.forceLeft + self.movementMultiplier
+                end
+            end
+
+            if currentPos.posX < (desiredPos.posX) then
+                if self.forceRight < self.forceCap then
+                    self.forceRight = self.forceRight + self.movementMultiplier
+                end
+            end
+
+            if currentPos.posY > (desiredPos.posY) then
+                if self.forceUp < self.forceCap then
+                    self.forceUp = self.forceUp + self.movementMultiplier
+                end
+            end
+
+            if currentPos.posY < (desiredPos.posY) then
+                if self.forceDown < self.forceCap then
+                    self.forceDown = self.forceDown + self.movementMultiplier
+                end
+            end
+
+            if  (self.posX == self.gotoX+1 or self.posX == self.gotoX-1) and
+                (self.posY == self.gotoY+1 or self.posY == self.gotoY-1)
+            then
+                self.currentlyMovingByScript = false
+            end
 
         end
     end
+
 
 end

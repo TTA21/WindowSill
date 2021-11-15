@@ -214,6 +214,7 @@ do --open
         end
 
         self.cameras[name]:enableCamera()
+
     end
 
 
@@ -244,12 +245,14 @@ do --open
     ]]
     testInt = 0
     function MapObj:testTableForCollisions(obj, table)
-        for i, obj2 in pairs(table) do
-            if obj2.hasCollision == true then
-                if (obj.globalId ~= obj2.globalId) and checkNearby(obj2, obj, 2) then
-                    directions = obj.hitBox:checkForDirectionalCollision(obj2.hitBox)
-                    obj:dealWithCollision(directions)
-                    obj2:dealWithCollision(directions)
+        if obj.hasCollision == true then
+            for i, obj2 in pairs(table) do
+                if obj2.hasCollision == true then
+                    if (obj.globalId ~= obj2.globalId) and checkNearby(obj2, obj, 2) then
+                        directions = obj.hitBox:checkForDirectionalCollision(obj2.hitBox)
+                        obj:dealWithCollision(directions)
+                        obj2:dealWithCollision(directions)
+                    end
                 end
             end
         end
@@ -270,7 +273,8 @@ do --open
             --test movement
             if obj.isMovableObj == true then
                 obj:keyboardMove()
-                obj:mouseMove()
+
+                obj:moveToPos()
 
                 ---Test for any possible collisions
                 self:testTableForCollisions(obj, self.middleGround)
@@ -289,7 +293,8 @@ do --open
             ----test movement
             if obj.isMovableObj == true then
                 obj:keyboardMove()
-                obj:mouseMove()
+
+                obj:moveToPos()
 
                 ---Test for any possible collisions
                 self:testTableForCollisions(obj, self.middleGround)
@@ -307,7 +312,8 @@ do --open
             --test movement
             if obj.isMovableObj == true then
                 obj:keyboardMove()
-                obj:mouseMove()
+
+                obj:moveToPos()
 
                 ---Test for any possible collisions
                 self:testTableForCollisions(obj, self.middleGround)

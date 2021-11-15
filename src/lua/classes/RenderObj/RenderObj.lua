@@ -67,6 +67,26 @@ do ---open
     end
 
     --[[
+        findRenderObjByIdInCamera(id)
+
+        Returns the index of the object in currentCameraRenderItems,
+            Params:
+                objId : RenderObj's objId
+            Return:
+                index of object in renderItems or nil if it doenst exist
+    ]]--
+    function findRenderObjByIdInCamera(objId)
+
+        for index, renderObj in pairs(currentCameraRenderItems) do
+            if renderObj.objId == objId then
+                return renderObj
+            end
+        end
+        return nil
+
+    end
+
+    --[[
         Every time you finish generating a map, it is good to call this function,
         it will reorder sprites based on the Y axis, so that sprites closer to the camera are
         rendered first, instead of by creation order
