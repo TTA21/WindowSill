@@ -242,10 +242,11 @@ do --open
         Checks if anything in the table is colliding with the current object of interest
         if so, act accordingly
     ]]
+    testInt = 0
     function MapObj:testTableForCollisions(obj, table)
         for i, obj2 in pairs(table) do
             if obj2.hasCollision == true then
-                if obj.globalId ~= obj2.globalId then
+                if (obj.globalId ~= obj2.globalId) and checkNearby(obj2, obj, 2) then
                     directions = obj.hitBox:checkForDirectionalCollision(obj2.hitBox)
                     obj:dealWithCollision(directions)
                     obj2:dealWithCollision(directions)

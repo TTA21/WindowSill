@@ -93,8 +93,8 @@ fn main_loop(
             //Check if the game should quit
             game_continue = lua.get::<bool, _>("shouldGameContinue").unwrap();
 
-            if let Some(remaining) = calc_runtime.checked_sub(calc_time) {
-                thread::sleep(calc_time);
+            if let Some(remaining) = calc_time.checked_sub(calc_runtime) {
+                thread::sleep(remaining);
             }
         }
 

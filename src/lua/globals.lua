@@ -121,3 +121,35 @@ function checkCollisionDirection(obj1, obj2)
         rightHit = true
     }
 end
+
+--[[
+    Check if obj1 is 'range' number of pixels near obj2
+]]--
+
+function checkNearby(obj1, obj2, range)
+
+    obj1 = obj1.hitBox:getNormalized()
+    obj2 = obj2.hitBox:getNormalized()
+
+    left_Tx = obj1.posX ---Tax, Tdx
+    left_Jx = obj2.posX - range ---Jax, Jdx
+    right_Tx = (obj1.posX + obj1.hitBoxWidth)   --Tcx, Tbx
+    right_Jx = (obj2.posX + obj2.hitBoxWidth) + range   --Jcx, Jbx
+
+    top_Ty = obj1.posY  ---Tay, Tcy
+    top_Jy = obj2.posY - range  ---Jay, Jcy
+    bottom_Ty = (obj1.posY + obj1.hitBoxHeight)     --Tdy, Tby
+    bottom_Jy = (obj2.posY + obj2.hitBoxHeight) + range     --Jdy, Jby
+
+    --print("BoxA", (left_Tx - right_Tx), "x", (top_Ty - bottom_Ty))
+
+    if  not (bottom_Ty <= top_Jy) and 
+        not (top_Ty >= bottom_Jy) and 
+        not (right_Tx <= left_Jx) and 
+        not (left_Tx >= right_Jx) then
+
+        return true
+    end
+    
+    return false
+end
