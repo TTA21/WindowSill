@@ -19,7 +19,7 @@ do  --open
     MovableObj.gotoY = 0
     MovableObj.currentlyMovingByScript = false
 
-    MovableObj.forceCap = 10  ---Number of pixels the object will move after letting go
+    MovableObj.forceCap = 5  ---Number of pixels the object will move after letting go
 
     ---Function Declaration
 
@@ -158,7 +158,7 @@ do  --open
             end
         end
 
-        self:updateSprite()
+        --self:updateSprite()
     end
 
     --[[
@@ -168,19 +168,19 @@ do  --open
 
 
         if math.floor(self.forceUp) > 0 then
-            self.forceUp = self.forceUp - 0.4
+            self.forceUp = self.forceUp - 1
         end
 
         if math.floor(self.forceDown) > 0 then
-            self.forceDown = self.forceDown - 0.4
+            self.forceDown = self.forceDown - 1
         end
 
         if math.floor(self.forceLeft) > 0 then
-            self.forceLeft = self.forceLeft - 0.4
+            self.forceLeft = self.forceLeft - 1
         end
 
         if math.floor(self.forceRight) > 0 then
-            self.forceRight = self.forceRight - 0.4
+            self.forceRight = self.forceRight - 1
         end
     end
 
@@ -188,13 +188,13 @@ do  --open
         Changes sprite based on the force the object is exerting
     ]]
     function MovableObj:updateSprite()
-        if  (self.forceUp > 1) or 
-            (self.forceDown > 1) or  
-            (self.forceLeft > 1) or 
-            (self.forceRight > 1)
+        if  (self.forceUp > 0.1) or 
+            (self.forceDown > 0.1) or  
+            (self.forceLeft > 0.1) or 
+            (self.forceRight > 0.1)
             then
                 
-                if not (self.forceLeft > 1 or self.forceRight > 1) then
+                if not (self.forceLeft > 0.1 or self.forceRight > 0.1) then
                     ---Moving Up
                     if self.lastMoveDirection == 0 then
                         if self.texture.identifier ~= self.diretionalTextures.up.identifier then
@@ -274,24 +274,28 @@ do  --open
             })
 
             if currentPos.posX > (desiredPos.posX) then
+                self.lastMoveDirection = 2
                 if self.forceLeft < self.forceCap then
                     self.forceLeft = self.forceLeft + self.movementMultiplier
                 end
             end
 
             if currentPos.posX < (desiredPos.posX) then
+                self.lastMoveDirection = 3
                 if self.forceRight < self.forceCap then
                     self.forceRight = self.forceRight + self.movementMultiplier
                 end
             end
 
             if currentPos.posY > (desiredPos.posY) then
+                self.lastMoveDirection = 0
                 if self.forceUp < self.forceCap then
                     self.forceUp = self.forceUp + self.movementMultiplier
                 end
             end
 
             if currentPos.posY < (desiredPos.posY) then
+                self.lastMoveDirection = 1
                 if self.forceDown < self.forceCap then
                     self.forceDown = self.forceDown + self.movementMultiplier
                 end
@@ -302,7 +306,6 @@ do  --open
             then
                 self.currentlyMovingByScript = false
             end
-
         end
     end
 

@@ -283,6 +283,7 @@ do --open
                 self:testTableForCollisions(obj, self.backGround)
 
                 obj:exertForce()
+                obj:updateSprite()
                 obj:exertResistance()
             end
 
@@ -303,6 +304,7 @@ do --open
                 self:testTableForCollisions(obj, self.backGround)
 
                 obj:exertForce()
+                obj:updateSprite()
                 obj:exertResistance()
             end
             ---DO other scripts here too
@@ -322,6 +324,7 @@ do --open
                 self:testTableForCollisions(obj, self.backGround)
 
                 obj:exertForce()
+                obj:updateSprite()
                 obj:exertResistance()
             end
             ---DO other scripts here too

@@ -7,7 +7,7 @@ do
     function firstStageSetup()
 
         obj1 = MovableObj:clone()
-        obj1:defineBase("Object1", textures.bard_16_31_left, 2, 123, 123)
+        obj1:defineBase("Object1", textures.bard_16_31_left, 1, 123, 123)
         obj1:defineMovable(true,1,true, {
             up_still = textures.bard_17_31_up_still,
             down_still = textures.bard_18_31_down_still,
@@ -24,8 +24,17 @@ do
         firstLevelMap:addNamedItemToMiddleGround("Object1", obj1)
 
         obj2 = MovableObj:clone()
-        obj2:defineBase("Object2", textures.blue_square, 1, 1, 1)
-        obj2:defineMovable(false,1,true)
+        obj2:defineBase("Object2", textures.bard_16_31_left, 1, 1, 1)
+        obj2:defineMovable(false,1,true,{
+            up_still = textures.bard_17_31_up_still,
+            down_still = textures.bard_18_31_down_still,
+            left_still = textures.bard_16_31_left_still,
+            right_still = textures.bard_15_31_right_still,
+            up = textures.bard_17_31_up,
+            down = textures.bard_18_31_down,
+            left = textures.bard_16_31_left,
+            right = textures.bard_16_31_right,
+        })
         
         firstLevelMap:addNamedItemToMiddleGround("Object2", obj2)
 
@@ -36,7 +45,7 @@ do
 
         reorderRenderItems()
 
-        obj2:setGotoPos(123,123)
+        obj2:setGotoPos(100,300)
 
     end
 
