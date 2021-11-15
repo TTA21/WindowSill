@@ -102,7 +102,8 @@ do  ---open
             self.scale,      
             self.alpha,      
             self.animStage,
-            self.allowRender
+            self.allowRender,
+            self
         )
         renderItems[#renderItems+1] = self.renderObj
     end

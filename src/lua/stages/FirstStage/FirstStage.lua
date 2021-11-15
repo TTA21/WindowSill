@@ -7,7 +7,7 @@ do
     function firstStageSetup()
 
         obj1 = MovableObj:clone()
-        obj1:defineBase("Object1", textures.bard_16_31_left, 1, 123, 123)
+        obj1:defineBase("Object1", textures.bard_16_31_left, 2, 123, 123)
         obj1:defineMovable(true,1,true, {
             up_still = textures.bard_17_31_up_still,
             down_still = textures.bard_18_31_down_still,

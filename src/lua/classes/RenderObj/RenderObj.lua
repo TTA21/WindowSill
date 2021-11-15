@@ -28,7 +28,8 @@ do  --open
         scale,      ---Self evident
         alpha,      ---Opacity, 100 for fully opaque
         animStage,  ---Frame of the sprite
-        allowRender ---Allows render to show this sprite
+        allowRender,---Allows render to show this sprite
+        referencingObj
     )
 
         self.objId = globalIdCounter
@@ -43,6 +44,7 @@ do  --open
         self.alpha = alpha or 100
         self.animStage = animStage or 0
         self.allowRender = allowRender or false
+        self.referencingObj = referencingObj or {}
     end
 
     ---Serves to change the texture Id aswell
@@ -97,7 +99,12 @@ do  --open
         rendered first, instead of by creation order
     ]]
     function reorderRenderItems()
-        table.sort(renderItems, function(a,b) return a.posY < b.posY end)
+        table.sort(renderItems, 
+            function(a,b) 
+                return (a.posY + a.referencingObj.texture.height*a.referencingObj.scale) < 
+                (b.posY + b.referencingObj.texture.height*b.referencingObj.scale)
+            end
+        )
     end
 
 end --close

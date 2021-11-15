@@ -169,7 +169,12 @@ do  --open
             end
         end
 
-        table.sort(itemsToRender, function(a,b) return a.posY < b.posY end)
+        table.sort(itemsToRender, 
+            function(a,b) 
+                return (a.posY + a.referencingObj.texture.height*a.referencingObj.scale) < 
+                (b.posY + b.referencingObj.texture.height*b.referencingObj.scale)
+            end
+        )
         currentCameraRenderItems = itemsToRender
 
     end
