@@ -43,8 +43,6 @@ do
 
         firstLevelMap:addNamedItemToMiddleGround("Object3", obj3)
 
-        reorderRenderItems()
-
         obj2:setGotoPos(444,444)
 
         obj4 = BaseObjAttachedObj:clone()
@@ -56,8 +54,10 @@ do
         obj5 = MovableObjAttachedObj:clone()
         obj5:defineBase("Object5", textures.red_square, 1, 1,1)
         obj5:defineMovable(false,1,true)
-        obj5:defineBaseObjAttached(obj1, 20,20)
+        obj5:defineMovableObjAttached(obj1, 20,20)
         firstLevelMap:addNamedItemToMiddleGround("Object5", obj5)
+
+        reorderRenderItems()
 
     end
 

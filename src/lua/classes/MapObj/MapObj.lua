@@ -273,7 +273,7 @@ do --open
         for i, obj in pairs(self.foreGround) do
 
             --test movement
-            if obj:isa(MovableObj) then
+            if obj:isa(MovableObj) or obj:isa(MovableObjAttachedObj)  then
                 obj:keyboardMove()
 
                 obj:moveToPos()
@@ -282,8 +282,7 @@ do --open
                 self:testTableForCollisions(obj, self.middleGround)
                 self:testTableForCollisions(obj, self.backGround)
 
-                obj:exertForce()
-                obj:updateSprite()
+                obj:exertForce()obj:updateSprite()
                 obj:exertResistance()
             end
 
@@ -296,6 +295,7 @@ do --open
                 end
             end
 
+            ---Update postition of attached objs
             if obj:isa(MovableObjAttachedObj) then
                 if not obj.noBaseAttached then
                     obj:updateForce()
@@ -307,7 +307,7 @@ do --open
         for i, obj in pairs(self.middleGround) do
 
             ----test movement
-            if obj:isa(MovableObj) then
+            if obj:isa(MovableObj) or obj:isa(MovableObjAttachedObj) then
                 obj:keyboardMove()
 
                 obj:moveToPos()
@@ -328,7 +328,7 @@ do --open
                     obj:updatePos()
                 end
             end
-
+            ---Update postition of attached objs
             if obj:isa(MovableObjAttachedObj) then
                 if not obj.noBaseAttached then
                     obj:updateForce()
@@ -362,6 +362,7 @@ do --open
                 end
             end
 
+            ---Update postition of attached objs
             if obj:isa(MovableObjAttachedObj) then
                 if not obj.noBaseAttached then
                     obj:updateForce()

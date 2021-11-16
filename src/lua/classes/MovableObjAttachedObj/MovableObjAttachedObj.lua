@@ -13,11 +13,9 @@ do --open
 
     ---Data declaration
 
-    MovableObjAttachedObj.anchor = {}
-
     ---Function Declarations
 
-    function MovableObjAttachedObj:defineBaseObjAttached(anchor, offsetX, offsetY)
+    function MovableObjAttachedObj:defineMovableObjAttached(anchor, offsetX, offsetY)
         
         self.noBaseAttached = false
         if not anchor then

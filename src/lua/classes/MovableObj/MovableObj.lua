@@ -168,19 +168,19 @@ do  --open
 
 
         if math.floor(self.forceUp) > 0 then
-            self.forceUp = self.forceUp - 1
+            self.forceUp = self.forceUp - 0.5
         end
 
         if math.floor(self.forceDown) > 0 then
-            self.forceDown = self.forceDown - 1
+            self.forceDown = self.forceDown - 0.5
         end
 
         if math.floor(self.forceLeft) > 0 then
-            self.forceLeft = self.forceLeft - 1
+            self.forceLeft = self.forceLeft - 0.5
         end
 
         if math.floor(self.forceRight) > 0 then
-            self.forceRight = self.forceRight - 1
+            self.forceRight = self.forceRight - 0.5
         end
     end
 
@@ -188,13 +188,13 @@ do  --open
         Changes sprite based on the force the object is exerting
     ]]
     function MovableObj:updateSprite()
-        if  (self.forceUp > 0.1) or 
-            (self.forceDown > 0.1) or  
-            (self.forceLeft > 0.1) or 
-            (self.forceRight > 0.1)
+        if  (self.forceUp > 0.5) or 
+            (self.forceDown > 0.5) or  
+            (self.forceLeft > 0.5) or 
+            (self.forceRight > 0.5)
             then
                 
-                if not (self.forceLeft > 0.1 or self.forceRight > 0.1) then
+                if not (self.forceLeft > 0.5 or self.forceRight > 0.5) then
                     ---Moving Up
                     if self.lastMoveDirection == 0 then
                         if self.texture.identifier ~= self.diretionalTextures.up.identifier then
