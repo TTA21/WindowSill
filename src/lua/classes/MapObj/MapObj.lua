@@ -288,6 +288,19 @@ do --open
 
             ---DO other scripts here too
 
+            ---Update postition of attached objs
+            if obj:isa(BaseObjAttachedObj) then
+                if not obj.noBaseAttached then
+                    obj:updatePos()
+                end
+            end
+
+            if obj:isa(MovableObjAttachedObj) then
+                if not obj.noBaseAttached then
+                    obj:updateForce()
+                end
+            end
+
         end
 
         for i, obj in pairs(self.middleGround) do
@@ -307,6 +320,19 @@ do --open
             end
             ---DO other scripts here too
 
+            ---Update postition of attached objs
+            if obj:isa(BaseObjAttachedObj) then
+                if not obj.noBaseAttached then
+                    obj:updatePos()
+                end
+            end
+
+            if obj:isa(MovableObjAttachedObj) then
+                if not obj.noBaseAttached then
+                    obj:updateForce()
+                end
+            end
+
         end
 
         for i, obj in pairs(self.backGround) do
@@ -325,6 +351,19 @@ do --open
                 obj:exertResistance()
             end
             ---DO other scripts here too
+
+            ---Update postition of attached objs
+            if obj:isa(BaseObjAttachedObj) then
+                if not obj.noBaseAttached then
+                    obj:updatePos()
+                end
+            end
+
+            if obj:isa(MovableObjAttachedObj) then
+                if not obj.noBaseAttached then
+                    obj:updateForce()
+                end
+            end
 
         end
 

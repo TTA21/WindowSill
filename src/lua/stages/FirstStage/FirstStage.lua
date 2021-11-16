@@ -7,7 +7,7 @@ do
     function firstStageSetup()
 
         obj1 = MovableObj:clone()
-        obj1:defineBase("Object1", textures.bard_16_31_left, 2, 123, 123)
+        obj1:defineBase("Object1", textures.bard_16_31_left, 1, 123, 123)
         obj1:defineMovable(true,1,true, {
             up_still = textures.bard_17_31_up_still,
             down_still = textures.bard_18_31_down_still,
@@ -36,7 +36,19 @@ do
 
         reorderRenderItems()
 
-        obj2:setGotoPos(123,123)
+        obj2:setGotoPos(444,444)
+
+        obj4 = BaseObjAttachedObj:clone()
+        obj4:defineBase("Object4", textures.red_square, 1, 1,1)
+        obj4.hasCollision = false
+        obj4:defineBaseObjAttached(obj2, 50,50)
+        firstLevelMap:addNamedItemToMiddleGround("Object4", obj4)
+
+        obj5 = MovableObjAttachedObj:clone()
+        obj5:defineBase("Object5", textures.red_square, 1, 1,1)
+        obj5:defineMovable(false,1,true)
+        obj5:defineBaseObjAttached(obj1, 20,20)
+        firstLevelMap:addNamedItemToMiddleGround("Object5", obj5)
 
     end
 

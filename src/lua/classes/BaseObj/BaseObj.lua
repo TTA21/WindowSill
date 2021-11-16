@@ -52,8 +52,8 @@ do  ---open
         --renderObj
     )
         self.texture = texture or {}
-        self.posX = posX or 0
-        self.posY = posY or 0
+        self.posX = posX or 1
+        self.posY = posY or 1
         self.scale = scale or 1
 
         if hitBoxObj then
