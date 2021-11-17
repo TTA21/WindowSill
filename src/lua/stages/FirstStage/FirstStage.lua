@@ -63,8 +63,7 @@ do
         --dialog1:defineAttachableDialog("ABCDEF\nGHIJK LM\nNOPQRST\nUVWXYZ", 1, 2 , -1, "C")
         --dialog1:defineAttachableDialog("abcdef\nghijk lm\nnopqrst\nuvwxyz", 1, 2 , -1, "C")
         --dialog1:defineAttachableDialog("1234567890!?%()'", 1, 2 , -1, "C")
-        dialog1:defineAttachableDialog("Test Message!\n Test Test?", 1, 2 , 1000, "C")
-        dialog1:write(firstLevelMap)
+        dialog1:defineAttachableDialog("Test Message!\n Test Test?", 1, 2, 3000 , 100, "C")
         firstLevelMap:addNamedItemToDialogs("Dialog1", dialog1)
         
         --objTest = BaseObj:clone()

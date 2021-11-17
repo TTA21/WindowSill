@@ -44,7 +44,10 @@ do --open
         self.foreGround = {}
         self.middleGround = {}
         self.backGround = {}
-        self.dialogs = {}
+        self.dialogs = {
+            backGrounds = {},
+            letters = {}
+        }
         self.cameras = {}
         self.areas = {}
 
@@ -224,10 +227,16 @@ do --open
         Used for dialogs
     ]]--
     function MapObj:addNamedItemToDialogs(name, obj)
-        self.dialogs[name] = obj
+        self.dialogs.backGrounds[name] = obj
+        for i, letter in pairs(obj.letters) do
+            self.dialogs.letters[#self.dialogs.letters+1] = letter
+        end
     end
     function MapObj:addToDialogs(obj)
-        self.dialogs[#self.dialogs + 1] = obj
+        self.dialogs.backGrounds[#self.dialogs + 1] = obj
+        for i, letter in pairs(obj.letters) do
+            self.dialogs.letters[#self.dialogs.letters+1] = letter
+        end
     end
 
     function MapObj:removeNamedFromDialogs(name)
@@ -255,7 +264,10 @@ do --open
             cam:renderTable(self.backGround)
             cam:renderTable(self.middleGround)
             cam:renderTable(self.foreGround)
-            cam:renderTable(self.dialogs)
+
+            cam:renderTable(self.dialogs.backGrounds)
+            cam:renderTable(self.dialogs.letters)
+
             cam:renderReorder()
         end
 
@@ -395,9 +407,16 @@ do --open
 
         end
 
-        for i, obj in pairs(self.dialogs) do
+        ---Update Dialogs
+        for i, obj in pairs(self.dialogs.backGrounds) do
             if obj.allowRender then
                 obj:update()
+            end
+        end
+        ---Update Dialogs
+        for i, obj in pairs(self.dialogs.letters) do
+            if obj.allowRender then
+                obj:updatePos()
             end
         end
 

@@ -48,6 +48,7 @@ texturesToBeLoaded = {
     'bard_18_31_down_still',
     'std_font_10_10',                       ---Part of Standard, DO NOT CHANGE
     'std_menu_background_blue_10_10',       ---Part of Standard, DO NOT CHANGE
+    'std_menu_background_white_10_10',      ---Part of Standard, DO NOT CHANGE
 }
 textures = {
     bardo_asset = {
@@ -145,6 +146,13 @@ textures = {
     std_menu_background_blue_10_10 = {  ---Part of Standard, DO NOT CHANGE
         identifier = 14,
         spritePath = "assets/menu_background_blue_10_10.png",
+        width = 10,
+        height = 10,
+        numAnimationStages = 0,
+    },
+    std_menu_background_white_10_10 = {  ---Part of Standard, DO NOT CHANGE
+        identifier = 15,
+        spritePath = "assets/white_50p_10_10.png",
         width = 10,
         height = 10,
         numAnimationStages = 0,

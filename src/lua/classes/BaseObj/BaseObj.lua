@@ -7,7 +7,7 @@ do  ---open
     BaseObj = object:clone()
 
     ---Data Declaration
-    BaseObj.texture = textures.blue_square
+    BaseObj.texture = textures.std_menu_background_white_10_10
     BaseObj.posX = 0
     BaseObj.posY = 0
     BaseObj.scale = 1
@@ -51,7 +51,7 @@ do  ---open
         allowRender
         --renderObj
     )
-        self.texture = texture or textures.blue_square
+        self.texture = texture or textures.std_menu_background_white_10_10
         self.posX = posX or 1
         self.posY = posY or 1
         self.scale = scale or 1

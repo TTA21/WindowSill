@@ -11,7 +11,7 @@ do --open
 
     ---Data declaration
 
-    AttachableDialogObj.texture = textures.std_menu_background_blue_10_10 ---Standard
+    AttachableDialogObj.texture = textures.std_menu_background_white_10_10 ---Standard
 
     ---Function Declaration
 
@@ -20,6 +20,7 @@ do --open
         spacingX,       ---How many pixels between letters
         spacingY,       ---How many pixels between lines
         timeOnScreen,   ---How long it should stay on screen by frames, -1 if no time is decided
+        framesPerLetter,---Every x frames, write one letter
         closeKey,       ---Wich key to press to close the dialog
         pauseGame,      ---Should the game pause when dialog is on screen
         forceWidth,     ---If wished, a size of the dialog can be defined, NOT RECOMENDED
@@ -37,11 +38,12 @@ do --open
             self.startFrame = globalFrameCounter
             self.endFrame = globalFrameCounter + self.timeOnScreen
         end
+        self.framesPerLetter = framesPerLetter or 100
 
         self.closeKey = closeKey or "NONE"
         self.isClosed = false
         self.texture = backgroundTexture or 
-            textures.std_menu_background_blue_10_10 ---Standard
+            textures.std_menu_background_white_10_10 ---Standard
 
         self.font = font
 
@@ -71,13 +73,10 @@ do --open
         self.spacingY = spacingY or 5
 
         if not self.width then
-            ---width should be the number of chars in a line * sizze of char
-            --- + 2 chars width for border
             self.width = (#self.biggestLine * self.font.texture.width) + (self.font.texture.width*3) + (#self.biggestLine * spacingX)
         end
 
         if not self.height then
-            ---height should be the same as width but with num of lines
             self.height = (#self.lines * self.font.texture.height) + (self.font.texture.height*3) + (#self.lines * spacingY)
         end
 
@@ -86,11 +85,11 @@ do --open
 
         self.letters = {}
 
-        --self:write()
+        self:write()
 
     end
 
-    function AttachableDialogObj:write(mapObj)
+    function AttachableDialogObj:write()
         spacingAdderX = self.spacingX
         spacingAdderY = self.spacingY
         for i, line in pairs(self.lines) do
@@ -107,12 +106,16 @@ do --open
                 )
                 spacingAdderX = spacingAdderX + self.spacingX
                 self.letters[#self.letters+1] = letter
-                mapObj:addToForeGround(letter)
+                --mapObj:addToForeGround(letter)
             end
             spacingAdderX = self.spacingX
             spacingAdderY = spacingAdderY + self.spacingY
         end
     end
+
+    --function AttachableDialogObj:write()
+
+    --end
 
     function AttachableDialogObj:parseLines()
         line = ""
