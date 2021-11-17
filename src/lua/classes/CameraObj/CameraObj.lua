@@ -89,8 +89,6 @@ do  --open
 
         if self.currentCam == true then
             
-            globalFrameCounter = globalFrameCounter + 1
-
             for index, baseObj in pairs(map.characters) do
                 
                 screenX = baseObj.posX - self.pointA.X
@@ -124,24 +122,24 @@ do  --open
 
         if self.currentCam == true then
             
-            globalFrameCounter = globalFrameCounter + 1
-
             for index, baseObj in pairs(table) do
                 
-                screenX = baseObj.posX - self.pointA.X
-                screenY = baseObj.posY - self.pointA.Y
+                if baseObj.allowRender then
+                    screenX = baseObj.posX - self.pointA.X
+                    screenY = baseObj.posY - self.pointA.Y
 
-                if  (screenX >= (0 - (baseObj.texture.width * baseObj.scale))) and (screenX <= self.width) and
-                    (screenY >= (0 - baseObj.texture.height * baseObj.scale)) and (screenY <= self.height)
-                then
+                    if  (screenX >= (0 - (baseObj.texture.width * baseObj.scale))) and (screenX <= self.width) and
+                        (screenY >= (0 - baseObj.texture.height * baseObj.scale)) and (screenY <= self.height)
+                    then
+                        
+                        baseObj:enableRender()
+                        baseObj:updateRenderObjCommon(screenX, screenY)
+
+                    else 
+
+                        baseObj:disableRender()
                     
-                    baseObj:enableRender()
-                    baseObj:updateRenderObjCommon(screenX, screenY)
-
-                else 
-
-                    baseObj:disableRender()
-                
+                    end
                 end
 
             end

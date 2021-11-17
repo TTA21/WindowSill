@@ -7,7 +7,7 @@ do  ---open
     BaseObj = object:clone()
 
     ---Data Declaration
-    BaseObj.texture = {}
+    BaseObj.texture = textures.blue_square
     BaseObj.posX = 0
     BaseObj.posY = 0
     BaseObj.scale = 1
@@ -51,7 +51,7 @@ do  ---open
         allowRender
         --renderObj
     )
-        self.texture = texture or {}
+        self.texture = texture or textures.blue_square
         self.posX = posX or 1
         self.posY = posY or 1
         self.scale = scale or 1
@@ -62,8 +62,8 @@ do  ---open
             hitBox = HitBoxObj:clone()
             hitBox:defineHitBox(
                 0, 0, 
-                texture.width * self.scale, 
-                texture.height * self.scale, 
+                self.texture.width * self.scale, 
+                self.texture.height * self.scale, 
                 self
             )
             self.hitBox = hitBox
@@ -80,7 +80,7 @@ do  ---open
         self.hasCollision = hasCollision or true
     
         if texture then
-            self.numAnimationStages = numAnimationStages or texture.numAnimationStages
+            self.numAnimationStages = numAnimationStages or self.texture.numAnimationStages
         else
             self.numAnimationStages = numAnimationStages or 0
         end
@@ -140,6 +140,11 @@ do  ---open
 
         end
 
+    end
+
+    function BaseObj:changeDimensions(width, height)
+        self.renderObj.width = width
+        self.renderObj.height = height
     end
 
     function BaseObj:enableRender()

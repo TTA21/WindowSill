@@ -125,7 +125,7 @@ pub fn send_keyboard_state_to_lua(
 ) -> Lua {
     {
         let mut array = lua.empty_array("keysPressed");
-        let mut iter: u8 = 0;
+        let mut iter: u8 = 1;
         for key in pressed_keys{
             array.set(iter, key.name());
             iter += 1;

@@ -70,6 +70,7 @@ fn main_loop(
 
         let render_runtime = render_start.elapsed();
         let calc_runtime = calc_start.elapsed();
+        let start = Instant::now();
 
         //Game Loop
         if calc_runtime.as_millis() > calc_time.as_millis() {
@@ -93,11 +94,11 @@ fn main_loop(
             //Check if the game should quit
             game_continue = lua.get::<bool, _>("shouldGameContinue").unwrap();
 
-            if let Some(remaining) = calc_time.checked_sub(calc_runtime) {
-                thread::sleep(remaining);
-            }
+            //if let Some(remaining) = calc_time.checked_sub(calc_runtime) {
+            //    thread::sleep(remaining);
+            //}
         }
-
+        
         if render_runtime.as_millis() > render_time {
             render_start = Instant::now();
             //Get the suff to render
@@ -107,6 +108,11 @@ fn main_loop(
 
             //Render the sprites
             sdl2_instance.canvas = sdl::render_frame(sdl2_instance.canvas, &sprite_data, sprite_objs);
+        }
+
+        let runtime = start.elapsed();
+        if let Some(remaining) = calc_time.checked_sub(runtime) {
+            thread::sleep(remaining);
         }
 
     }

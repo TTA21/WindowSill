@@ -44,6 +44,7 @@ do --open
         self.foreGround = {}
         self.middleGround = {}
         self.backGround = {}
+        self.dialogs = {}
         self.cameras = {}
         self.areas = {}
 
@@ -219,6 +220,28 @@ do --open
 
     end
 
+    --[[
+        Used for dialogs
+    ]]--
+    function MapObj:addNamedItemToDialogs(name, obj)
+        self.dialogs[name] = obj
+    end
+    function MapObj:addToDialogs(obj)
+        self.dialogs[#self.dialogs + 1] = obj
+    end
+
+    function MapObj:removeNamedFromDialogs(name)
+        self.dialogs[name] = nil
+    end
+
+    function MapObj:removeFromDialogs(globalId)
+        for index, object in pairs(self.dialogs) do
+            if object.globalId == globalId then
+                object = nil
+            end
+        end
+    end
+
 
     --[[
         Main render function, called every frame
@@ -232,6 +255,7 @@ do --open
             cam:renderTable(self.backGround)
             cam:renderTable(self.middleGround)
             cam:renderTable(self.foreGround)
+            cam:renderTable(self.dialogs)
             cam:renderReorder()
         end
 
@@ -369,6 +393,10 @@ do --open
                 end
             end
 
+        end
+
+        for i, obj in pairs(self.dialogs) do
+            obj:update()
         end
 
         --occasionally reorder the scenario for better performance

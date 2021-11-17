@@ -46,16 +46,22 @@ do
         obj2:setGotoPos(444,444)
 
         obj4 = BaseObjAttachedObj:clone()
-        obj4:defineBase("Object4", textures.red_square, 1, 1,1)
+        obj4:defineBase("Object4", textures.red_square, 1)
         obj4.hasCollision = false
         obj4:defineBaseObjAttached(obj2, 50,50)
         firstLevelMap:addNamedItemToMiddleGround("Object4", obj4)
 
         obj5 = MovableObjAttachedObj:clone()
-        obj5:defineBase("Object5", textures.red_square, 1, 1,1)
+        obj5:defineBase("Object5", textures.red_square, 1)
         obj5:defineMovable(false,1,true)
         obj5:defineMovableObjAttached(obj1, 20,20)
         firstLevelMap:addNamedItemToMiddleGround("Object5", obj5)
+
+        dialog1 = AttachableDialogObj:clone()
+        dialog1:defineBase("Dialog1")
+        dialog1:defineBaseObjAttached(obj1, 40, 40)
+        dialog1:defineAttachableDialog("One\nTwo\nThreeee\nFour\nFive", 1000, "C")
+        firstLevelMap:addNamedItemToDialogs("Dialog1", dialog1)
 
         reorderRenderItems()
 
@@ -71,6 +77,8 @@ do
             print("Level: ", firstLevelMap.name, " Deconstructed")
             firstLevelMap = nil
         end
+
+        globalFrameCounter = globalFrameCounter + 1 ---MANDATORY
 
     end
 
