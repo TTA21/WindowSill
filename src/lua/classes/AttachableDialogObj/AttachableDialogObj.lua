@@ -19,6 +19,7 @@ do --open
         text,           ---What you want to write
         spacingX,       ---How many pixels between letters
         spacingY,       ---How many pixels between lines
+        fontScale,      ---Width and height of the font, 1 for normal, 2 for double size
         timeOnScreen,   ---How long it should stay on screen by frames, -1 if no time is decided
         framesPerLetter,---Every x frames, write one letter
         closeKey,       ---Wich key to press to close the dialog
@@ -30,6 +31,7 @@ do --open
     )
 
         self.text = text or "Default Message"
+        self.fontScale = fontScale or 1
 
         --2000 = 5s
         --1000 = 2.5s
@@ -67,12 +69,17 @@ do --open
         self.spacingX = spacingX or 5
         self.spacingY = spacingY or 5
 
+        self.spacingX = self.spacingX * self.fontScale
+        self.spacingY = self.spacingY * self.fontScale
+
         if not self.width then
             self.width = (#self.biggestLine * self.font.texture.width) + (self.font.texture.width*3) + (#self.biggestLine * spacingX)
+            self.width = self.width * self.fontScale
         end
 
         if not self.height then
             self.height = (#self.lines * self.font.texture.height) + (self.font.texture.height*3) + (#self.lines * spacingY)
+            self.height = self.height * self.fontScale
         end
 
         self:changeDimensions(self.width, self.height)
@@ -89,14 +96,14 @@ do --open
         for i, line in pairs(self.lines) do
             for j=1, #line do
                 letter = BaseObjAttachedObj:clone()
-                letter:defineBase("", self.font.texture, 1)
+                letter:defineBase("", self.font.texture, self.fontScale)
                 letter.hasCollision = false
                 letter.animStage = self.font.charTable[line:sub(j,j)]
                 letter.pauseAnimation = true
                 letter:defineBaseObjAttached(
                     self,
-                    (self.font.texture.width/2)+ (self.font.texture.width*j) + spacingAdderX,
-                    (self.font.texture.height/2)+ (self.font.texture.height*i) + spacingAdderY
+                    (self.font.texture.width/2)+ ((self.font.texture.width * self.fontScale)*j) + spacingAdderX,
+                    (self.font.texture.height/2)+ ((self.font.texture.height * self.fontScale)*i) + spacingAdderY
                 )
                 spacingAdderX = spacingAdderX + self.spacingX
                 self.letters[#self.letters+1] = letter

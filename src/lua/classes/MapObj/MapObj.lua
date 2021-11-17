@@ -432,6 +432,9 @@ do --open
         ---Update Timed Renderers
         for i, obj in pairs(self.timedInsertions) do
             obj:update()
+            if obj.isDone then
+                self.timedInsertions[i] = nil
+            end
         end
 
         --occasionally reorder the scenario for better performance

@@ -4,6 +4,9 @@ do
         Timed insertions insert to the end (append) a table to another in an interval
         Useful for dialogs, where you want one letter ater another in a sequence
         but not all at the same time
+
+        If self.isDone is true, make sure to nullify the reference to this object to not
+        waste performance
     ]]
 
     TimedInsertionObj = object:clone()
@@ -20,18 +23,22 @@ do
 
         self.currentTime = globalFrameCounter
         self.index = 1
+        self.isDone = false
 
     end
 
     function TimedInsertionObj:update()
-        if (#self.itemTable > 0) 
-            and (self.index < #self.itemTable)
-            and globalFrameCounter > (self.currentTime + self.interval)
+        if (self.index ~= #self.itemTable)
+            and (globalFrameCounter > (self.currentTime + self.interval))
         then
             --self.tableToinsert[#self.tableToinsert] = item
             self.tableToinsert[#self.tableToinsert+1] = self.itemTable[self.index]
             self.index = self.index + 1
             self.currentTime = globalFrameCounter
+        end
+
+        if self.index == #self.itemTable then
+            self.isDone = true
         end
     end
 end
