@@ -140,7 +140,7 @@ textures = {
         spritePath = "assets/std_font_10_10.png",
         width = 10,
         height = 10,
-        numAnimationStages = 0,
+        numAnimationStages = #"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!?%()' ",
     },
     std_menu_background_blue_10_10 = {  ---Part of Standard, DO NOT CHANGE
         identifier = 14,

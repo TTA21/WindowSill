@@ -60,8 +60,20 @@ do
         dialog1 = AttachableDialogObj:clone()
         dialog1:defineBase("Dialog1")
         dialog1:defineBaseObjAttached(obj1, 40, 40)
-        dialog1:defineAttachableDialog("One\nTwo\nThreeee\nFour\nFive", 1000, "C")
+        --dialog1:defineAttachableDialog("ABCDEF\nGHIJK LM\nNOPQRST\nUVWXYZ", 1, 2 , -1, "C")
+        --dialog1:defineAttachableDialog("abcdef\nghijk lm\nnopqrst\nuvwxyz", 1, 2 , -1, "C")
+        --dialog1:defineAttachableDialog("1234567890!?%()'", 1, 2 , -1, "C")
+        dialog1:defineAttachableDialog("Test Message!\n Test Test?", 1, 2 , 1000, "C")
+        dialog1:write(firstLevelMap)
         firstLevelMap:addNamedItemToDialogs("Dialog1", dialog1)
+        
+        --objTest = BaseObj:clone()
+        --font = FontObj:clone()
+        --font:defineFont()
+        --objTest:defineBase("Font", font.texture, 1,30, 30 )
+        --objTest.animStage = 3
+        --objTest.pauseAnimation = true
+        --firstLevelMap:addNamedItemToMiddleGround("Font", objTest)
 
         reorderRenderItems()
 

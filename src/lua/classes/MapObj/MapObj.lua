@@ -396,7 +396,9 @@ do --open
         end
 
         for i, obj in pairs(self.dialogs) do
-            obj:update()
+            if obj.allowRender then
+                obj:update()
+            end
         end
 
         --occasionally reorder the scenario for better performance

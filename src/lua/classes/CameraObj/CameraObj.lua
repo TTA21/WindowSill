@@ -124,22 +124,22 @@ do  --open
             
             for index, baseObj in pairs(table) do
                 
-                if baseObj.allowRender then
-                    screenX = baseObj.posX - self.pointA.X
-                    screenY = baseObj.posY - self.pointA.Y
+                screenX = baseObj.posX - self.pointA.X
+                screenY = baseObj.posY - self.pointA.Y
 
-                    if  (screenX >= (0 - (baseObj.texture.width * baseObj.scale))) and (screenX <= self.width) and
-                        (screenY >= (0 - baseObj.texture.height * baseObj.scale)) and (screenY <= self.height)
-                    then
-                        
+                if  (screenX >= (0 - (baseObj.texture.width * baseObj.scale))) and (screenX <= self.width) and
+                    (screenY >= (0 - baseObj.texture.height * baseObj.scale)) and (screenY <= self.height)
+                then
+                    
+                    if not baseObj.isClosed then
                         baseObj:enableRender()
                         baseObj:updateRenderObjCommon(screenX, screenY)
-
-                    else 
-
-                        baseObj:disableRender()
-                    
                     end
+
+                else 
+
+                    baseObj:disableRender()
+                
                 end
 
             end

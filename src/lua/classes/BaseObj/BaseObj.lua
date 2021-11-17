@@ -86,6 +86,7 @@ do  ---open
         end
         
         self.animStage = animStage or 0
+        self.pauseAnimation = false
         self.numFramesPerAnimationStage = numFramesPerAnimationStage or 100
         self.localFrameCounter = localFrameCounter or 0
 
@@ -124,20 +125,24 @@ do  ---open
         self.renderObj.posY = y or self.posY
         self.renderObj.scale = self.scale
         self.renderObj.alpha = self.alpha
-        self.renderObj.animStage = self.animStage
         self.renderObj.allowRender = self.allowRender
-
-        if self.localFrameCounter < self.numFramesPerAnimationStage then
-            self.localFrameCounter = self.localFrameCounter + 1
-        else
-            self.localFrameCounter = 0
-            
-            if self.animStage < self.numAnimationStages then
-                self.animStage = self.animStage + 1
+        if self.pauseAnimation == false then
+            self.renderObj.animStage = self.animStage
+        
+            if self.localFrameCounter < self.numFramesPerAnimationStage then
+                self.localFrameCounter = self.localFrameCounter + 1
             else
-                self.animStage = 0
-            end
+                self.localFrameCounter = 0
+                
+                if self.animStage < self.numAnimationStages then
+                    self.animStage = self.animStage + 1
+                else
+                    self.animStage = 0
+                end
 
+            end
+        else
+            self.renderObj.animStage = self.animStage
         end
 
     end
