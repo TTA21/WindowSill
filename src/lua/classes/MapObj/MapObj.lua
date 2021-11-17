@@ -50,6 +50,7 @@ do --open
         }
         self.cameras = {}
         self.areas = {}
+        self.timedInsertions = {}  ---for TimedInsertions ONLY
 
         self:clearRenderer()
         return self
@@ -228,15 +229,23 @@ do --open
     ]]--
     function MapObj:addNamedItemToDialogs(name, obj)
         self.dialogs.backGrounds[name] = obj
-        for i, letter in pairs(obj.letters) do
-            self.dialogs.letters[#self.dialogs.letters+1] = letter
-        end
+        timedInsertion = TimedInsertionObj:clone()
+        timedInsertion:defineTimedRenderer(
+            obj.framesPerLetter, 
+            obj.letters, 
+            self.dialogs.letters
+        )
+        self.timedInsertions[#self.timedInsertions+1] = timedInsertion
     end
     function MapObj:addToDialogs(obj)
-        self.dialogs.backGrounds[#self.dialogs + 1] = obj
-        for i, letter in pairs(obj.letters) do
-            self.dialogs.letters[#self.dialogs.letters+1] = letter
-        end
+        self.dialogs.backGrounds[#self.dialogs.backGrounds + 1] = obj
+        timedInsertion = TimedInsertionObj:clone()
+        timedInsertion:defineTimedRenderer(
+            obj.framesPerLetter, 
+            obj.letters, 
+            self.dialogs.letters
+        )
+        self.timedInsertions[#self.timedInsertions+1] = timedInsertion
     end
 
     function MapObj:removeNamedFromDialogs(name)
@@ -418,6 +427,11 @@ do --open
             if obj.allowRender then
                 obj:updatePos()
             end
+        end
+
+        ---Update Timed Renderers
+        for i, obj in pairs(self.timedInsertions) do
+            obj:update()
         end
 
         --occasionally reorder the scenario for better performance

@@ -62,11 +62,6 @@ do --open
         }
         self:parseLines()
 
-        for i, line in pairs(self.lines) do
-            print(line)
-        end
-        print(self.biggestLine, #self.biggestLine)
-
         self.width = forceWidth
         self.height = forceHeight
         self.spacingX = spacingX or 5
@@ -80,16 +75,15 @@ do --open
             self.height = (#self.lines * self.font.texture.height) + (self.font.texture.height*3) + (#self.lines * spacingY)
         end
 
-        print(self.width, self.height)
         self:changeDimensions(self.width, self.height)
 
         self.letters = {}
 
-        self:write()
+        self:makeLetters()
 
     end
 
-    function AttachableDialogObj:write()
+    function AttachableDialogObj:makeLetters()
         spacingAdderX = self.spacingX
         spacingAdderY = self.spacingY
         for i, line in pairs(self.lines) do
@@ -106,16 +100,11 @@ do --open
                 )
                 spacingAdderX = spacingAdderX + self.spacingX
                 self.letters[#self.letters+1] = letter
-                --mapObj:addToForeGround(letter)
             end
             spacingAdderX = self.spacingX
             spacingAdderY = spacingAdderY + self.spacingY
         end
     end
-
-    --function AttachableDialogObj:write()
-
-    --end
 
     function AttachableDialogObj:parseLines()
         line = ""

@@ -4,6 +4,8 @@ do
         1500, 1500, "First Level"
     )
 
+    timed = {}
+
     function firstStageSetup()
 
         obj1 = MovableObj:clone()
@@ -60,10 +62,7 @@ do
         dialog1 = AttachableDialogObj:clone()
         dialog1:defineBase("Dialog1")
         dialog1:defineBaseObjAttached(obj1, 40, 40)
-        --dialog1:defineAttachableDialog("ABCDEF\nGHIJK LM\nNOPQRST\nUVWXYZ", 1, 2 , -1, "C")
-        --dialog1:defineAttachableDialog("abcdef\nghijk lm\nnopqrst\nuvwxyz", 1, 2 , -1, "C")
-        --dialog1:defineAttachableDialog("1234567890!?%()'", 1, 2 , -1, "C")
-        dialog1:defineAttachableDialog("Test Message!\n Test Test?", 1, 2, 3000 , 100, "C")
+        dialog1:defineAttachableDialog("Test Message!\n Test Test?", 1, 2, 3000 , 10, "C")
         firstLevelMap:addNamedItemToDialogs("Dialog1", dialog1)
         
         --objTest = BaseObj:clone()
@@ -74,12 +73,18 @@ do
         --objTest.pauseAnimation = true
         --firstLevelMap:addNamedItemToMiddleGround("Font", objTest)
 
+        --timedRenderer = TimedRendererObj:clone()
+        --timedRenderer:defineTimedRenderer(400, dialog1.letters, firstLevelMap.dialogs.letters)
+
         reorderRenderItems()
+
+        --timed = timedRenderer
 
     end
 
     function firstStage()
 
+        --timed:update()
         firstLevelMap:act()
         firstLevelMap:render()
 
