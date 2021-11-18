@@ -48,13 +48,21 @@ do  ---open
         numFramesPerAnimationStage,     ---Every 10 frames, move animStage forward, used for delay
         localFrameCounter,              ---Used for the animations
 
-        allowRender
+        allowRender,
+        priority
         --renderObj
     )
         self.texture = texture or textures.std_menu_background_white_10_10
         self.posX = posX or 1
         self.posY = posY or 1
         self.scale = scale or 1
+
+        --priority_0 --Letters of Dialogs and menus
+        --priority_1 --Dialogs and menus
+        --priority_2 --ForeGround
+        --priority_3 --Middle Ground
+        --priority_4 --BackGround
+        self.priority = priority or 4   
 
         if hitBoxObj then
             self.hitBox = hitBoxObj
@@ -104,7 +112,8 @@ do  ---open
             self.alpha,      
             self.animStage,
             self.allowRender,
-            self
+            self,
+            self.priority
         )
         renderItems[#renderItems+1] = self.renderObj
     end
@@ -191,6 +200,16 @@ do  ---open
         self.texture = sprite
         self.numAnimationStages = sprite.numAnimationStages
         self.numFramesPerAnimationStage = framesPerAnim or self.numFramesPerAnimationStage
+
+    end 
+
+    --[[
+        Change this renderObj's render priority
+    ]]
+    function BaseObj:changePriority(priority)
+
+        self.priority = priority
+        self.renderObj.priority = self.priority
 
     end 
 

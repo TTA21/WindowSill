@@ -41,4 +41,25 @@ do
             self.isDone = true
         end
     end
+
+    --[[
+        If you want to do the insertion manually
+    ]]
+    function TimedInsertionObj:returnObj()
+        if (self.index ~= #self.itemTable)
+            and (globalFrameCounter > (self.currentTime + self.interval))
+        then
+            --self.tableToinsert[#self.tableToinsert] = item
+            --self.tableToinsert[#self.tableToinsert+1] = self.itemTable[self.index]
+            self.index = self.index + 1
+            self.currentTime = globalFrameCounter
+            return self.itemTable[self.index-1]
+        end
+
+        if self.index == #self.itemTable then
+            self.isDone = true
+        end
+
+        return nil
+    end
 end

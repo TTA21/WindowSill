@@ -159,7 +159,7 @@ do  --open
         Generate render objects the camera can see in order of posY in the currentCameraRenderItems.
         Usually called after renderTable
     ]]
-    function CameraObj:renderReorder()
+    function CameraObj:renderReorderPosY()
         itemsToRender = {}
         for i, rendObj in pairs(renderItems) do
             if rendObj.allowRender == true then
@@ -174,6 +174,81 @@ do  --open
             end
         )
         currentCameraRenderItems = itemsToRender
+
+    end
+
+    --[[
+        Orders based on PosY for items with the same priority, but places items with
+        higher priority first.
+        Mind that priority 0 is the highest priority
+    ]]
+    function CameraObj:renderReorderPriority()
+        itemsToRender = {}
+        for i, rendObj in pairs(renderItems) do
+            if rendObj.allowRender == true then
+                itemsToRender[#itemsToRender+1] = rendObj
+            end
+        end
+
+        table.sort(itemsToRender, 
+            function(a,b) 
+                return (a.posY + a.referencingObj.texture.height*a.referencingObj.scale) < 
+                (b.posY + b.referencingObj.texture.height*b.referencingObj.scale)
+            end
+        )
+
+        priority_0 = {} --Letters of said Dialogs and menus
+        priority_1 = {} --Dialogs and menus
+        priority_2 = {} --ForeGround
+        priority_3 = {} --Middle Ground
+        priority_4 = {} --BackGround
+
+        for index, obj in pairs(itemsToRender) do
+
+            if obj.priority == 0 then
+                priority_0[#priority_0 + 1] = obj
+            end
+
+            if obj.priority == 1 then
+                priority_1[#priority_1 + 1] = obj
+            end
+
+            if obj.priority == 2 then
+                priority_2[#priority_2 + 1] = obj
+            end
+
+            if obj.priority == 3 then
+                priority_3[#priority_3 + 1] = obj
+            end
+
+            if obj.priority == 4 then
+                priority_4[#priority_4 + 1] = obj
+            end
+        end 
+
+        orderedItemsToRender = {}
+
+        for i, obj in pairs(priority_4) do
+            orderedItemsToRender[#orderedItemsToRender + 1] = obj
+        end
+
+        for i, obj in pairs(priority_3) do
+            orderedItemsToRender[#orderedItemsToRender + 1] = obj
+        end
+
+        for i, obj in pairs(priority_2) do
+            orderedItemsToRender[#orderedItemsToRender + 1] = obj
+        end
+
+        for i, obj in pairs(priority_1) do
+            orderedItemsToRender[#orderedItemsToRender + 1] = obj
+        end
+
+        for i, obj in pairs(priority_0) do
+            orderedItemsToRender[#orderedItemsToRender + 1] = obj
+        end
+
+        currentCameraRenderItems = orderedItemsToRender
 
     end
 

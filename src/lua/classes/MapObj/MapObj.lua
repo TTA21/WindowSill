@@ -74,6 +74,7 @@ do --open
         if  obj.posX > 0 and obj.posX < self.width and
             obj.posY > 0 and obj.posY < self.height then
 
+                obj:changePriority(2)
                 self.foreGround[name] = obj
         else
             print("Obj not added,  ", obj.name, " out of bounds!")
@@ -90,7 +91,8 @@ do --open
         if  obj.posX >= 0 and obj.posX <= self.width and
             obj.posY >= 0 and obj.posY <= self.height then
 
-            self.foreGround[#self.foreGround + 1] = obj
+                obj:changePriority(2)
+                self.foreGround[#self.foreGround + 1] = obj
         else
             print("Obj not added,  ", obj.name, " out of bounds!")
         end
@@ -119,7 +121,8 @@ do --open
         if  obj.posX > 0 and obj.posX < self.width and
             obj.posY > 0 and obj.posY < self.height then
 
-            self.middleGround[name] = obj
+                obj:changePriority(3)
+                self.middleGround[name] = obj
         else
             print("Obj not added,  ", obj.name, " out of bounds!")
         end
@@ -133,7 +136,8 @@ do --open
         if  obj.posX > 0 and obj.posX < self.width and
             obj.posY > 0 and obj.posY < self.height then
 
-            self.middleGround[#self.middleGround + 1] = obj
+                obj:changePriority(3)
+                self.middleGround[#self.middleGround + 1] = obj
         else
             print("Obj not added,  ", obj.name, " out of bounds!")
         end
@@ -162,6 +166,7 @@ do --open
         if  obj.posX > 0 and obj.posX < self.width and
             obj.posY > 0 and obj.posY < self.height then
 
+                obj:changePriority(4)
                 self.backGround[name] = obj
         else
             print("Obj not added,  ", obj.name, " out of bounds!")
@@ -176,6 +181,7 @@ do --open
         if  obj.posX > 0 and obj.posX < self.width and
             obj.posY > 0 and obj.posY < self.height then
 
+                obj:changePriority(4)
                 self.backGround[#self.backGround + 1] = obj
         else
             print("Obj not added,  ", obj.name, " out of bounds!")
@@ -187,7 +193,7 @@ do --open
         self.backGround[name] = nil
     end
 
-    function MapObj:removeFromMiddleGround(globalId)
+    function MapObj:removeFromBackGround(globalId)
         for index, object in pairs(self.backGround) do
             if object.globalId == globalId then
                 object = nil
@@ -228,6 +234,7 @@ do --open
         Used for dialogs
     ]]--
     function MapObj:addNamedItemToDialogs(name, obj)
+        obj:changePriority(1)
         self.dialogs.backGrounds[name] = obj
         timedInsertion = TimedInsertionObj:clone()
         timedInsertion:defineTimedRenderer(
@@ -238,6 +245,7 @@ do --open
         self.timedInsertions[#self.timedInsertions+1] = timedInsertion
     end
     function MapObj:addToDialogs(obj)
+        obj:changePriority(1)
         self.dialogs.backGrounds[#self.dialogs.backGrounds + 1] = obj
         timedInsertion = TimedInsertionObj:clone()
         timedInsertion:defineTimedRenderer(
@@ -259,6 +267,13 @@ do --open
             end
         end
     end
+    --[[
+        Used for dialogs
+    ]]--
+    function MapObj:insertLetter(obj)
+        obj:changePriority(0)
+        self.dialogs.letters[#self.dialogs.letters + 1] = obj
+    end
 
 
     --[[
@@ -277,7 +292,9 @@ do --open
             cam:renderTable(self.dialogs.backGrounds)
             cam:renderTable(self.dialogs.letters)
 
-            cam:renderReorder()
+            --cam:renderReorderPosY()
+            cam:renderReorderPriority()
+            
         end
 
         if hasCameras == false then
@@ -431,7 +448,12 @@ do --open
 
         ---Update Timed Renderers
         for i, obj in pairs(self.timedInsertions) do
-            obj:update()
+            --obj:update()
+            ret = obj:returnObj()
+            if ret then
+                self:insertLetter(ret)
+            end
+
             if obj.isDone then
                 self.timedInsertions[i] = nil
             end

@@ -29,7 +29,8 @@ do  --open
         alpha,      ---Opacity, 100 for fully opaque
         animStage,  ---Frame of the sprite
         allowRender,---Allows render to show this sprite
-        referencingObj
+        referencingObj,
+        priority
     )
 
         self.objId = globalIdCounter
@@ -45,6 +46,7 @@ do  --open
         self.animStage = animStage or 0
         self.allowRender = allowRender or false
         self.referencingObj = referencingObj or {}
+        self.priority = priority or 5
     end
 
     ---Serves to change the texture Id aswell
