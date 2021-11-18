@@ -64,13 +64,13 @@ do
         dialog1 = AttachableDialogObj:clone()
         dialog1:defineBase("Dialog1")
         dialog1:defineBaseObjAttached(obj1, 40, 40)
-        dialog1:defineAttachableDialog("Test Message!\n Test Test?", 1, 2, 2, 3000 , 10, "C", true)
+        dialog1:defineAttachableDialog("Test Message!\n Test Test?", 1, 2, 1, 3000 , 10, "C", true)
         firstLevelMap:addNamedItemToDialogs("Dialog1", dialog1)
 
         dialog2 = AttachableDialogObj:clone()
         dialog2:defineBase("Dialog2")
         dialog2:defineBaseObjAttached(obj2, 0, -80)
-        dialog2:defineAttachableDialog("ASDASD()()\nzxczxc", 1, 2, 2, 3000, 10, "F")
+        dialog2:defineAttachableDialog("ASDASD()()\nzxczxc", 1, 2, 1, 3000, 10, "F")
         firstLevelMap:addNamedItemToDialogs("Dialog2", dialog2)
         
         --objTest = BaseObj:clone()

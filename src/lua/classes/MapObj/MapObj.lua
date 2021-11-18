@@ -35,6 +35,7 @@ do --open
         self:clearRenderer()
 
         self.gamePaused = false
+        self.gamePausedDueToDialog = false
 
     end
 
@@ -303,12 +304,26 @@ do --open
         end
     end
 
+    --[[
+        Standard Pause
+    ]]
     function MapObj:pauseGame()
         self.gamePaused = true
     end
 
     function MapObj:unPauseGame()
         self.gamePaused = false
+    end
+
+    --[[
+        Pause due to dialog
+    ]]
+    function MapObj:pauseGameDueToDialog()
+        self.gamePausedDueToDialog = true
+    end
+
+    function MapObj:unPauseGameDueToDialog()
+        self.gamePausedDueToDialog = false
     end
 
     --[[
@@ -321,7 +336,7 @@ do --open
     ]]--
     function MapObj:act()
 
-        if not self.gamePaused then
+        if not self.gamePausedDueToDialog and not self.gamePaused then
             for i, obj in pairs(self.foreGround) do
 
                 --test movement
@@ -444,10 +459,10 @@ do --open
                 obj:update()
             end
             if obj.pauseGame then
-                self:pauseGame()
+                self:pauseGameDueToDialog()
             end
             if obj.isClosed and obj.pauseGame then
-                self:unPauseGame()
+                self:unPauseGameDueToDialog()
                 self.dialogs[i] = nil
             end
         end
