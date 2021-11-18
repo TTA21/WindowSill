@@ -1,12 +1,14 @@
 do
 
-    local firstLevelMap = MapObj:new(
-        1500, 1500, "First Level"
-    )
-
-    timed = {}
+    local firstLevelMap = {}
+    --new(
+    --    1500, 1500, "First Level"
+    --)
 
     function firstStageSetup()
+
+        firstLevelMap = MapObj:clone()
+        firstLevelMap:defineMap(1500, 1500, "First Level")
 
         obj1 = MovableObj:clone()
         obj1:defineBase("Object1", textures.bard_16_31_left, 1, 123, 123)
@@ -38,7 +40,7 @@ do
             right = textures.bard_16_31_right,
         })
         
-        firstLevelMap:addNamedItemToMiddleGround("Object2", obj2)
+        firstLevelMap:addNamedItemToBackGround("Object2", obj2)
 
         obj3 = BaseObj:clone()
         obj3:defineBase("Object3", textures.blue_square, 1, 321, 312)
@@ -62,7 +64,7 @@ do
         dialog1 = AttachableDialogObj:clone()
         dialog1:defineBase("Dialog1")
         dialog1:defineBaseObjAttached(obj1, 40, 40)
-        dialog1:defineAttachableDialog("Test Message!\n Test Test?", 1, 2, 2, 3000 , 10, "C")
+        dialog1:defineAttachableDialog("Test Message!\n Test Test?", 1, 2, 2, 3000 , 10, "C", true)
         firstLevelMap:addNamedItemToDialogs("Dialog1", dialog1)
 
         dialog2 = AttachableDialogObj:clone()
@@ -90,6 +92,7 @@ do
 
     function firstStage()
 
+        
         --timed:update()
         firstLevelMap:act()
         firstLevelMap:render()

@@ -142,10 +142,8 @@ do --open
             end
         end
 
-        for i, key in pairs(keysPressed) do
-            if key == self.closeKey then
-                self:close()
-            end
+        if risingEdgeKey(self.closeKey) then
+            self:close()
         end
 
     end

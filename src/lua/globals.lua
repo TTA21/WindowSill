@@ -13,6 +13,7 @@ windowOptions = {
     name = "WindowSill 1.0alpha"    ---The name of your game
 }
 
+keysPressedOld = {} --last iteration of keysPressed, used to check for key press differences
 keysPressed = {}    --Comes as strings; 'A', 'B', 'Left Shift', 'Left Tab', etc
 mouse = {}          --X, Y, RMB, LMB, MMB
 
@@ -164,4 +165,20 @@ function getCenterOfHitbox(obj)
         posX = obj.posX + (obj.hitBox.hitBoxWidth)/2,
         posY = obj.posY + (obj.hitBox.hitBoxHeight)/2
     }
+end
+
+--[[
+    Returns true if key has just been pressed, but not if the key is being pressed
+]]
+function risingEdgeKey(keyCode)
+    isInOldBuffer = false
+    for i,key in pairs(keysPressedOld) do
+        if key == keyCode then isInOldBuffer = true end
+    end
+    isInCurrentBuffer = false
+    for i,key in pairs(keysPressed) do
+        if key == keyCode then isInCurrentBuffer = true end
+    end
+
+    return (isInCurrentBuffer and not isInOldBuffer)
 end
