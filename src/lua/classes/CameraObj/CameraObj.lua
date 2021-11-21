@@ -131,7 +131,8 @@ do  --open
                     (screenY >= (0 - baseObj.texture.height * baseObj.scale)) and (screenY <= self.height)
                 then
                     
-                    if not baseObj.isClosed then
+                    --if not baseObj.isClosed then
+                    if not baseObj.isClosed and baseObj.enableRendering then
                         baseObj:enableRender()
                         baseObj:updateRenderObjCommon(screenX, screenY)
                     end
@@ -204,7 +205,6 @@ do  --open
         priority_4 = {} --BackGround
 
         for index, obj in pairs(itemsToRender) do
-
             if obj.priority == 0 then
                 priority_0[#priority_0 + 1] = obj
             end

@@ -5,6 +5,8 @@ do
     --    1500, 1500, "First Level"
     --)
 
+    button1 = {}
+
     function firstStageSetup()
 
         firstLevelMap = MapObj:clone()
@@ -83,10 +85,17 @@ do
 
         --timedRenderer = TimedRendererObj:clone()
         --timedRenderer:defineTimedRenderer(400, dialog1.letters, firstLevelMap.dialogs.letters)
+        --timed = timedRenderer
+
+        testButton = ButtonMenuObj:clone()
+        testButton:defineBase("button1", nil, 1)
+        testButton:defineBaseObjAttached(obj1, 150,150)
+        testButton:defineButtonMenu("asdasd", nil, true, false)
+        firstLevelMap:addNamedItemToMenus("button1", testButton)
+        button1 = testButton
 
         reorderRenderItems()
-
-        --timed = timedRenderer
+        
 
     end
 
@@ -94,6 +103,8 @@ do
 
         
         --timed:update()
+        --button1:update()
+
         firstLevelMap:act()
         firstLevelMap:render()
 

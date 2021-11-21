@@ -49,6 +49,11 @@ texturesToBeLoaded = {
     'std_font_10_10',                       ---Part of Standard, DO NOT CHANGE
     'std_menu_background_blue_10_10',       ---Part of Standard, DO NOT CHANGE
     'std_menu_background_white_10_10',      ---Part of Standard, DO NOT CHANGE
+    'std_button_blue_10_10',                ---Part of Standard, DO NOT CHANGE
+    'std_button_green_10_10',               ---Part of Standard, DO NOT CHANGE
+    'std_roller_bar_100_10_blue',           ---Part of Standard, DO NOT CHANGE
+    'std_roller_handle_blue_10_10',         ---Part of Standard, DO NOT CHANGE
+    'std_empty_10_10',                      ---Part of Standard, DO NOT CHANGE
 }
 textures = {
     bardo_asset = {
@@ -153,6 +158,43 @@ textures = {
     std_menu_background_white_10_10 = {  ---Part of Standard, DO NOT CHANGE
         identifier = 15,
         spritePath = "assets/white_50p_10_10.png",
+        width = 10,
+        height = 10,
+        numAnimationStages = 0,
+    },
+
+    std_button_blue_10_10 = {  ---Part of Standard, DO NOT CHANGE
+        identifier = 16,
+        spritePath = "assets/std_button_blue_10_10.png",
+        width = 10,
+        height = 10,
+        numAnimationStages = 0,
+    },
+    std_button_green_10_10 = {  ---Part of Standard, DO NOT CHANGE
+        identifier = 17,
+        spritePath = "assets/std_button_green_10_10.png",
+        width = 10,
+        height = 10,
+        numAnimationStages = 0,
+    },
+    std_roller_bar_100_10_blue = {  ---Part of Standard, DO NOT CHANGE
+        identifier = 18,
+        spritePath = "assets/std_roller_bar_100_10_blue.png",
+        width = 100,
+        height = 10,
+        numAnimationStages = 0,
+    },
+    std_roller_handle_blue_10_10 = {  ---Part of Standard, DO NOT CHANGE
+        identifier = 19,
+        spritePath = "assets/std_roller_handle_blue_10_10.png",
+        width = 10,
+        height = 10,
+        numAnimationStages = 0,
+    },
+
+    std_empty_10_10 = {  ---Part of Standard, DO NOT CHANGE
+        identifier = 20,
+        spritePath = "assets/empty_10_10.png",
         width = 10,
         height = 10,
         numAnimationStages = 0,

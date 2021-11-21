@@ -48,11 +48,11 @@ function quitButton()
     end
 end
 
----TODO: make relative hitboxes. a complex object cna have a posX and posY, but also a
----hitbox{
-    --posX, posY, hitboxHeight, hitboxWidth
-    --posX and posY are offsets of the normal posX and posY
-    --as in: obj.posX + hitbox.posX = offsetPosX
---}
----so instead of using the complete sprite as a hitbox, you can have the shadows as hitboxes,
----wich make a much better game
+--[[
+    TODO:
+    for alfa1.1
+        menus,
+        bugchecking with multiple resolutions and stress testing with multiple
+        objects
+        documentation of the engine so far
+]]

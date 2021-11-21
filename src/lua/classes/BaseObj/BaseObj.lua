@@ -99,6 +99,7 @@ do  ---open
         self.localFrameCounter = localFrameCounter or 0
 
         self.allowRender = allowRender or true
+        self.enableRendering = true   ---For cameraObj
 
         self.renderObj = RenderObj:clone()
 
@@ -162,11 +163,13 @@ do  ---open
     end
 
     function BaseObj:enableRender()
+        self.enableRendering = true
         self.allowRender = true
         self.renderObj.allowRender = true
     end
 
     function BaseObj:disableRender()
+        self.enableRendering = false
         self.allowRender = false
         self.renderObj.allowRender = false
     end

@@ -28,6 +28,10 @@ do --open
             backGrounds = {},
             letters = {}
         }
+        self.menus = {  ---Menus use the dialogs to show letters
+            backGrounds = {},
+            sprites = {}
+        }
         self.cameras = {}
         self.areas = {}
         self.timedInsertions = {}  ---for TimedInsertions ONLY
@@ -257,6 +261,19 @@ do --open
         self.dialogs.letters[#self.dialogs.letters + 1] = obj
     end
 
+    --[[
+        Used for menus
+    ]]
+    --[[
+        Used for dialogs
+    ]]--
+    function MapObj:addNamedItemToMenus(name, obj)
+        --For now just the components
+        obj:changePriority(1)
+        self.menus.sprites[name] = obj
+        self:addToDialogs(obj.attachedDialog)
+    end
+
 
     --[[
         Main render function, called every frame
@@ -273,6 +290,8 @@ do --open
 
             cam:renderTable(self.dialogs.backGrounds)
             cam:renderTable(self.dialogs.letters)
+            cam:renderTable(self.menus.backGrounds)
+            cam:renderTable(self.menus.sprites)
 
             --cam:renderReorderPosY() --old
             cam:renderReorderPriority()
@@ -471,6 +490,13 @@ do --open
             if obj.allowRender then
                 obj:updatePos()
             end
+        end
+
+        --Update Menus, just components for now
+        for i, obj in pairs(self.menus.sprites) do
+            --allow rendering is checked by the component, FOR NOW
+            obj:update()
+            obj:updatePos()
         end
 
         --occasionally reorder the scenario for better performance

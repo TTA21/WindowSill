@@ -157,4 +157,18 @@ do --open
         self.isClosed = true
     end
 
+    function AttachableDialogObj:hide()
+        for i, letter in pairs(self.letters) do
+            letter:disableRender()
+        end
+        self:disableRender()
+    end
+
+    function AttachableDialogObj:show()
+        for i, letter in pairs(self.letters) do
+            letter:enableRender()
+        end
+        self:enableRender()
+    end
+
 end --close
