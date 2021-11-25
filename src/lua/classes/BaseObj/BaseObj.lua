@@ -99,7 +99,7 @@ do  ---open
         self.localFrameCounter = localFrameCounter or 0
 
         self.allowRender = allowRender or true
-        self.enableRendering = true   ---For cameraObj
+        self.isOnCamera = false   ---For cameraObj
 
         self.renderObj = RenderObj:clone()
 
@@ -114,7 +114,8 @@ do  ---open
             self.animStage,
             self.allowRender,
             self,
-            self.priority
+            self.priority,
+            self.isOnCamera
         )
         renderItems[#renderItems+1] = self.renderObj
     end
@@ -162,14 +163,17 @@ do  ---open
         self.renderObj.height = height
     end
 
+    function BaseObj:updateIsOnCamera(state)
+        self.isOnCamera = state
+        self.renderObj.isOnCamera = state
+    end
+
     function BaseObj:enableRender()
-        self.enableRendering = true
         self.allowRender = true
         self.renderObj.allowRender = true
     end
 
     function BaseObj:disableRender()
-        self.enableRendering = false
         self.allowRender = false
         self.renderObj.allowRender = false
     end

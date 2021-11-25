@@ -127,21 +127,15 @@ do  --open
                 screenX = baseObj.posX - self.pointA.X
                 screenY = baseObj.posY - self.pointA.Y
 
-                if  (screenX >= (0 - (baseObj.texture.width * baseObj.scale))) and (screenX <= self.width) and
-                    (screenY >= (0 - baseObj.texture.height * baseObj.scale)) and (screenY <= self.height)
+                if  (screenX >= (-1 - (baseObj.texture.width * baseObj.scale))) and (screenX <= self.width+1) and
+                    (screenY >= (-1 - baseObj.texture.height * baseObj.scale)) and (screenY <= self.height+1)
                 then
-                    
-                    --if not baseObj.isClosed then
-                    if not baseObj.isClosed and baseObj.enableRendering then
-                        baseObj:enableRender()
-                        baseObj:updateRenderObjCommon(screenX, screenY)
-                    end
-
+                    baseObj:updateIsOnCamera(true)
                 else 
-
-                    baseObj:disableRender()
-                
+                    baseObj:updateIsOnCamera(false)
                 end
+
+                baseObj:updateRenderObjCommon(screenX, screenY)
 
             end
 
@@ -163,7 +157,7 @@ do  --open
     function CameraObj:renderReorderPosY()
         itemsToRender = {}
         for i, rendObj in pairs(renderItems) do
-            if rendObj.allowRender == true then
+            if rendObj.allowRender and renderObj.isOnCamera then
                 itemsToRender[#itemsToRender+1] = rendObj
             end
         end

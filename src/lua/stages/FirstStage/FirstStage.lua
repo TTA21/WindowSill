@@ -72,7 +72,7 @@ do
         dialog2 = AttachableDialogObj:clone()
         dialog2:defineBase("Dialog2")
         dialog2:defineBaseObjAttached(obj2, 0, -80)
-        dialog2:defineAttachableDialog("ASDASD()()\nzxczxc", 1, 2, 1, 3000, 10, "F")
+        dialog2:defineAttachableDialog("ASDASD()()\nzxczxc", 1, 2, 1, -1, 10, "F")
         firstLevelMap:addNamedItemToDialogs("Dialog2", dialog2)
         
         --objTest = BaseObj:clone()

@@ -30,7 +30,8 @@ do  --open
         animStage,  ---Frame of the sprite
         allowRender,---Allows render to show this sprite
         referencingObj,
-        priority
+        priority,
+        isOnCamera
     )
 
         self.objId = globalIdCounter
