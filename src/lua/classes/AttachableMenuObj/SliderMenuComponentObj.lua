@@ -62,7 +62,7 @@ do
         else
             self.slideHandler:defineBase(self.description, textures.std_roller_handle_blue_10_10)
         end
-        self.slideHandler:defineBaseObjAttached(self, self.state, 0)
+        self.slideHandler:defineBaseObjAttached(self, self.state, 1)
 
 
         self.displayState = displayValueOnSide or false

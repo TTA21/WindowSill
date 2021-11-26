@@ -278,7 +278,7 @@ do --open
         end
 
         if obj:isa(SliderMenuComponentObj) then
-            obj.slideHandler:changePriority(0)  ---To go on top of the bar
+            obj.slideHandler:changePriority(1)
             self.menus.sprites[name .. "_handler"] = obj.slideHandler
 
             if obj.displayState then
