@@ -205,6 +205,8 @@ do  ---open
 
         self.animStage = 0
         self.texture = sprite
+        self.renderObj.width = self.texture.width
+        self.renderObj.height = self.texture.height
         self.numAnimationStages = sprite.numAnimationStages
         self.numFramesPerAnimationStage = framesPerAnim or self.numFramesPerAnimationStage
 
@@ -219,6 +221,11 @@ do  ---open
         self.renderObj.priority = self.priority
 
     end 
+
+    --[[
+        To be overriden
+    ]]
+    function BaseObj:update() end
 
 
 end ---close

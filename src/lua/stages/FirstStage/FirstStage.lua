@@ -100,6 +100,12 @@ do
         stringInput:defineStringInputMenu("type something", 10, true, "")
         firstLevelMap:addNamedItemToMenus("input1", stringInput)
 
+        sliderInput = SliderMenuComponentObj:clone()
+        sliderInput:defineBase("sliderinput1", nil, 1)
+        sliderInput:defineBaseObjAttached(obj1, -100, -100)
+        sliderInput:defineSliderMenu("slide the slide", nil, true, 50, 10, true)
+        firstLevelMap:addNamedItemToMenus("sliderinput1", sliderInput)
+
         reorderRenderItems()
         
 

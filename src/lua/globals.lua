@@ -197,6 +197,16 @@ function risingEdgeKeys(keyCode)
 end
 
 --[[
+    Checks if key is pressed
+]]
+function keyIsPressed(keyCode)
+    for i,key in pairs(keysPressed) do
+        if key == keyCode then return true end
+    end
+    return false
+end
+
+--[[
     https://stackoverflow.com/questions/5249629/modifying-a-character-in-a-string-in-lua
     replaces a character in a string
 ]]

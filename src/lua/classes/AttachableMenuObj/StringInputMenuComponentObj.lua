@@ -15,11 +15,6 @@ do
         font            ---Font for the sentence, std font if left alone
     )
 
-        --keys = risingEdgeKeys()
-        --if #keys > 0 then
-        --    print( table.concat(keys,", "))
-        --end
-
         self.hasCollision = false
         self.description = description or "Description Here"
 
@@ -34,7 +29,7 @@ do
             self.font = stdFont
         end
 
-        ---Write the sentence besides the button
+        ---Write the sentence above the
         self.attachedDialog = AttachableDialogObj:clone()
         self.attachedDialog:defineBase(self.description)
         self.attachedDialog:defineBaseObjAttached(self, 0, -20)

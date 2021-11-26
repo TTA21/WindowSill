@@ -272,9 +272,20 @@ do --open
         obj:changePriority(1)
         self.menus.sprites[name] = obj
         self:addToDialogs(obj.attachedDialog)
-        if obj.attachedInputDialog then
+
+        if obj:isa(StringInputMenuComponentObj) then
             self:addToDialogs(obj.attachedInputDialog)
         end
+
+        if obj:isa(SliderMenuComponentObj) then
+            obj.slideHandler:changePriority(0)  ---To go on top of the bar
+            self.menus.sprites[name .. "_handler"] = obj.slideHandler
+
+            if obj.displayState then
+                self:addToDialogs(obj.attachedStateDialog)
+            end
+        end
+
     end
 
 
