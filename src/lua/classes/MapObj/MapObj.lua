@@ -272,6 +272,9 @@ do --open
         obj:changePriority(1)
         self.menus.sprites[name] = obj
         self:addToDialogs(obj.attachedDialog)
+        if obj.attachedInputDialog then
+            self:addToDialogs(obj.attachedInputDialog)
+        end
     end
 
 

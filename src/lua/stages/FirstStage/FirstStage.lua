@@ -94,6 +94,12 @@ do
         firstLevelMap:addNamedItemToMenus("button1", testButton)
         button1 = testButton
 
+        stringInput = StringInputMenuComponentObj:clone()
+        stringInput:defineBase("input1", nil, 1)
+        stringInput:defineBaseObjAttached(obj1, 100, 100)
+        stringInput:defineStringInputMenu("type something", 10, true, "")
+        firstLevelMap:addNamedItemToMenus("input1", stringInput)
+
         reorderRenderItems()
         
 
@@ -101,12 +107,8 @@ do
 
     function firstStage()
 
-        
-        --timed:update()
-        --button1:update()
-
-        firstLevelMap:act()
-        firstLevelMap:render()
+        firstLevelMap:act()     ---MANDATORY
+        firstLevelMap:render()  ---MANDATORY
 
         quitButton()
         if shouldGameContinue == false then

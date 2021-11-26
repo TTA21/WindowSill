@@ -24,10 +24,10 @@ do --open
         framesPerLetter,---Every x frames, write one letter
         closeKey,       ---Wich key to press to close the dialog
         pauseGame,      ---Should the game pause when dialog is on screen
+        font,           ---FontObj
         forceWidth,     ---If wished, a size of the dialog can be defined, NOT RECOMENDED
         forceHeight,    ---If wished, a size of the dialog can be defined, NOT RECOMENDED
-        backgroundTexture,
-        font            ---FontObj
+        backgroundTexture
     )
 
         self.text = text or "Default Message"
@@ -111,6 +111,19 @@ do --open
             spacingAdderX = self.spacingX
             spacingAdderY = spacingAdderY + self.spacingY
         end
+    end
+
+    function AttachableDialogObj:changeLetter(line, pos, letter)
+        workingIndex = 0
+        if line > 1 then
+            for i=2, line do
+                workingIndex = workingIndex + #self.lines[i-1]
+            end
+        end
+
+        workingIndex = workingIndex + pos
+        self.letters[workingIndex].animStage = self.font.charTable[letter]
+        self.letters[workingIndex].renderObj.animStage = self.font.charTable[letter]
     end
 
     function AttachableDialogObj:parseLines()

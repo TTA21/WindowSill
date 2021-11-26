@@ -182,3 +182,24 @@ function risingEdgeKey(keyCode)
 
     return (isInCurrentBuffer and not isInOldBuffer)
 end
+
+--[[
+    Returns the keys that have just been pressed
+]]
+function risingEdgeKeys(keyCode)
+    ret = {}
+    for i,key in pairs(keysPressed) do
+        if risingEdgeKey(key) then
+            ret[#ret+1] = key
+        end
+    end
+    return ret
+end
+
+--[[
+    https://stackoverflow.com/questions/5249629/modifying-a-character-in-a-string-in-lua
+    replaces a character in a string
+]]
+function replace_char(pos, str, r)
+    return str:sub(1, pos-1) .. r .. str:sub(pos+1)
+end
