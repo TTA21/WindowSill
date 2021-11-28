@@ -52,7 +52,7 @@ do
         self.attachedInputDialog:defineBase(self.description)
         self.attachedInputDialog:defineBaseObjAttached(self, 10, 0)
         self.attachedInputDialog:defineAttachableDialog(self.state, 1, 2, self.scale, -1 , 1)
-        --self.attachedInputDialog:changeSprite(textures.std_empty_10_10)
+        self.attachedInputDialog:changeSprite(textures.std_empty_10_10)
 
     end
 

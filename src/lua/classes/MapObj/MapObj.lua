@@ -28,10 +28,8 @@ do --open
             backGrounds = {},
             letters = {}
         }
-        self.menus = {  ---Menus use the dialogs to show letters
-            backGrounds = {},
-            sprites = {}
-        }
+        self.menus = {}  ---Menus use the dialogs to show letters
+        self.menuSprites = {}
         self.cameras = {}
         self.areas = {}
         self.timedInsertions = {}  ---for TimedInsertions ONLY
@@ -265,8 +263,6 @@ do --open
         Used for menus
     ]]
     --[[
-        Used for dialogs
-    ]]--
     function MapObj:addNamedItemToMenus(name, obj)
         --For now just the components
         obj:changePriority(1)
@@ -287,6 +283,35 @@ do --open
         end
 
     end
+    ]]
+
+    function MapObj:addNamedItemToMenus(name, obj)
+        obj:changePriority(1)
+        self.menus[name] = obj
+        obj.selectedBackground:changePriority(1)
+        self.menuSprites[name .. "_selectedBackground"] = obj.selectedBackground
+
+        accumulator = 1
+        for i, component in pairs(obj.menuComponentList) do
+            component:changePriority(1)
+            self:addToDialogs(component.attachedDialog)
+
+            if component:isa(StringInputMenuComponentObj) then
+                self:addToDialogs(component.attachedInputDialog)
+            end
+    
+            if component:isa(SliderMenuComponentObj) then
+                component.slideHandler:changePriority(1)
+                self.menuSprites[name .. "_handler_" .. accumulator] = component.slideHandler
+    
+                if component.displayState then
+                    self:addToDialogs(component.attachedStateDialog)
+                end
+            end
+            accumulator = accumulator + 1
+        end
+
+    end
 
 
     --[[
@@ -304,8 +329,12 @@ do --open
 
             cam:renderTable(self.dialogs.backGrounds)
             cam:renderTable(self.dialogs.letters)
-            cam:renderTable(self.menus.backGrounds)
-            cam:renderTable(self.menus.sprites)
+
+            cam:renderTable(self.menus)
+            for i, component in pairs(self.menus) do
+                cam:renderTable(component.menuComponentList)
+            end
+            cam:renderTable(self.menuSprites)
 
             --cam:renderReorderPosY() --old
             cam:renderReorderPriority()
@@ -506,11 +535,12 @@ do --open
             end
         end
 
-        --Update Menus, just components for now
-        for i, obj in pairs(self.menus.sprites) do
+
+        for i, menu in pairs(self.menus) do
             --allow rendering is checked by the component, FOR NOW
-            obj:update()
-            obj:updatePos()
+            --obj:update()
+            --obj:updatePos()
+            menu:update()
         end
 
         --occasionally reorder the scenario for better performance

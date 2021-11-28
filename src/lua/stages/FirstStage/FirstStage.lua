@@ -87,6 +87,7 @@ do
         --timedRenderer:defineTimedRenderer(400, dialog1.letters, firstLevelMap.dialogs.letters)
         --timed = timedRenderer
 
+        --[[
         testButton = ButtonMenuObj:clone()
         testButton:defineBase("button1", nil, 1)
         testButton:defineBaseObjAttached(obj1, 150,150)
@@ -105,10 +106,30 @@ do
         sliderInput:defineBaseObjAttached(obj1, -100, -100)
         sliderInput:defineSliderMenu("slide the slide", nil, true, 50, 10, true)
         firstLevelMap:addNamedItemToMenus("sliderinput1", sliderInput)
+        ]]
+
+        menuExamp = AttachableMenuObj:clone()
+        menuExamp:defineBase("menu1", nil, 1)
+        menuExamp:defineBaseObjAttached(obj1, 100, 100)
+        menuExamp:defineAttachableMenu(
+            "Menu 1", 
+            {
+                {"Button", {description = "First Button",}},    ---the rest is default
+                {"Button", {description = "Second Button",}}, 
+                {"Slider", {description = "First Slide", initialState = 50,}}, 
+                {"StringInput", {description = "First String Input",}}
+            }, 
+            "Tab",
+            (function(data)
+                for i, d in pairs(data) do
+                    print(i, d)
+                end
+                print("")
+            end)
+        )
+        firstLevelMap:addNamedItemToMenus("menu1", menuExamp)
 
         reorderRenderItems()
-        
-
     end
 
     function firstStage()
