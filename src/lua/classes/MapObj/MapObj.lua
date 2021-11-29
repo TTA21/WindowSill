@@ -535,12 +535,10 @@ do --open
             end
         end
 
-
+        ---Update Menus
         for i, menu in pairs(self.menus) do
-            --allow rendering is checked by the component, FOR NOW
-            --obj:update()
-            --obj:updatePos()
             menu:update()
+            self.gamePaused = menu.pauseGame
         end
 
         --occasionally reorder the scenario for better performance

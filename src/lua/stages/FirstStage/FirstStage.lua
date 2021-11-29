@@ -117,7 +117,8 @@ do
                 {"Button", {description = "First Button",}},    ---the rest is default
                 {"Button", {description = "Second Button",}}, 
                 {"Slider", {description = "First Slide", initialState = 50,}}, 
-                {"StringInput", {description = "First String Input",}}
+                {"StringInput", {description = "First String Input", stringLength = 20, initialState = "init"}},
+                {"Button", {description = "Third Button",}},
             }, 
             "Tab",
             (function(data)

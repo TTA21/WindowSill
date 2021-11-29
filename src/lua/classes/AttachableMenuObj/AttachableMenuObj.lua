@@ -47,6 +47,7 @@ do
 
         self.isClosed = false
         self.toggleKey = toggleKey or "Tab"
+        self.pauseGame = true
         self.onUpdate = onUpdate or 
             function(states)
                 ---states recieves self.data on call
@@ -54,11 +55,13 @@ do
             end
 
         self:changeSprite(backGroundTexture or textures.std_menu_background_blue_10_10)
-        ---Proper dimensions needed
-        self:changeDimensions(300,300)
 
+        yAccumulator = 0
+        componentTypeCount = {0,0,0} ---For calculating size of background
         for i, component in pairs(self.optionsList) do
             if component[1] == "Button" then
+                componentTypeCount[1] = componentTypeCount[1]+1
+
                 button = ButtonMenuObj:clone()
                 button:defineBase(
                     component[2].description .. "_" .. i, 
@@ -77,10 +80,11 @@ do
                     component[2].allowRender, 
                     component[2].priority
                 )
+                yAccumulator = 20 + yAccumulator
                 button:defineBaseObjAttached(
                     self, 
                     10,     --X
-                    20*i    --Y
+                    yAccumulator    --Y
                 )
                 button:defineButtonMenu(
                     component[2].description, 
@@ -91,39 +95,119 @@ do
                     component[2].textureNotPressed,
                     component[2].font
                 )
-                if i == 1 then
-                    button.isSelected = true
-                end
-
                 self.menuComponentList[#self.menuComponentList +1 ] = button
                 self.data[i] = button.state
 
             elseif component[1] == "Slider" then
+                componentTypeCount[2] = componentTypeCount[2]+1
 
+                sliderInput = SliderMenuComponentObj:clone()
+                sliderInput:defineBase(
+                    component[2].description .. "_" .. i, 
+                    component[2].texture, 
+                    component[2].scale, 
+                    component[2].posX, 
+                    component[2].posY, 
+                    component[2].hitBox, 
+                    component[2].alpha, 
+                    component[2].animStage, 
+                    component[2].hasCollision, 
+                    component[2].numAnimationStages, 
+                    component[2].animStage, 
+                    component[2].numFramesPerAnimationStage, 
+                    component[2].localFrameCounter, 
+                    component[2].allowRender, 
+                    component[2].priority
+                )
+                yAccumulator = 50 + yAccumulator    ---Needs bigger spacing for title
+                sliderInput:defineBaseObjAttached(
+                    self, 
+                    20,     --X
+                    yAccumulator    --Y
+                )
+                sliderInput:defineSliderMenu(
+                    component[2].description,
+                    component[2].sliderKeys,
+                    false,
+                    component[2].initialState,
+                    component[2].valueChangeDelay,
+                    component[2].displayValueOnSide,
+                    component[2].sliderTexture,
+                    component[2].sliderHandlerTexture,
+                    component[2].font
+                )
+                self.menuComponentList[#self.menuComponentList +1 ] = sliderInput
+                self.data[i] = sliderInput.state
+                
             elseif component[1] == "StringInput" then
+                componentTypeCount[3] = componentTypeCount[3]+1
 
+                stringInput = StringInputMenuComponentObj:clone()
+                stringInput:defineBase(
+                    component[2].description .. "_" .. i, 
+                    component[2].texture, 
+                    component[2].scale, 
+                    component[2].posX, 
+                    component[2].posY, 
+                    component[2].hitBox, 
+                    component[2].alpha, 
+                    component[2].animStage, 
+                    component[2].hasCollision, 
+                    component[2].numAnimationStages, 
+                    component[2].animStage, 
+                    component[2].numFramesPerAnimationStage, 
+                    component[2].localFrameCounter, 
+                    component[2].allowRender, 
+                    component[2].priority
+                )
+                yAccumulator = 20 + yAccumulator
+                stringInput:defineBaseObjAttached(
+                    self, 
+                    10,     --X
+                    yAccumulator    --Y
+                )
+                yAccumulator = 20 + yAccumulator    ---More spacing for anything below this component
+
+                stringInput:defineStringInputMenu(
+                    component[2].description,
+                    component[2].stringLength,
+                    false,
+                    component[2].initialState,
+                    component[2].font
+                )
+
+                self.menuComponentList[#self.menuComponentList +1 ] = stringInput
+                self.data[i] = stringInput.state
             end
         end
+
+        self.menuComponentList[1].isSelected = true
 
         self.selectedId = 1 ---Wich component is selected
 
         self.selectedBackground = BaseObjAttachedObj:clone()
         self.selectedBackground:defineBase(self.title .. "_selectedBackground", nil, 1)
         self.selectedBackground:defineBaseObjAttached(self.menuComponentList[self.selectedId], -5, -2)
-        self.selectedBackground:changeDimensions(
-            self.menuComponentList[self.selectedId].attachedDialog.width,
-            self.menuComponentList[self.selectedId].attachedDialog.height/3
-        );
+        self:changeSelectedBackGroundAnchor()
 
+         self:changeDimensions(300, yAccumulator + (20 * componentTypeCount[2]) )
 
     end
 
     function AttachableMenuObj:changeSelectedBackGroundAnchor()
         self.selectedBackground.anchor = self.menuComponentList[self.selectedId]
-        self.selectedBackground:changeDimensions(
-            self.menuComponentList[self.selectedId].attachedDialog.width,
-            self.menuComponentList[self.selectedId].attachedDialog.height/3
-        );
+
+        if self.selectedBackground.anchor:isa(StringInputMenuComponentObj) then
+            self.selectedBackground:changeDimensions(
+                self.menuComponentList[self.selectedId].attachedInputDialog.width,
+                self.menuComponentList[self.selectedId].attachedInputDialog.height
+            );
+        else
+            self.selectedBackground:changeDimensions(
+                self.menuComponentList[self.selectedId].attachedDialog.width,
+                self.menuComponentList[self.selectedId].attachedDialog.height/3
+            );
+        end
     end
 
     function AttachableMenuObj:update()
@@ -132,14 +216,16 @@ do
             self.isClosed = not self.isClosed
             if self.isClosed then
                 self:closeMenu()
+                self.pauseGame = false
             else
                 self:openMenu()
+                self.pauseGame = true
             end
         end 
 
         if not self.isClosed then
             for i, key in pairs(self.selectKeys[2]) do
-                if keyIsPressed(key) then
+                if risingEdgeKey(key) then
                     if self.selectedId < #self.menuComponentList then
                         self.menuComponentList[self.selectedId].isSelected = false
                         self.selectedId = self.selectedId + 1
@@ -150,7 +236,7 @@ do
                 end
             end
             for i, key in pairs(self.selectKeys[1]) do
-                if keyIsPressed(key) then
+                if risingEdgeKey(key) then
                     if self.selectedId > 1 then
                         self.menuComponentList[self.selectedId].isSelected = false
                         self.selectedId = self.selectedId - 1
@@ -166,16 +252,16 @@ do
             for i, component in pairs(self.menuComponentList) do
                 component:update()
                 component:updatePos()
+
+                if component:isa(SliderMenuComponentObj) then
+                    component.slideHandler:updatePos()
+                end
                 self.data[i] = component.state
             end
             self.onUpdate(self.data)
         end
     end
 
-    --[[
-        Menu's might not need to be deleted if the dev needs them again,
-        so open and close are implemented and checked on the mapObj
-    ]]
     function AttachableMenuObj:closeMenu()
         self:disableRender()
         self.selectedBackground:disableRender()

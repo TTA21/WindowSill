@@ -32,9 +32,9 @@ do
         ---Write the sentence above the
         self.attachedDialog = AttachableDialogObj:clone()
         self.attachedDialog:defineBase(self.description)
-        self.attachedDialog:defineBaseObjAttached(self, 0, -20)
+        self.attachedDialog:defineBaseObjAttached(self, 0, -15)
         self.attachedDialog:defineAttachableDialog(self.description, 1, 2, self.scale, -1 , 1, nil, false, self.font)
-        --self.attachedDialog:changeSprite(textures.std_empty_10_10)
+        self.attachedDialog:changeSprite(textures.std_empty_10_10)
 
         if stringLength > 1 then
             self.stringLength = stringLength
@@ -97,15 +97,6 @@ do
             
         end
 
-        --for testing
-        if risingEdgeKey("H") then
-            print("Show")
-            self:show()
-        end
-        if risingEdgeKey("J") then
-            print("Hide")
-            self:hide()
-        end
     end
 
     function StringInputMenuComponentObj:hide()

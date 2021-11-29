@@ -82,7 +82,7 @@ do
             end
 
             self.attachedStateDialog:defineAttachableDialog(stateString, 1, 2, self.scale, -1 , 1, nil, false, self.font)
-            --self.attachedDialog:changeSprite(textures.std_empty_10_10)
+            self.attachedDialog:changeSprite(textures.std_empty_10_10)
         end
 
     end
@@ -128,6 +128,24 @@ do
                     end
                 end
             end
+        end
+    end
+
+    function SliderMenuComponentObj:show()
+        self:enableRender()
+        self.attachedDialog:show()
+        self.slideHandler:enableRender()
+        if self.displayState then
+            self.attachedStateDialog:show()
+        end
+    end
+
+    function SliderMenuComponentObj:hide()
+        self:disableRender()
+        self.attachedDialog:hide()
+        self.slideHandler:disableRender()
+        if self.displayState then
+            self.attachedStateDialog:hide()
         end
     end
 

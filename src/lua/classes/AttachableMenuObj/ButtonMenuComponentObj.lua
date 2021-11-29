@@ -55,15 +55,6 @@ do
             end
         end
 
-        --for testing
-        if risingEdgeKey("H") then
-            print("Show")
-            self:show()
-        end
-        if risingEdgeKey("J") then
-            print("Hide")
-            self:hide()
-        end
     end
 
     function ButtonMenuObj:hide()
