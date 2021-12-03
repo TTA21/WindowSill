@@ -1,12 +1,7 @@
 do
     --[[
-        TODO:
-        string input
-        button
-        draggable lever
-
-        separate them into components that can be added in a list,
-        all of them should have some text besides them aswell
+        Simple menus, can do buttons (true or false), String Inputs (to write stuff),
+        and Sliders (integer 0 to 100)
     ]]
     AttachableMenuObj = BaseObjAttachedObj:clone()
 
@@ -59,27 +54,14 @@ do
         yAccumulator = 0
         componentTypeCount = {0,0,0} ---For calculating size of background
         for i, component in pairs(self.optionsList) do
+            component[2].description = component[2].description .. "_" .. i
+
             if component[1] == "Button" then
                 componentTypeCount[1] = componentTypeCount[1]+1
 
                 button = ButtonMenuObj:clone()
-                button:defineBase(
-                    component[2].description .. "_" .. i, 
-                    component[2].texture, 
-                    component[2].scale, 
-                    component[2].posX, 
-                    component[2].posY, 
-                    component[2].hitBox, 
-                    component[2].alpha, 
-                    component[2].animStage, 
-                    component[2].hasCollision, 
-                    component[2].numAnimationStages, 
-                    component[2].animStage, 
-                    component[2].numFramesPerAnimationStage, 
-                    component[2].localFrameCounter, 
-                    component[2].allowRender, 
-                    component[2].priority
-                )
+                button:defineBase(component[2])
+
                 yAccumulator = 20 + yAccumulator
                 button:defineBaseObjAttached(
                     self, 
@@ -102,23 +84,8 @@ do
                 componentTypeCount[2] = componentTypeCount[2]+1
 
                 sliderInput = SliderMenuComponentObj:clone()
-                sliderInput:defineBase(
-                    component[2].description .. "_" .. i, 
-                    component[2].texture, 
-                    component[2].scale, 
-                    component[2].posX, 
-                    component[2].posY, 
-                    component[2].hitBox, 
-                    component[2].alpha, 
-                    component[2].animStage, 
-                    component[2].hasCollision, 
-                    component[2].numAnimationStages, 
-                    component[2].animStage, 
-                    component[2].numFramesPerAnimationStage, 
-                    component[2].localFrameCounter, 
-                    component[2].allowRender, 
-                    component[2].priority
-                )
+                sliderInput:defineBase(component[2])
+
                 yAccumulator = 50 + yAccumulator    ---Needs bigger spacing for title
                 sliderInput:defineBaseObjAttached(
                     self, 
@@ -143,23 +110,8 @@ do
                 componentTypeCount[3] = componentTypeCount[3]+1
 
                 stringInput = StringInputMenuComponentObj:clone()
-                stringInput:defineBase(
-                    component[2].description .. "_" .. i, 
-                    component[2].texture, 
-                    component[2].scale, 
-                    component[2].posX, 
-                    component[2].posY, 
-                    component[2].hitBox, 
-                    component[2].alpha, 
-                    component[2].animStage, 
-                    component[2].hasCollision, 
-                    component[2].numAnimationStages, 
-                    component[2].animStage, 
-                    component[2].numFramesPerAnimationStage, 
-                    component[2].localFrameCounter, 
-                    component[2].allowRender, 
-                    component[2].priority
-                )
+                stringInput:defineBase(component[2])
+
                 yAccumulator = 20 + yAccumulator
                 stringInput:defineBaseObjAttached(
                     self, 
@@ -186,7 +138,10 @@ do
         self.selectedId = 1 ---Wich component is selected
 
         self.selectedBackground = BaseObjAttachedObj:clone()
-        self.selectedBackground:defineBase(self.title .. "_selectedBackground", nil, 1)
+        self.selectedBackground:defineBase({
+            name = self.title .. "_selectedBackground",
+            scale = 1
+        })
         self.selectedBackground:defineBaseObjAttached(self.menuComponentList[self.selectedId], -5, -2)
         self:changeSelectedBackGroundAnchor()
 

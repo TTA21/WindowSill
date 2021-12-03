@@ -2,33 +2,70 @@ do  ---open
 
     --BaseObj | Class Declaration
 
-    --[[
-        Every object that can be rendered is expected to be derived from this base class
+    --Every object that can be rendered is expected to be derived form this base class
 
-        Has a simple hitbox for collisions, does simple 1 sprite animations.
-    ]]--
     BaseObj = object:clone()
+
+    ---Data Declaration
+    BaseObj.texture = textures.std_menu_background_white_10_10
+    BaseObj.posX = 0
+    BaseObj.posY = 0
+    BaseObj.scale = 1
+
+    BaseObj.hitBox = {}
+    
+    BaseObj.alpha = 100
+    BaseObj.animStage = 0
+
+    BaseObj.globalId = -1
+
+    BaseObj.name = "Default Name"
+    BaseObj.hasCollision = false
+
+    BaseObj.numAnimationStages = 0
+    BaseObj.animStage = 0
+    BaseObj.numFramesPerAnimationStage = 100
+    BaseObj.localFrameCounter = 0
+
+    BaseObj.allowRender = false
 
     ---Function Declaration
 
     function BaseObj:defineBase(
-        params  ---The parameters object
+        name,               ---Self explanatory
+        texture,            ---Texture object
+        scale,              ---Width & Height of the sprite times scale. 1 for normal
+        posX,               ---Based on the map, not the screen
+        posY,               ---Based on the map, not the screen
+        hitBox,             ---Contains offset for proper hitboxing
+        alpha,              ---Opacity, 0 for see through, 100 for fully opaque
+        animStage,          ---Frame of the animation sprite
+        --globalId,           ---Every Object has an unique id
+        hasCollision,       ---Self explanatory, uses hitbox values
+    
+        numAnimationStages,             ---How many frames sprite has
+        animStage,                      ---Current sprite animation
+        numFramesPerAnimationStage,     ---Every 10 frames, move animStage forward, used for delay
+        localFrameCounter,              ---Used for the animations
+
+        allowRender,
+        priority
+        --renderObj
     )
-        self.texture = params.texture or textures.std_menu_background_white_10_10
-        self.posX = params.posX or 1
-        self.posY = params.posY or 1
-        self.scale = params.scale or 1
+        self.texture = texture or textures.std_menu_background_white_10_10
+        self.posX = posX or 1
+        self.posY = posY or 1
+        self.scale = scale or 1
 
         --priority_0 --Letters of Dialogs and menus
         --priority_1 --Dialogs and menus
         --priority_2 --ForeGround
         --priority_3 --Middle Ground
         --priority_4 --BackGround
-        self.priority = params.priority or 4   
+        self.priority = priority or 4   
 
-        if params.hitBoxObj then
-            print("Has Hitbox")
-            self.hitBox = params.hitBoxObj
+        if hitBoxObj then
+            self.hitBox = hitBoxObj
         else
             hitBox = HitBoxObj:clone()
             hitBox:defineHitBox(
@@ -41,27 +78,27 @@ do  ---open
         end
 
         
-        self.alpha = params.alpha or 100
-        self.animStage = params.animStage or 0
+        self.alpha = alpha or 100
+        self.animStage = animStage or 0
     
         self.globalId = globalIdCounter
         globalIdCounter = globalIdCounter + 1
     
-        self.name = params.name or "Bob"
-        self.hasCollision = params.hasCollision or true
+        self.name = name or "Bob"
+        self.hasCollision = hasCollision or true
     
         if texture then
-            self.numAnimationStages = params.numAnimationStages or self.texture.numAnimationStages
+            self.numAnimationStages = numAnimationStages or self.texture.numAnimationStages
         else
-            self.numAnimationStages = params.numAnimationStages or 0
+            self.numAnimationStages = numAnimationStages or 0
         end
         
-        self.animStage = params.animStage or 0
+        self.animStage = animStage or 0
         self.pauseAnimation = false
-        self.numFramesPerAnimationStage = params.numFramesPerAnimationStage or 100
-        self.localFrameCounter = params.localFrameCounter or 0
+        self.numFramesPerAnimationStage = numFramesPerAnimationStage or 100
+        self.localFrameCounter = localFrameCounter or 0
 
-        self.allowRender = params.allowRender or true
+        self.allowRender = allowRender or true
         self.isOnCamera = false   ---For cameraObj
 
         self.renderObj = RenderObj:clone()

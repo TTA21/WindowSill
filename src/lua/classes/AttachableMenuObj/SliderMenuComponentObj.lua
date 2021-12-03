@@ -49,7 +49,7 @@ do
 
         ---Write the sentence above the input
         self.attachedDialog = AttachableDialogObj:clone()
-        self.attachedDialog:defineBase(self.description)
+        self.attachedDialog:defineBase({name = self.description})
         self.attachedDialog:defineBaseObjAttached(self, -10, -40)
         self.attachedDialog:defineAttachableDialog(self.description, 1, 2, self.scale, -1 , 1, nil, false, self.font)
         self.attachedDialog:changeSprite(textures.std_empty_10_10)
@@ -58,9 +58,15 @@ do
 
         self.slideHandler = BaseObjAttachedObj:clone()
         if sliderHandlerTexture then
-            self.slideHandler:defineBase(self.description, sliderHandlerTexture)
+            self.slideHandler:defineBase({
+                name = self.description,
+                texture = sliderHandlerTexture
+            })
         else
-            self.slideHandler:defineBase(self.description, textures.std_roller_handle_blue_10_10)
+            self.slideHandler:defineBase({
+                name = self.description,
+                texture = textures.std_roller_handle_blue_10_10
+            })
         end
         self.slideHandler:defineBaseObjAttached(self, self.state, 1)
 
@@ -69,7 +75,7 @@ do
         if self.displayState then
             ---Write the state value on the side
             self.attachedStateDialog = AttachableDialogObj:clone()
-            self.attachedStateDialog:defineBase(self.description .. "_state")
+            self.attachedStateDialog:defineBase({name = self.description .. "_state"})
             self.attachedStateDialog:defineBaseObjAttached(self, 110, -17)
 
             stateString = tostring(self.state)

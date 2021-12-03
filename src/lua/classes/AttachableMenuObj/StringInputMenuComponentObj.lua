@@ -31,7 +31,7 @@ do
 
         ---Write the sentence above the
         self.attachedDialog = AttachableDialogObj:clone()
-        self.attachedDialog:defineBase(self.description)
+        self.attachedDialog:defineBase({name = self.description})
         self.attachedDialog:defineBaseObjAttached(self, 0, -15)
         self.attachedDialog:defineAttachableDialog(self.description, 1, 2, self.scale, -1 , 1, nil, false, self.font)
         self.attachedDialog:changeSprite(textures.std_empty_10_10)
@@ -49,7 +49,7 @@ do
         self.stateWriteIndex = 1
 
         self.attachedInputDialog = AttachableDialogObj:clone()
-        self.attachedInputDialog:defineBase(self.description)
+        self.attachedInputDialog:defineBase({name = self.description})
         self.attachedInputDialog:defineBaseObjAttached(self, 10, 0)
         self.attachedInputDialog:defineAttachableDialog(self.state, 1, 2, self.scale, -1 , 1)
         self.attachedInputDialog:changeSprite(textures.std_empty_10_10)

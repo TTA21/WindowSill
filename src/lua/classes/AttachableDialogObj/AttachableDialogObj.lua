@@ -96,7 +96,11 @@ do --open
         for i, line in pairs(self.lines) do
             for j=1, #line do
                 letter = BaseObjAttachedObj:clone()
-                letter:defineBase("", self.font.texture, self.fontScale)
+                letter:defineBase({
+                    name =  "",
+                    texture = self.font.texture,
+                    scale = self.fontScale
+                })
                 letter.hasCollision = false
                 letter.animStage = self.font.charTable[line:sub(j,j)]
                 letter.pauseAnimation = true

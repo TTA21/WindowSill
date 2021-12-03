@@ -13,7 +13,12 @@ do
         firstLevelMap:defineMap(1500, 1500, "First Level")
 
         obj1 = MovableObj:clone()
-        obj1:defineBase("Object1", textures.bard_16_31_left, 1, 123, 123)
+        obj1:defineBase({
+            name = "Object1", 
+            texture = textures.bard_16_31_left,
+            posX = 123, 
+            posY = 123
+        })
         obj1:defineMovable(true,1,true, {
             up_still = textures.bard_17_31_up_still,
             down_still = textures.bard_18_31_down_still,
@@ -30,7 +35,10 @@ do
         firstLevelMap:addNamedItemToMiddleGround("Object1", obj1)
 
         obj2 = MovableObj:clone()
-        obj2:defineBase("Object2", textures.bard_16_31_left, 1, 1, 1)
+        obj2:defineBase({
+            name = "Object2", 
+            texture = textures.bard_16_31_left, 
+        })
         obj2:defineMovable(false,1,true,{
             up_still = textures.bard_17_31_up_still,
             down_still = textures.bard_18_31_down_still,
@@ -45,71 +53,44 @@ do
         firstLevelMap:addNamedItemToBackGround("Object2", obj2)
 
         obj3 = BaseObj:clone()
-        obj3:defineBase("Object3", textures.blue_square, 1, 321, 312)
+        obj3:defineBase({
+            name = "Object3", 
+            texture = textures.blue_square, 
+            posX = 321, 
+            posY = 312
+        })
 
         firstLevelMap:addNamedItemToMiddleGround("Object3", obj3)
+
+        --print("obj3 ", obj3.globalId)
 
         obj2:setGotoPos(444,444)
 
         obj4 = BaseObjAttachedObj:clone()
-        obj4:defineBase("Object4", textures.red_square, 1)
-        obj4.hasCollision = false
+        obj4:defineBase({name = "Object4", texture = textures.red_square, hasCollision = false})
         obj4:defineBaseObjAttached(obj2, 50,50)
         firstLevelMap:addNamedItemToMiddleGround("Object4", obj4)
 
         obj5 = MovableObjAttachedObj:clone()
-        obj5:defineBase("Object5", textures.red_square, 1)
+        obj5:defineBase({name = "Object5", texture = textures.red_square})
         obj5:defineMovable(false,1,true)
         obj5:defineMovableObjAttached(obj1, 20,20)
         firstLevelMap:addNamedItemToMiddleGround("Object5", obj5)
 
         dialog1 = AttachableDialogObj:clone()
-        dialog1:defineBase("Dialog1")
+        dialog1:defineBase({name = "Dialog1"})
         dialog1:defineBaseObjAttached(obj1, 40, 40)
         dialog1:defineAttachableDialog("Test Message!\n Test Test?", 1, 2, 1, 3000 , 10, "C", true)
         firstLevelMap:addNamedItemToDialogs("Dialog1", dialog1)
 
         dialog2 = AttachableDialogObj:clone()
-        dialog2:defineBase("Dialog2")
+        dialog2:defineBase({name = "Dialog2"})
         dialog2:defineBaseObjAttached(obj2, 0, -80)
         dialog2:defineAttachableDialog("ASDASD()()\nzxczxc", 1, 2, 1, -1, 10, "F")
         firstLevelMap:addNamedItemToDialogs("Dialog2", dialog2)
         
-        --objTest = BaseObj:clone()
-        --font = FontObj:clone()
-        --font:defineFont()
-        --objTest:defineBase("Font", font.texture, 1,30, 30 )
-        --objTest.animStage = 3
-        --objTest.pauseAnimation = true
-        --firstLevelMap:addNamedItemToMiddleGround("Font", objTest)
-
-        --timedRenderer = TimedRendererObj:clone()
-        --timedRenderer:defineTimedRenderer(400, dialog1.letters, firstLevelMap.dialogs.letters)
-        --timed = timedRenderer
-
-        --[[
-        testButton = ButtonMenuObj:clone()
-        testButton:defineBase("button1", nil, 1)
-        testButton:defineBaseObjAttached(obj1, 150,150)
-        testButton:defineButtonMenu("asdasd", nil, true, false)
-        firstLevelMap:addNamedItemToMenus("button1", testButton)
-        button1 = testButton
-
-        stringInput = StringInputMenuComponentObj:clone()
-        stringInput:defineBase("input1", nil, 1)
-        stringInput:defineBaseObjAttached(obj1, 100, 100)
-        stringInput:defineStringInputMenu("type something", 10, true, "")
-        firstLevelMap:addNamedItemToMenus("input1", stringInput)
-
-        sliderInput = SliderMenuComponentObj:clone()
-        sliderInput:defineBase("sliderinput1", nil, 1)
-        sliderInput:defineBaseObjAttached(obj1, -100, -100)
-        sliderInput:defineSliderMenu("slide the slide", nil, true, 50, 10, true)
-        firstLevelMap:addNamedItemToMenus("sliderinput1", sliderInput)
-        ]]
-
         menuExamp = AttachableMenuObj:clone()
-        menuExamp:defineBase("menu1", nil, 1)
+        menuExamp:defineBase({name = "menu1"})
         menuExamp:defineBaseObjAttached(obj1, 100, 100)
         menuExamp:defineAttachableMenu(
             "Menu 1", 
@@ -122,10 +103,10 @@ do
             }, 
             "Tab",
             (function(data)
-                for i, d in pairs(data) do
-                    print(i, d)
-                end
-                print("")
+                --for i, d in pairs(data) do
+                    --print(i, d)
+                --end
+                --print("")
             end)
         )
         firstLevelMap:addNamedItemToMenus("menu1", menuExamp)
@@ -149,3 +130,11 @@ do
     end
 
 end
+
+
+--[[
+    TODO:
+    Dialog trees, and dialog choices (simple menu)
+    action scripts
+    add constructors, loop conditions and other useful closures to objects  --WIP
+]]
