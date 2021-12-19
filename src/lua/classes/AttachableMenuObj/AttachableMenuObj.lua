@@ -54,20 +54,23 @@ do
         yAccumulator = 0
         componentTypeCount = {0,0,0} ---For calculating size of background
         for i, component in pairs(self.optionsList) do
-            component[2].description = component[2].description .. "_" .. i
+            --component[2].description = component[2].description .. "_" .. i
 
             if component[1] == "Button" then
                 componentTypeCount[1] = componentTypeCount[1]+1
 
                 button = ButtonMenuObj:clone()
-                button:defineBase(component[2])
-
+                
                 yAccumulator = 20 + yAccumulator
-                button:defineBaseObjAttached(
-                    self, 
-                    10,     --X
-                    yAccumulator    --Y
-                )
+
+                ---component[2] has baseObj data, but not defineBaseObjAttached, must merge early
+                merge(component[2], {
+                    anchor = self, 
+                    offsetX = 10,     --X
+                    offsetY = yAccumulator    --Y
+                })
+                button:defineBaseObjAttached(component[2])
+
                 button:defineButtonMenu(
                     component[2].description, 
                     component[2].selectKey, 
@@ -84,14 +87,17 @@ do
                 componentTypeCount[2] = componentTypeCount[2]+1
 
                 sliderInput = SliderMenuComponentObj:clone()
-                sliderInput:defineBase(component[2])
 
                 yAccumulator = 50 + yAccumulator    ---Needs bigger spacing for title
-                sliderInput:defineBaseObjAttached(
-                    self, 
-                    20,     --X
-                    yAccumulator    --Y
-                )
+
+                ---component[2] has baseObj data, but not defineBaseObjAttached, must merge early
+                merge(component[2], {
+                    anchor = self, 
+                    offsetX = 20,     --X
+                    offsetY = yAccumulator    --Y
+                })
+                sliderInput:defineBaseObjAttached(component[2])
+
                 sliderInput:defineSliderMenu(
                     component[2].description,
                     component[2].sliderKeys,
@@ -110,14 +116,17 @@ do
                 componentTypeCount[3] = componentTypeCount[3]+1
 
                 stringInput = StringInputMenuComponentObj:clone()
-                stringInput:defineBase(component[2])
 
                 yAccumulator = 20 + yAccumulator
-                stringInput:defineBaseObjAttached(
-                    self, 
-                    10,     --X
-                    yAccumulator    --Y
-                )
+
+                ---component[2] has baseObj data, but not defineBaseObjAttached, must merge early
+                merge(component[2], {
+                    anchor = self, 
+                    offsetX = 10,     --X
+                    offsetY = yAccumulator    --Y
+                })
+                stringInput:defineBaseObjAttached(component[2])
+
                 yAccumulator = 20 + yAccumulator    ---More spacing for anything below this component
 
                 stringInput:defineStringInputMenu(
@@ -138,11 +147,14 @@ do
         self.selectedId = 1 ---Wich component is selected
 
         self.selectedBackground = BaseObjAttachedObj:clone()
-        self.selectedBackground:defineBase({
+        self.selectedBackground:defineBaseObjAttached({
             name = self.title .. "_selectedBackground",
-            scale = 1
+            scale = 1,
+            anchor = self.menuComponentList[self.selectedId],
+            offsetX = -5,
+            offsetY = -2
         })
-        self.selectedBackground:defineBaseObjAttached(self.menuComponentList[self.selectedId], -5, -2)
+        
         self:changeSelectedBackGroundAnchor()
 
          self:changeDimensions(300, yAccumulator + (20 * componentTypeCount[2]) )

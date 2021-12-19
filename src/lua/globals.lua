@@ -213,3 +213,15 @@ end
 function replace_char(pos, str, r)
     return str:sub(1, pos-1) .. r .. str:sub(pos+1)
 end
+
+
+--[[
+    Merges two tables together, tableBase recieves data from tableDonator
+    If there are any similar keys in tableDonator, they will override the tableBase.
+    References work just the same as any other table, no deep copies are made.
+]]
+function merge(tableBase, tableDonator)
+    for k,v in pairs(tableDonator) do
+        tableBase[k] = v
+    end
+end

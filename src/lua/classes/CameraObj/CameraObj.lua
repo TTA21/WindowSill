@@ -78,40 +78,6 @@ do  --open
 
     end
 
-    --[[
-        Expected to be called every frame.
-        Renders whatever the camera sees on a simple map table, only one camera should be rendering at any one time
-
-    ]]--
-    function CameraObj:render()
-
-        ---Currently iterating through basic map table, pass real map later
-
-        if self.currentCam == true then
-            
-            for index, baseObj in pairs(map.characters) do
-                
-                screenX = baseObj.posX - self.pointA.X
-                screenY = baseObj.posY - self.pointA.Y
-
-                if  (screenX >= (0 - baseObj.texture.width * baseObj.scale)) and (screenX <= self.width) and
-                    (screenY >= (0 - baseObj.texture.height * baseObj.scale)) and (screenY <= self.height)
-                then
-                    
-                    baseObj:enableRender()
-                    baseObj:updateRenderObjCommon(screenX, screenY)
-
-                else 
-
-                    baseObj:disableRender()
-                
-                end
-
-            end
-
-        end
-
-    end
 
     --[[
         Expected to be called every frame.

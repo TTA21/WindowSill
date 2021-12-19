@@ -6,6 +6,25 @@ do  ---open
         Every object that can be rendered is expected to be derived from this base class
 
         Has a simple hitbox for collisions, does simple 1 sprite animations.
+
+        obj:defineBase({
+            texture = textures.std_menu_background_white_10_10,
+            posX = 1,
+            posY = 1,
+            scale = 1,
+            prority = 4,
+            hitBoxObj = null,
+            alpha = 100,
+            animStage = 0,
+            numAnimationStages = 0,
+            name = "ASD",
+            hasCollision = true,
+            pauseAnimation = false,
+            numFramesPerAnimationStage = 100,
+            localFrameCounter = 0,
+            allowRender = true
+
+        })
     ]]--
     BaseObj = object:clone()
 
@@ -27,7 +46,6 @@ do  ---open
         self.priority = params.priority or 4   
 
         if params.hitBoxObj then
-            print("Has Hitbox")
             self.hitBox = params.hitBoxObj
         else
             hitBox = HitBoxObj:clone()
@@ -42,7 +60,6 @@ do  ---open
 
         
         self.alpha = params.alpha or 100
-        self.animStage = params.animStage or 0
     
         self.globalId = globalIdCounter
         globalIdCounter = globalIdCounter + 1
@@ -50,14 +67,14 @@ do  ---open
         self.name = params.name or "Bob"
         self.hasCollision = params.hasCollision or true
     
-        if texture then
+        if self.texture then
             self.numAnimationStages = params.numAnimationStages or self.texture.numAnimationStages
         else
             self.numAnimationStages = params.numAnimationStages or 0
         end
         
         self.animStage = params.animStage or 0
-        self.pauseAnimation = false
+        self.pauseAnimation = params.pauseAnimation or false
         self.numFramesPerAnimationStage = params.numFramesPerAnimationStage or 100
         self.localFrameCounter = params.localFrameCounter or 0
 
@@ -81,6 +98,7 @@ do  ---open
             self.isOnCamera
         )
         renderItems[#renderItems+1] = self.renderObj
+
     end
 
     --[[

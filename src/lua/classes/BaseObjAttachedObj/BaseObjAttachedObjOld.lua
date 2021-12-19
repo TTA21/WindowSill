@@ -11,30 +11,31 @@ do --open
 
     BaseObjAttachedObj = BaseObj:clone()
 
+    ---Data declaration
+
+    BaseObjAttachedObj.anchor = {}
+
     ---Function Declarations
 
-    function BaseObjAttachedObj:defineBaseObjAttached(params)
+    function BaseObjAttachedObj:defineBaseObjAttached(anchor, offsetX, offsetY)
         
-        self:defineBase(params)
-        --print(params.name)
-
         self.noBaseAttached = false
-        if not params.anchor then
-            print("ALERT, BaseObjAttached's anchor is nil", self.name)
+        if not anchor then
+            print("ALERT, BaseObjAttached's anchor is nil")
             self.noBaseAttached = true
             return
         end
 
-        if params.anchor:isa(BaseObj) then
-            self.anchor = params.anchor
+        if anchor:isa(BaseObj) then
+            self.anchor = anchor
         else
             print("ALERT, BaseObjAttached's anchor does not contain BaseObj")
             self.noBaseAttached = true
             return
         end
 
-        self.offsetX = params.offsetX or 0
-        self.offsetY = params.offsetY or 0
+        self.offsetX = offsetX or 0
+        self.offsetY = offsetY or 0
 
     end
 

@@ -24,12 +24,14 @@ do  --open
     ---Function Declaration
 
     function MovableObj:defineMovable(
+        params,
         allowMovementByKeyboard,     ---WASD
         movementMultiplier,          ---1 = normal speed, 2 = double speed
         hasCollision,
         diretionalTextures,         ---One sprite aniation for left, right, up and down
         hitBox             ---Contains offset for proper hitboxing
     )
+        self:defineBase(params)
         self.hasCollision = hasCollision or false
 
         if diretionalTextures then

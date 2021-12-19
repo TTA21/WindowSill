@@ -96,19 +96,17 @@ do --open
         for i, line in pairs(self.lines) do
             for j=1, #line do
                 letter = BaseObjAttachedObj:clone()
-                letter:defineBase({
+                letter:defineBaseObjAttached({
                     name =  "",
                     texture = self.font.texture,
-                    scale = self.fontScale
+                    scale = self.fontScale,
+                    hasCollision = false,
+                    animStage = self.font.charTable[line:sub(j,j)],
+                    pauseAnimation = true,
+                    anchor = self,
+                    offsetX = (self.font.texture.width/2)+ ((self.font.texture.width * self.fontScale)*j) + spacingAdderX,
+                    offsetY = (self.font.texture.height/2)+ ((self.font.texture.height * self.fontScale)*i) + spacingAdderY
                 })
-                letter.hasCollision = false
-                letter.animStage = self.font.charTable[line:sub(j,j)]
-                letter.pauseAnimation = true
-                letter:defineBaseObjAttached(
-                    self,
-                    (self.font.texture.width/2)+ ((self.font.texture.width * self.fontScale)*j) + spacingAdderX,
-                    (self.font.texture.height/2)+ ((self.font.texture.height * self.fontScale)*i) + spacingAdderY
-                )
                 spacingAdderX = spacingAdderX + self.spacingX
                 self.letters[#self.letters+1] = letter
             end

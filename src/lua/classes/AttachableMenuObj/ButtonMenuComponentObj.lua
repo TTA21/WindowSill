@@ -31,8 +31,11 @@ do
 
         ---Write the sentence besides the button
         self.attachedDialog = AttachableDialogObj:clone()
-        self.attachedDialog:defineBase({name = self.description})
-        self.attachedDialog:defineBaseObjAttached(self, 0, 0)
+        self.attachedDialog:defineBaseObjAttached({
+            name = self.description,
+            anchor = self
+        })
+
         self.attachedDialog:defineAttachableDialog(self.description, 1, 2, self.scale, -1 , 1)
         self.attachedDialog.offsetY = -((self.attachedDialog.height/2) - self.attachedDialog.font.texture.height/2)
         self.attachedDialog:changeSprite(textures.std_empty_10_10)
