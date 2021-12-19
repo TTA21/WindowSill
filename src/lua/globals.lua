@@ -1,4 +1,20 @@
+globalFrameCounter = 0  ---Number increases every CameraObj render
 globalIdCounter = 0     ---Used to create unique id's
+function newGlobalId()
+    --print("ALERT, new item at added at frame " .. globalFrameCounter .." : " .. globalIdCounter)
+    globalIdCounter = globalIdCounter + 1
+    return globalIdCounter - 1
+end
+
+globalDefaultParams = {
+    baseObjName = "Bob",
+    numFramesPerAnimationStage = 1000,
+    alpha = 100,
+    scale = 1,
+    hasCollision = true,
+    allowRender = true,
+}
+
 renderItems = {}        ---used by the engine, do not mess with it directly
 currentCameraRenderItems = {}
 
@@ -16,8 +32,6 @@ windowOptions = {
 keysPressedOld = {} --last iteration of keysPressed, used to check for key press differences
 keysPressed = {}    --Comes as strings; 'A', 'B', 'Left Shift', 'Left Tab', etc
 mouse = {}          --X, Y, RMB, LMB, MMB
-
-globalFrameCounter = 0  ---Number increases every CameraObj render
 
 ------------------------------------
 --Helper Functions

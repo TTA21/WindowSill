@@ -132,10 +132,10 @@ do
             },
             toggleKey = "Tab",
             onUpdate = (function(data)
-                for i, d in pairs(data) do
-                    print(i, d)
-                end
-                print("")
+                --for i, d in pairs(data) do
+                --    print(i, d)
+                --end
+                --print("")
             end)
         })
         firstLevelMap:addNamedItemToMenus("menu1", menuExamp)

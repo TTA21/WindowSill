@@ -3,29 +3,57 @@ do  ---open
     --BaseObj | Class Declaration
 
     --[[
-        Every object that can be rendered is expected to be derived from this base class
+        :defineBase({
+            texture = ,
+            posX = ,
+            posY = ,
+            scale = ,
+            prority = ,
+            hitBoxObj = ,
+            alpha = ,
+            animStage = ,
+            numAnimationStages = ,
+            name = ,
+            hasCollision = ,
+            pauseAnimation = ,
+            numFramesPerAnimationStage = ,
+            localFrameCounter = ,
+            allowRender = ,
+        })
+    ]]
+
+    --[[
+        Every object that can be rendered is expected to be derived from this class.
 
         Has a simple hitbox for collisions, does simple 1 sprite animations.
 
         obj:defineBase({
-            texture = textures.std_menu_background_white_10_10,
-            posX = 1,
-            posY = 1,
-            scale = 1,
-            prority = 4,
-            hitBoxObj = null,
-            alpha = 100,
-            animStage = 0,
-            numAnimationStages = 0,
-            name = "ASD",
-            hasCollision = true,
-            pauseAnimation = false,
-            numFramesPerAnimationStage = 100,
-            localFrameCounter = 0,
-            allowRender = true
+            texture = ,                         ---The sprite to be displayed, should be declared in 'textures.lua'
+            posX = ,                            ---Cartesian X axis position on the map
+            posY = ,                            ---Cartesian Y axis position on the map
+            scale = ,                           ---Width and Height multiplied by this number
+            prority = ,                         ---Rendering priority, see below
+            hitBoxObj = ,                       ---The hitbox used for collisions and scripts
+            alpha = ,                           ---The transparency, 100 for none
+            animStage = ,                       ---If a sprite is animated, it has n stages, begins at 0
+            numAnimationStages = ,              ---The number of sprites for the animation
+            name = ,                            ---Name for debugging purposes, Bob for automatically generated ones
+            hasCollision = ,                    ---True if the object has collision, does not affect scripts
+            pauseAnimation = ,                  ---True if you want the animation to be paused, will not pause the movement
+            numFramesPerAnimationStage = ,      ---Every n frames, change animation frame
+            localFrameCounter = ,               ---Used for the parameter above, leave it alone if ou dont know what it does
+            allowRender = ,                     ---True if you want it to render,equivalento to having an alfa of 0, does not affect scripts
+            onUpdate = (function (this) end),   ---Closure, every time the baseObj's update is called, this function is called
 
         })
+
+        --priority_0 --Letters of Dialogs and menus
+        --priority_1 --Dialogs and menus
+        --priority_2 --ForeGround
+        --priority_3 --Middle Ground
+        --priority_4 --BackGround
     ]]--
+
     BaseObj = object:clone()
 
     ---Function Declaration
@@ -36,13 +64,8 @@ do  ---open
         self.texture = params.texture or textures.std_menu_background_white_10_10
         self.posX = params.posX or 1
         self.posY = params.posY or 1
-        self.scale = params.scale or 1
-
-        --priority_0 --Letters of Dialogs and menus
-        --priority_1 --Dialogs and menus
-        --priority_2 --ForeGround
-        --priority_3 --Middle Ground
-        --priority_4 --BackGround
+        self.scale = params.scale or globalDefaultParams.scale
+        
         self.priority = params.priority or 4   
 
         if params.hitBoxObj then
@@ -59,13 +82,12 @@ do  ---open
         end
 
         
-        self.alpha = params.alpha or 100
+        self.alpha = params.alpha or globalDefaultParams.alpha
     
-        self.globalId = globalIdCounter
-        globalIdCounter = globalIdCounter + 1
+        self.globalId = newGlobalId()
     
-        self.name = params.name or "Bob"
-        self.hasCollision = params.hasCollision or true
+        self.name = params.name or globalDefaultParams.baseObjName
+        self.hasCollision = params.hasCollision or globalDefaultParams.hasCollision
     
         if self.texture then
             self.numAnimationStages = params.numAnimationStages or self.texture.numAnimationStages
@@ -75,11 +97,17 @@ do  ---open
         
         self.animStage = params.animStage or 0
         self.pauseAnimation = params.pauseAnimation or false
-        self.numFramesPerAnimationStage = params.numFramesPerAnimationStage or 100
+        self.numFramesPerAnimationStage = params.numFramesPerAnimationStage or globalDefaultParams.numFramesPerAnimationStage
         self.localFrameCounter = params.localFrameCounter or 0
 
-        self.allowRender = params.allowRender or true
+        self.allowRender = params.allowRender or globalDefaultParams.allowRender
         self.isOnCamera = false   ---For cameraObj
+
+        if params.onUpdate then
+            self.onUpdate = params.onUpdate
+        else
+            self.onUpdate = function (this) end
+        end
 
         self.renderObj = RenderObj:clone()
 
@@ -140,8 +168,8 @@ do  ---open
     end
 
     function BaseObj:changeDimensions(width, height)
-        self.renderObj.width = width
-        self.renderObj.height = height
+        self.renderObj.width = width or self.renderObj.width
+        self.renderObj.height = height or self.renderObj.height
     end
 
     function BaseObj:updateIsOnCamera(state)
@@ -185,7 +213,7 @@ do  ---open
     function BaseObj:changeSprite(sprite, framesPerAnim)
 
         self.animStage = 0
-        self.texture = sprite
+        self.texture = sprite or self.texture
         self.renderObj.width = self.texture.width
         self.renderObj.height = self.texture.height
         self.numAnimationStages = sprite.numAnimationStages
@@ -204,9 +232,11 @@ do  ---open
     end 
 
     --[[
-        To be overriden
+        To be overriden, in principle this should never be called, but hey, just in case
     ]]
-    function BaseObj:update() end
+    function BaseObj:update() 
+        self.onUpdate(self)
+    end
 
 
 end ---close
