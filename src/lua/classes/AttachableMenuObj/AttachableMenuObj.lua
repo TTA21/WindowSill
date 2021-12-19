@@ -4,19 +4,29 @@ do
         and Sliders (integer 0 to 100)
     ]]
     AttachableMenuObj = BaseObjAttachedObj:clone()
+    --[[
+        defineAttachableMenu({
+            baseObjParams
+            baseObjAttached params,
+            menuTitle,          ---Self explanatory
+            optionsList,        ---What the menu contains
+            toggleKey,          ---The key that opens and closes the menu
+            onUpdate,           ---Function handler provided by the dev, it is called after and update
+                                ---to do something with the menu's data
+            selectKeys,         ---The keys that select wich menu component is being modified, only goes up or down
+            backGroundTexture   ---The background for the overall menu,not its components
+        })
+        
+    ]]
 
     function AttachableMenuObj:defineAttachableMenu(
-        menuTitle,          ---Self explanatory
-        optionsList,        ---What the menu contains
-        toggleKey,          ---The key that opens and closes the menu
-        onUpdate,           ---Function handler provided by the dev, it is called after and update
-                            ---to do something with the menu's data
-        selectKeys,         ---The keys that select wich menu component is being modified, only goes up or down
-        backGroundTexture   ---The background for the overall menu,not its components
+        params
     )
 
-        self.title = menuTitle or "Menu Title"
-        self.optionsList = optionsList or {}
+        self:defineBaseObjAttached(params)
+
+        self.title = params.menuTitle or "Menu Title"
+        self.optionsList = params.optionsList or {}
         ---OptionsList example:
         --[[{ 
             {"Button", {description: "Something", initialState: true}},
@@ -38,18 +48,18 @@ do
             }
         ]]
 
-        self.selectKeys = selectKeys or {{"Up"}, {"Down"}}
+        self.selectKeys = params.selectKeys or {{"Up"}, {"Down"}}
 
         self.isClosed = false
-        self.toggleKey = toggleKey or "Tab"
+        self.toggleKey = params.toggleKey or "Tab"
         self.pauseGame = true
-        self.onUpdate = onUpdate or 
+        self.onUpdate = params.onUpdate or 
             function(states)
                 ---states recieves self.data on call
                 print(states[1])
             end
 
-        self:changeSprite(backGroundTexture or textures.std_menu_background_blue_10_10)
+        self:changeSprite(params.backGroundTexture or textures.std_menu_background_blue_10_10)
 
         yAccumulator = 0
         componentTypeCount = {0,0,0} ---For calculating size of background

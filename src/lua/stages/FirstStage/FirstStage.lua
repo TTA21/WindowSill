@@ -117,29 +117,27 @@ do
         firstLevelMap:addNamedItemToDialogs("Dialog2", dialog2)
         
         menuExamp = AttachableMenuObj:clone()
-        menuExamp:defineBaseObjAttached({
+        menuExamp:defineAttachableMenu({
             name = "menu1",
             anchor = obj1,
             offsetX = 100,
-            offsetY = 100
-        })
-        menuExamp:defineAttachableMenu(
-            "Menu 1", 
-            {
+            offsetY = 100,
+            menuTitle = "Menu 1",
+            optionsList = {
                 {"Button", {description = "First Button",}},    ---the rest is default
                 {"Button", {description = "Second Button",}}, 
                 {"Slider", {description = "First Slide", initialState = 50,}}, 
                 {"StringInput", {description = "First String Input", stringLength = 20}},
                 {"Button", {description = "Third Button",}},
-            }, 
-            "Tab",
-            (function(data)
-                --for i, d in pairs(data) do
-                    --print(i, d)
-                --end
-                --print("")
+            },
+            toggleKey = "Tab",
+            onUpdate = (function(data)
+                for i, d in pairs(data) do
+                    print(i, d)
+                end
+                print("")
             end)
-        )
+        })
         firstLevelMap:addNamedItemToMenus("menu1", menuExamp)
 
         reorderRenderItems()
