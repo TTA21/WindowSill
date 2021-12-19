@@ -2,49 +2,36 @@ do  --open
 
     MovableObj = BaseObj:clone()
 
-    ---Data Declaration
-
-    MovableObj.hitBox = {}
-    MovableObj.diretionalTextures = {}
-        
-    MovableObj.allowMovementByKeyboard = false
-    MovableObj.movementMultiplier = 1
-
-    MovableObj.forceLeft = 0
-    MovableObj.forceRight = 0
-    MovableObj.forceUp = 0
-    MovableObj.forceDown = 0
-
-    MovableObj.gotoX = 0                        ---Goto this position
-    MovableObj.gotoY = 0
-    MovableObj.currentlyMovingByScript = false
-
-    MovableObj.forceCap = 5  ---Number of pixels the object will move after letting go
-
     ---Function Declaration
 
+    --[[
+        defineMovable({
+            baseObj params,
+            allowMovementByKeyboard,     ---WASD
+            movementMultiplier,          ---1 = normal speed, 2 = double speed
+            hasCollision,
+            diretionalTextures,         ---One sprite aniation for left, right, up and down
+            hitBox
+        })
+    ]]
+
     function MovableObj:defineMovable(
-        params,
-        allowMovementByKeyboard,     ---WASD
-        movementMultiplier,          ---1 = normal speed, 2 = double speed
-        hasCollision,
-        diretionalTextures,         ---One sprite aniation for left, right, up and down
-        hitBox             ---Contains offset for proper hitboxing
+        params
     )
         self:defineBase(params)
-        self.hasCollision = hasCollision or false
+        self.hasCollision = params.hasCollision or false
 
-        if diretionalTextures then
-            self.diretionalTextures = diretionalTextures
+        if params.diretionalTextures then
+            self.diretionalTextures = params.diretionalTextures
             self.diretionalTextures = {
-                up_still = diretionalTextures.up_still or self.texture,
-                down_still = diretionalTextures.down_still or self.texture,
-                left_still = diretionalTextures.left_still or self.texture,
-                right_still = diretionalTextures.right_still or self.texture,
-                up = diretionalTextures.up or self.texture,
-                down = diretionalTextures.down or self.texture,
-                left = diretionalTextures.left or self.texture,
-                right = diretionalTextures.right or self.texture
+                up_still = params.diretionalTextures.up_still or self.texture,
+                down_still = params.diretionalTextures.down_still or self.texture,
+                left_still = params.diretionalTextures.left_still or self.texture,
+                right_still = params.diretionalTextures.right_still or self.texture,
+                up = params.diretionalTextures.up or self.texture,
+                down = params.diretionalTextures.down or self.texture,
+                left = params.diretionalTextures.left or self.texture,
+                right = params.diretionalTextures.right or self.texture
             }
         else
             self.diretionalTextures = {
@@ -59,8 +46,8 @@ do  --open
             }
         end
 
-        if hitBoxObj then
-            self.hitBox = hitBoxObj
+        if params.hitBoxObj then
+            self.hitBox = params.hitBoxObj
         else
             hitBox = HitBoxObj:clone()
             hitBox:defineHitBox(
@@ -73,9 +60,9 @@ do  --open
             self.hitBox = hitBox
         end
             
-        self.allowMovementByKeyboard = allowMovementByKeyboard or false
-        self.allowMovementByMouse = allowMovementByMouse or false
-        self.movementMultiplier = movementMultiplier or 1
+        self.allowMovementByKeyboard = params.allowMovementByKeyboard or false
+        self.allowMovementByMouse = params.allowMovementByMouse or false
+        self.movementMultiplier = params.movementMultiplier or 1
 
         self.forceLeft = 0
         self.forceRight = 0

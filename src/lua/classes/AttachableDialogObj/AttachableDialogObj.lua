@@ -15,39 +15,49 @@ do --open
 
     ---Function Declaration
 
+    --[[
+        defineAttachableDialog({
+            baseObj params,
+            baseObjAttached params,
+            text,           ---What you want to write
+            spacingX,       ---How many pixels between letters
+            spacingY,       ---How many pixels between lines
+            fontScale,      ---Width and height of the font, 1 for normal, 2 for double size
+            timeOnScreen,   ---How long it should stay on screen by frames, -1 if no time is decided
+            framesPerLetter,---Every x frames, write one letter
+            closeKey,       ---Wich key to press to close the dialog
+            pauseGame,      ---Should the game pause when dialog is on screen
+            font,           ---FontObj
+            forceWidth,     ---If wished, a size of the dialog can be defined, NOT RECOMENDED
+            forceHeight,    ---If wished, a size of the dialog can be defined, NOT RECOMENDED
+            backgroundTexture
+        })
+    ]]
+
     function AttachableDialogObj:defineAttachableDialog(
-        text,           ---What you want to write
-        spacingX,       ---How many pixels between letters
-        spacingY,       ---How many pixels between lines
-        fontScale,      ---Width and height of the font, 1 for normal, 2 for double size
-        timeOnScreen,   ---How long it should stay on screen by frames, -1 if no time is decided
-        framesPerLetter,---Every x frames, write one letter
-        closeKey,       ---Wich key to press to close the dialog
-        pauseGame,      ---Should the game pause when dialog is on screen
-        font,           ---FontObj
-        forceWidth,     ---If wished, a size of the dialog can be defined, NOT RECOMENDED
-        forceHeight,    ---If wished, a size of the dialog can be defined, NOT RECOMENDED
-        backgroundTexture
+        params
     )
 
-        self.text = text or "Default Message"
-        self.fontScale = fontScale or 1
+        self:defineBaseObjAttached(params)
+
+        self.text = params.text or "Default Message"
+        self.fontScale = params.fontScale or 1
 
         --2000 = 5s
         --1000 = 2.5s
-        self.timeOnScreen = timeOnScreen or -1
+        self.timeOnScreen = params.timeOnScreen or -1
         if self.timeOnScreen > -1 then
             self.startFrame = globalFrameCounter
             self.endFrame = globalFrameCounter + self.timeOnScreen
         end
-        self.framesPerLetter = framesPerLetter or 100
+        self.framesPerLetter = params.framesPerLetter or 100
 
-        self.closeKey = closeKey or "NONE"
+        self.closeKey = params.closeKey or "NONE"
         self.isClosed = false
-        self.texture = backgroundTexture or 
+        self.texture = params.backgroundTexture or 
             textures.std_menu_background_white_10_10 ---Standard
 
-        self.font = font
+        self.font = params.font
 
         if not self.font then
             stdFont = FontObj:clone()
@@ -55,7 +65,7 @@ do --open
             self.font = stdFont
         end
 
-        self.pauseGame = pauseGame or false
+        self.pauseGame = params.pauseGame or false
 
         self.lines = {}
         self.biggestLine = {    
@@ -64,21 +74,21 @@ do --open
         }
         self:parseLines()
 
-        self.width = forceWidth
-        self.height = forceHeight
-        self.spacingX = spacingX or 5
-        self.spacingY = spacingY or 5
+        self.width = params.forceWidth
+        self.height = params.forceHeight
+        self.spacingX = params.spacingX or 5
+        self.spacingY = params.spacingY or 5
 
         self.spacingX = self.spacingX * self.fontScale
         self.spacingY = self.spacingY * self.fontScale
 
         if not self.width then
-            self.width = (#self.biggestLine * self.font.texture.width) + (self.font.texture.width*3) + (#self.biggestLine * spacingX)
+            self.width = (#self.biggestLine * self.font.texture.width) + (self.font.texture.width*3) + (#self.biggestLine * self.spacingX)
             self.width = self.width * self.fontScale
         end
 
         if not self.height then
-            self.height = (#self.lines * self.font.texture.height) + (self.font.texture.height*3) + (#self.lines * spacingY)
+            self.height = (#self.lines * self.font.texture.height) + (self.font.texture.height*3) + (#self.lines * self.spacingY)
             self.height = self.height * self.fontScale
         end
 

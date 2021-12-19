@@ -31,14 +31,20 @@ do
 
         ---Write the sentence above the
         self.attachedDialog = AttachableDialogObj:clone()
-        self.attachedDialog:defineBaseObjAttached({
+        self.attachedDialog:defineAttachableDialog({
             name = self.description,
             anchor = self,
             offsetX = 0,
-            offsetY = -15
+            offsetY = -15,
+            text = self.description,
+            spacingX = 1,
+            spacingY = 2,
+            fontScale = self.scale,
+            timeOnScreen = -1,
+            framesPerLetter = 1,
+            pauseGame = false,
+            font = self.font,
         })
-
-        self.attachedDialog:defineAttachableDialog(self.description, 1, 2, self.scale, -1 , 1, nil, false, self.font)
         self.attachedDialog:changeSprite(textures.std_empty_10_10)
 
         if stringLength > 1 then
@@ -54,14 +60,19 @@ do
         self.stateWriteIndex = 1
 
         self.attachedInputDialog = AttachableDialogObj:clone()
-        self.attachedInputDialog:defineBaseObjAttached({
+        self.attachedInputDialog:defineAttachableDialog({
             name = self.description,
             anchor = self,
             offsetX = 10,
-            offsetY = 0
+            offsetY = 0,
+            text = self.state,
+            spacingX = 1,
+            spacingY = 2,
+            fontScale = self.scale,
+            timeOnScreen = -1,
+            framesPerLetter = 1,
+            backgroundTexture = textures.std_empty_10_10
         })
-        self.attachedInputDialog:defineAttachableDialog(self.state, 1, 2, self.scale, -1 , 1)
-        self.attachedInputDialog:changeSprite(textures.std_empty_10_10)
 
     end
 

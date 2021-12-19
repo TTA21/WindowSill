@@ -13,46 +13,46 @@ do
         firstLevelMap:defineMap(1500, 1500, "First Level")
 
         obj1 = MovableObj:clone()
-        obj1:defineMovable(
-            {
-                name = "Object1", 
-                texture = textures.bard_16_31_left,
-                posX = 123, 
-                posY = 123
-            }, 
-            true,1,true, {
-            up_still = textures.bard_17_31_up_still,
-            down_still = textures.bard_18_31_down_still,
-            left_still = textures.bard_16_31_left_still,
-            right_still = textures.bard_15_31_right_still,
-            up = textures.bard_17_31_up,
-            down = textures.bard_18_31_down,
-            left = textures.bard_16_31_left,
-            right = textures.bard_16_31_right,
+        obj1:defineMovable({
+            name = "Object1", 
+            texture = textures.bard_16_31_left,
+            posX = 123, 
+            posY = 123,
+            allowMovementByKeyboard = true,
+            hasCollision = true,
+            diretionalTextures = {
+                up_still = textures.bard_17_31_up_still,
+                down_still = textures.bard_18_31_down_still,
+                left_still = textures.bard_16_31_left_still,
+                right_still = textures.bard_15_31_right_still,
+                up = textures.bard_17_31_up,
+                down = textures.bard_18_31_down,
+                left = textures.bard_16_31_left,
+                right = textures.bard_16_31_right,
+            }
         })
-        
+        firstLevelMap:addNamedItemToMiddleGround("Object1", obj1)
         firstLevelMap:addCameraAnchoredTo("Main Camera", obj1)
 
-        firstLevelMap:addNamedItemToMiddleGround("Object1", obj1)
-
         obj2 = MovableObj:clone()
-        obj2:defineMovable(
-            {
-                name = "Object2", 
-                texture = textures.bard_16_31_left, 
-            },
-            false,1,true,{
-            up_still = textures.bard_17_31_up_still,
-            down_still = textures.bard_18_31_down_still,
-            left_still = textures.bard_16_31_left_still,
-            right_still = textures.bard_15_31_right_still,
-            up = textures.bard_17_31_up,
-            down = textures.bard_18_31_down,
-            left = textures.bard_16_31_left,
-            right = textures.bard_16_31_right,
+        obj2:defineMovable({
+            name = "Object2", 
+            texture = textures.bard_16_31_left,
+            allowMovementByKeyboard = false,
+            hasCollision = true,
+            diretionalTextures = {
+                up_still = textures.bard_17_31_up_still,
+                down_still = textures.bard_18_31_down_still,
+                left_still = textures.bard_16_31_left_still,
+                right_still = textures.bard_15_31_right_still,
+                up = textures.bard_17_31_up,
+                down = textures.bard_18_31_down,
+                left = textures.bard_16_31_left,
+                right = textures.bard_16_31_right,
+            }
         })
-        
         firstLevelMap:addNamedItemToBackGround("Object2", obj2)
+        obj2:setGotoPos(444,444)
 
         obj3 = BaseObj:clone()
         obj3:defineBase({
@@ -61,10 +61,7 @@ do
             posX = 321, 
             posY = 312
         })
-
         firstLevelMap:addNamedItemToMiddleGround("Object3", obj3)
-
-        obj2:setGotoPos(444,444)
 
         obj4 = BaseObjAttachedObj:clone()
         obj4:defineBaseObjAttached({
@@ -78,28 +75,45 @@ do
         firstLevelMap:addNamedItemToMiddleGround("Object4", obj4)
 
         obj5 = MovableObjAttachedObj:clone()
-        obj5:defineMovable({name = "Object5", texture = textures.red_square}, false,1,true)
-        obj5:defineMovableObjAttached(obj1, 20,20)
+        obj5:defineMovableObjAttached({
+            name = "Object5",
+            texture = textures.red_square,
+            allowMovementByKeyboard = false,
+            hasCollision = true,
+            anchor = obj1,
+            offsetX = 20,
+            offsetY = 20
+        })
         firstLevelMap:addNamedItemToMiddleGround("Object5", obj5)
 
         dialog1 = AttachableDialogObj:clone()
-        dialog1:defineBaseObjAttached({
+        dialog1:defineAttachableDialog({
             name = "Dialog1",
             anchor = obj1,
             offsetX = 40,
-            offsetY = 40
+            offsetY = 40,
+            text = "Test Message!\n Test Test?",
+            spacingX = 1,
+            spacingY = 2,
+            timeOnScreen = 3000,
+            framesPerLetter = 10,
+            closeKey = "C",
+            pauseGame = true
         })
-        dialog1:defineAttachableDialog("Test Message!\n Test Test?", 1, 2, 1, 3000 , 10, "C", true)
         firstLevelMap:addNamedItemToDialogs("Dialog1", dialog1)
 
         dialog2 = AttachableDialogObj:clone()
-        dialog2:defineBaseObjAttached({
+        dialog2:defineAttachableDialog({
             name = "Dialog2",
             anchor = obj2,
             offsetX = 0,
-            offsetY = -80
+            offsetY = -80,
+            text = "Test Message!\n Test Test?",
+            spacingX = 1,
+            spacingY = 2,
+            framesPerLetter = 10,
+            closeKey = "F"
         })
-        dialog2:defineAttachableDialog("ASDASD()()\nzxczxc", 1, 2, 1, -1, 10, "F")
         firstLevelMap:addNamedItemToDialogs("Dialog2", dialog2)
         
         menuExamp = AttachableMenuObj:clone()

@@ -31,18 +31,19 @@ do
 
         ---Write the sentence besides the button
         self.attachedDialog = AttachableDialogObj:clone()
-        self.attachedDialog:defineBaseObjAttached({
+        self.attachedDialog:defineAttachableDialog({
             name = self.description,
-            anchor = self
+            anchor = self,
+            text = self.description,
+            spacingX = 1,
+            spacingY = 2,
+            fontScale = self.scale,
+            timeOnScreen = -1,
+            framesPerLetter = 1,
+            backgroundTexture = textures.std_empty_10_10
         })
-
-        self.attachedDialog:defineAttachableDialog(self.description, 1, 2, self.scale, -1 , 1)
         self.attachedDialog.offsetY = -((self.attachedDialog.height/2) - self.attachedDialog.font.texture.height/2)
-        self.attachedDialog:changeSprite(textures.std_empty_10_10)
-
-
-        ---Dialog not going away
-        ---Maybe make a simpler dialog obj without background
+        
     end
 
 

@@ -49,14 +49,21 @@ do
 
         ---Write the sentence above the input
         self.attachedDialog = AttachableDialogObj:clone()
-        self.attachedDialog:defineBaseObjAttached({
+        self.attachedDialog:defineAttachableDialog({
             name = self.description,
             anchor = self,
             offsetX = -10,
-            offsetY = -40
+            offsetY = -40,
+            text = self.description,
+            spacingX = 1,
+            spacingY = 2,
+            fontScale = self.scale,
+            timeOnScreen = -1,
+            framesPerLetter = 1,
+            pauseGame = false,
+            font = self.font,
+            backgroundTexture = textures.std_empty_10_10
         })
-        self.attachedDialog:defineAttachableDialog(self.description, 1, 2, self.scale, -1 , 1, nil, false, self.font)
-        self.attachedDialog:changeSprite(textures.std_empty_10_10)
 
         self.state = initialState or 0
 
@@ -82,14 +89,7 @@ do
         self.displayState = displayValueOnSide or false
         if self.displayState then
             ---Write the state value on the side
-            self.attachedStateDialog = AttachableDialogObj:clone()
-            self.attachedStateDialog:defineBaseObjAttached({
-                name = self.description .. "_state",
-                anchor = self,
-                offsetX = 110,
-                offsetY = -17
-            })
-
+            
             stateString = tostring(self.state)
             if self.state < 10 then
                 stateString = "00" .. stateString
@@ -99,8 +99,22 @@ do
                 stateString = "0" .. stateString
             end
 
-            self.attachedStateDialog:defineAttachableDialog(stateString, 1, 2, self.scale, -1 , 1, nil, false, self.font)
-            self.attachedDialog:changeSprite(textures.std_empty_10_10)
+            self.attachedStateDialog = AttachableDialogObj:clone()
+            self.attachedStateDialog:defineAttachableDialog({
+                name = self.description .. "_state",
+                anchor = self,
+                offsetX = 110,
+                offsetY = -17,
+                text = stateString,
+                spacingX = 1,
+                spacingY = 2,
+                fontScale = self.scale,
+                timeOnScreen = -1,
+                framesPerLetter = 1,
+                pauseGame = false,
+                font = self.font,
+                backgroundTexture = textures.std_empty_10_10
+            })
         end
 
     end

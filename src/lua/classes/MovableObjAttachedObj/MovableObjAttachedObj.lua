@@ -15,25 +15,38 @@ do --open
 
     ---Function Declarations
 
-    function MovableObjAttachedObj:defineMovableObjAttached(anchor, offsetX, offsetY)
+    --anchor, offsetX, offsetY
+    --[[
+        defineMovable({
+            baseObj params,
+            movableObj params,
+            anchor,
+            offsetX,
+            offsetY
+        })
+    ]]
+
+    function MovableObjAttachedObj:defineMovableObjAttached(params)
+
+        self:defineMovable(params)
         
         self.noBaseAttached = false
-        if not anchor then
+        if not params.anchor then
             print("ALERT, MovableObjAttachedObj's anchor is nil")
             self.noBaseAttached = true
             return
         end
 
-        if anchor:isa(MovableObj) then
-            self.anchor = anchor
+        if params.anchor:isa(MovableObj) then
+            self.anchor = params.anchor
         else
             print("ALERT, MovableObjAttachedObj's anchor does not contain MovableObj")
             self.noBaseAttached = true
             return
         end
 
-        self.offsetX = offsetX or 0
-        self.offsetY = offsetY or 0
+        self.offsetX = params.offsetX or 0
+        self.offsetY = params.offsetY or 0
 
         self.posX = self.offsetX + self.anchor.posX ---Initial position
         self.posY = self.offsetY + self.anchor.posY ---Initial position

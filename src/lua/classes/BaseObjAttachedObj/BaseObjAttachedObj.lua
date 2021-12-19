@@ -16,7 +16,6 @@ do --open
     function BaseObjAttachedObj:defineBaseObjAttached(params)
         
         self:defineBase(params)
-        --print(params.name)
 
         self.noBaseAttached = false
         if not params.anchor then
