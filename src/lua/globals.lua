@@ -13,6 +13,9 @@ globalDefaultParams = {
     scale = 1,
     hasCollision = true,
     allowRender = true,
+    movementMultiplier = 1,
+    forceCap = 10,
+    forceResistance = 0.5
 }
 
 renderItems = {}        ---used by the engine, do not mess with it directly

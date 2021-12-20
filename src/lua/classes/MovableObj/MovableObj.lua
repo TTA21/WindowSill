@@ -3,15 +3,39 @@ do  --open
     MovableObj = BaseObj:clone()
 
     ---Function Declaration
+    --[[
+        :defineMovable({
+            baseObj params,
+            allowMovementByKeyboard = ,
+            movementMultiplier = ,
+            diretionalTextures = {
+                up_still = textures. ,
+                down_still = textures. ,
+                left_still = textures. ,
+                right_still = textures. ,
+                up = textures. ,
+                down = textures. ,
+                left = textures. ,
+                right = textures. 
+            },
+        })
+    ]]
 
     --[[
-        defineMovable({
-            baseObj params,
-            allowMovementByKeyboard,     ---WASD
-            movementMultiplier,          ---1 = normal speed, 2 = double speed
-            hasCollision,
-            diretionalTextures,         ---One sprite aniation for left, right, up and down
-            hitBox
+        Movable Objects are a derivative of BaseObj, it is very similar to the standard BaseObj but
+        it allows itself to move, applying force in the directions demanded by the desired position.
+
+        It contains a rudimentary collision algorithm, if it detects a collision the force in the 
+        direction of the collision is nullified.
+
+        It also contains a better animation handler, enabling direction animations to be implemented
+        for characters and such.
+
+        :defineMovable({
+            baseObj params,             ---See file 'lua/classes/BaseObj/BaseObj.lua'
+            allowMovementByKeyboard,    ---WASD, temporary
+            movementMultiplier,         ---1 = normal speed, 2 = double speed
+            diretionalTextures,         ---One sprite animation for left, right, up and down; when moving and when still
         })
     ]]
 
@@ -19,8 +43,23 @@ do  --open
         params
     )
         self:defineBase(params)
-        self.hasCollision = params.hasCollision or false
 
+        self.allowMovementByKeyboard = params.allowMovementByKeyboard or false  ---TO BE REMOVED
+        
+        self.forceLeft = 0
+        self.forceRight = 0
+        self.forceUp = 0
+        self.forceDown = 0
+
+        self.gotoX = self.posX  ---Goto this position
+        self.gotoY = self.posY  ---Goto this position
+        self.currentlyMovingByScript = false    ---See function 'setGotoPos()'
+
+        self.lastMoveDirection = 1  --0 up, 1 down, 2 left, 3 right
+
+        self.forceCap = globalDefaultParams.forceCap  ---Number of pixels the object will move after letting go
+
+        ---If no directionalTexture provided, the BaseObj's texture will be used on all cases.
         if params.diretionalTextures then
             self.diretionalTextures = params.diretionalTextures
             self.diretionalTextures = {
@@ -46,6 +85,7 @@ do  --open
             }
         end
 
+        ---If no hitBox provided, create one with a third the height and at the bottom of the sprite.
         if params.hitBoxObj then
             self.hitBox = params.hitBoxObj
         else
@@ -58,27 +98,19 @@ do  --open
             })
             self.hitBox = hitBox
         end
+
+        ---The limit of the movement multiplier is 0 <= x <= 5
+        self.movementMultiplier = params.movementMultiplier or globalDefaultParams.movementMultiplier
+        if self.movementMultiplier < 0 then
+            self.movementMultiplier = 0
+        elseif self.movementMultiplier > 5 then
+            self.movementMultiplier = 5
+        end
             
-        self.allowMovementByKeyboard = params.allowMovementByKeyboard or false
-        self.allowMovementByMouse = params.allowMovementByMouse or false
-        self.movementMultiplier = params.movementMultiplier or 1
-
-        self.forceLeft = 0
-        self.forceRight = 0
-        self.forceUp = 0
-        self.forceDown = 0
-
-        self.gotoX = self.posX  ---Goto this position
-        self.gotoY = self.posY
-        self.currentlyMovingByScript = false
-
-        self.lastMoveDirection = 1  --0 up, 1 down, 2 left, 3 right
-
-        self.forceCap = 10  ---Number of pixels the object will move after letting go
-        
     end
 
     --[[
+        *********WILL BE REMOVED LATER**************
         Extremely Basic movement, it is expected of the game dev to create a hero class to
         implement more complex design for their game
     ]]--
@@ -118,10 +150,16 @@ do  --open
     end
 
     --[[
+        **********************MEANT TO BE CALLED EVERY FRAME**********************
         Takes force values and translates them to movement
     ]]--
     function MovableObj:exertForce()
 
+        --[[
+            The movement occurs by determining if in this frame the position will change,
+            if the force is above 0 the movement can occur.
+            If the movement multiplier is high, the chance that move will happen will be higher.
+        ]]
         if math.floor(self.forceUp) > 0 then
             if (globalFrameCounter % math.abs(math.floor(5-self.movementMultiplier)) ) == 0 then
                 self.posY = self.posY - 1
@@ -146,42 +184,47 @@ do  --open
             end
         end
 
-        --self:updateSprite()
     end
 
     --[[
+        **********************MEANT TO BE CALLED EVERY FRAME**********************
         Force must run out eventually, call it after force has been exerted
     ]]--
     function MovableObj:exertResistance()
 
 
         if math.floor(self.forceUp) > 0 then
-            self.forceUp = self.forceUp - 0.5
+            self.forceUp = self.forceUp - globalDefaultParams.forceResistance
         end
 
         if math.floor(self.forceDown) > 0 then
-            self.forceDown = self.forceDown - 0.5
+            self.forceDown = self.forceDown - globalDefaultParams.forceResistance
         end
 
         if math.floor(self.forceLeft) > 0 then
-            self.forceLeft = self.forceLeft - 0.5
+            self.forceLeft = self.forceLeft - globalDefaultParams.forceResistance
         end
 
         if math.floor(self.forceRight) > 0 then
-            self.forceRight = self.forceRight - 0.5
+            self.forceRight = self.forceRight - globalDefaultParams.forceResistance
         end
     end
 
     --[[
+        **********************MEANT TO BE CALLED EVERY FRAME**********************
         Changes sprite based on the force the object is exerting
     ]]
     function MovableObj:updateSprite()
-        if  (self.forceUp > 0.5) or 
-            (self.forceDown > 0.5) or  
-            (self.forceLeft > 0.5) or 
-            (self.forceRight > 0.5)
+        if  (self.forceUp > globalDefaultParams.forceResistance) or 
+            (self.forceDown > globalDefaultParams.forceResistance) or  
+            (self.forceLeft > globalDefaultParams.forceResistance) or 
+            (self.forceRight > globalDefaultParams.forceResistance)
             then
                 
+                --- 0.5 here is a token value, this conditional serves to not let the 
+                --- sprite spazz out when horizontal and vertical forces are being applied at the same
+                --- time.
+                --- The conditional favors vertical animations
                 if not (self.forceLeft > 0.5 or self.forceRight > 0.5) then
                     ---Moving Up
                     if self.lastMoveDirection == 0 then
@@ -237,7 +280,8 @@ do  --open
     end
 
     --[[
-        Called by the dev, the object tries to go to the position on the map +- 1 pixel
+        Called by the dev, the object tries to go to the position on the map +- 1 pixel.
+        Very useful for NPC's and more animated game worlds
     ]]
     function MovableObj:setGotoPos(posX, posY)
         self.gotoX = posX
@@ -246,8 +290,11 @@ do  --open
     end
 
     --[[
+        **********************MEANT TO BE CALLED EVERY FRAME**********************
         Meant to be called by the map loop, moves in the direction of the desired coordinates
-        set by 'setGotoPos' +- 1 pixel
+        set by 'setGotoPos' +- 1 pixel.
+        Mind that if it has collision on, it will not go around obstacles, derivatives of this
+        object will implement path finding algorithms, this is a basic movement script.
     ]]
     function MovableObj:moveToPos()
         if self.currentlyMovingByScript then

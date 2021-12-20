@@ -9,7 +9,6 @@ do  ---open
             posY = ,
             scale = ,
             prority = ,
-            hitBoxObj = ,
             alpha = ,
             animStage = ,
             numAnimationStages = ,
@@ -19,6 +18,13 @@ do  ---open
             numFramesPerAnimationStage = ,
             localFrameCounter = ,
             allowRender = ,
+            hitBoxObj = {
+                posX =  ,
+                posY =  ,
+                width =  ,
+                height =  ,
+                anchor =  ,
+            },
             onBaseObjUpdate = (
                 function (this) 
 
