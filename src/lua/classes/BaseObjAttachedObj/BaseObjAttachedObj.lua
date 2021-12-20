@@ -66,4 +66,24 @@ do --open
         self.posY = (self.anchor.posY + self.offsetY)
     end
 
+    --[[
+        For debugging purposes
+    ]]
+    function BaseObj:debug_printBaseObjAttachedObj(closure, funcName)
+        if not funcName then
+            funcName = "debug_printBaseObjAttachedObj"
+        end
+        
+        self:debug_printBaseObj(
+            (function (indent)
+                print(indent .. "offsets : " .. self.offsetX .. "   " .. self.offsetY)
+                print(indent .. "anchor name = " .. self.anchor.name .. " | anchor global Id = " .. self.anchor.globalId)
+                if closure then
+                    closure(indent)
+                end
+            end),
+            funcName
+        )
+    end
+
 end --close

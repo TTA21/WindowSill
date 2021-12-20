@@ -18,6 +18,7 @@ do
             texture = textures.bard_16_31_left,
             posX = 123, 
             posY = 123,
+            scale = 2,
             allowMovementByKeyboard = true,
             hasCollision = true,
             diretionalTextures = {
@@ -73,7 +74,6 @@ do
             posY = 312
         })
         firstLevelMap:addNamedItemToMiddleGround("Object3", obj3)
-        obj3:debug_printBaseObj()
 
         obj4 = BaseObjAttachedObj:clone()
         obj4:defineBaseObjAttached({

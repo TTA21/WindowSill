@@ -279,15 +279,22 @@ do  ---open
     --[[
         For debugging purposes
     ]]
-    function BaseObj:debug_printBaseObj()
+    function BaseObj:debug_printBaseObj(closure, funcName)
+        indent = "\t"
+        if not funcName then
+            funcName = "debug_printBaseObj"
+        end
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        print("\tdebug_printBaseObj called at frame " .. globalFrameCounter)
-        print("\tname = " .. self.name .. " : globalId = " .. self.globalId)
-        print("\trenderObj objId = " .. self.renderObj.objId)
-        print("\ttexture id = " .. self.texture.identifier .. " : path = " .. self.texture.spritePath)
-        print("\tposition : " .. self.posX .. "  " .. self.posY .. " | scale = " .. self.scale)
-        print("\tpriority = " .. self.priority .. " | hasCollision = " .. tostring(self.hasCollision))
-        print("\tallowRender = " .. tostring(self.allowRender) .. " | numFramesPerAnimStage = " .. self.numFramesPerAnimationStage )
+        print(indent .. funcName .. " called at frame " .. globalFrameCounter)
+        print(indent .."name = " .. self.name .. " : globalId = " .. self.globalId)
+        print(indent .."renderObj objId = " .. self.renderObj.objId)
+        print(indent .."texture id = " .. self.texture.identifier .. " : path = " .. self.texture.spritePath)
+        print(indent .."position : " .. self.posX .. "  " .. self.posY .. " | scale = " .. self.scale)
+        print(indent .."priority = " .. self.priority .. " | hasCollision = " .. tostring(self.hasCollision))
+        print(indent .."allowRender = " .. tostring(self.allowRender) .. " | numFramesPerAnimStage = " .. self.numFramesPerAnimationStage )
+        if closure then
+            closure(indent)
+        end
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     end
 
