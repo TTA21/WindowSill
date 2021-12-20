@@ -1,88 +1,117 @@
 do  --open
 
-    --[[
-        xxxxxxxxx
-        x       x   A = anchor, the obj the player is interested in
-        x       x   x = borders
-        x   A   x   distance borders to anchor = [width/2][height/2]
-        x       x   anything outside borders has 'allowRender = false'
-        x       x   converts positions on the map to positions on the screen, 
-        xxxxxxxxx       thats the purpose of the camera
-    ]]--
+    --CameraObj | Class Declaration
 
-    --A camera can anchor to anything that has a posX and posY
+    --[[
+        :anchorTo(
+            --anchor,
+            --cameraName
+        )
+    ]]
+
+    --[[
+        Cameras serve to display the map, it is anchored to a BaseObj or a derivative.
+        It also convinently does render reorders to keep visual aberrations to a minimum.
+
+        There can be multiple cameras, aswell as multiple active cameras if one wants some special effects.
+
+        Undefined behaviour of the camera is unanchored.
+
+        Note that camera's do not have define's, it is created and immediatly anchored to something
+        :anchorTo(
+            --anchor,       --BaseObj or its derivatives
+            --cameraName    --For debugging purposes
+        )
+
+        Render priority follows the following sequence:
+        --priority_0 --Letters of Dialogs and menus
+        --priority_1 --Dialogs and menus
+        --priority_2 --ForeGround
+        --priority_3 --Middle Ground
+        --priority_4 --BackGround
+    ]]
 
     CameraObj = object:clone()
-
-    ---Data Declaration
-
-    CameraObj.width = windowOptions.width
-    CameraObj.height = windowOptions.height
-
-    CameraObj.anchor = nil
-
-    CameraObj.pointA = {}
-
-    CameraObj.pointB = {}
-
-    CameraObj.cameraId = -1
-
-    CameraObj.currentCam = false
-    CameraObj.name = "Give This Camera A Name Please"
 
     ---Function Declarations
 
     function CameraObj:anchorTo(
         anchor, cameraName
     )
+
+        self.cameraId = newGlobalId()
+
+        ---Undefined behaviour of the camera is unanchored.
+        self.anchor = anchor or nil
+
+        ---Immediately set to false, if none changed the game will never have an active camera
+        self.currentCam = false
+
+        ---Name for debugging purposes
+        self.name = cameraName or "Give This Camera A Name Please"
+
+        ---This can be changed after the class definition if wanted
         self.width = windowOptions.width
         self.height = windowOptions.height
 
-        self.anchor = anchor or nil
-
+        ---Points used to calculate relative positions on the map
         self.pointA = {
             X = self.anchor.posX - (self.width/2),
             Y = self.anchor.posY - (self.height/2),
         }
-
         self.pointB = {
             X = self.anchor.posX + (self.width/2),
             Y = self.anchor.posY + (self.height/2),
         }
-
-        self.cameraId = globalIdCounter
-        globalIdCounter = globalIdCounter+1
-
-        self.currentCam = false
-        self.name = cameraName or "Give This Camera A Name Please"
+        
     end
 
     --[[
-        Expected to be called every frame, serves to update what the camera sees based
-        on the anchor's new postion, leave it uncalled and the screen never updates
+        ************************Expected to be called every frame************************
+        Update the camera position based on the anchor object, cant have the camera sitting still
+        while the character moves.
 
-        You can have multiple cameras
+        For the sake of not having to calculate the new positions of inactive cameras,
+        the arithmetic is only done on the active ones. Might change later
     ]]--
     function CameraObj:updateCameraPos()
  
         if self.currentCam == true then
 
-            self.pointA.X = self.anchor.posX - (self.width/2) + (self.anchor.texture.width/2)
-            self.pointA.Y = self.anchor.posY - (self.height/2) + (self.anchor.texture.height/2)
+            --[[
+                To get the caera to the center of the sprite,
 
+                -   Start by getting the 0,0 if the anchor, the subtract by half the camera width,
+                        that will put you in the center of the sprite's 0,0.
+
+                -   However the texture does not have a 0 size width, as such simply add half the sprites
+                        width to the position, that will put you in the very middle of the sprite's position
+            ]]
+
+            self.pointA.X = self.anchor.posX - (self.width/2) + ((self.anchor.texture.width/2) * self.anchor.scale)
+            self.pointA.Y = self.anchor.posY - (self.height/2) + (self.anchor.texture.height/2 * self.anchor.scale)
+
+            --[[
+                Point A is the top left corner, Point B is the bottom right corner
+            ]]
             self.pointB.X = self.pointA.X + self.width
             self.pointB.Y = self.pointA.Y + self.height
 
         end
-        
 
     end
 
 
     --[[
-        Expected to be called every frame.
-        Renders whatever the camera sees on a MapObj table, only one camera should be rendering at any one time
+        ************************Expected to be called every frame************************
+        
+        Renders whatever the camera sees on a MapObj table, only one camera should be rendering at any one time unless
+        you know what youre doing.
 
+        MapObj table is expected to be a table of BaseObj's or its derivatives.
+
+        The camera simply dictates what sprites should be rendered by Rust's SDL, if the referenced
+        RenderObj has isOnCamera=true, then rust will render it at the position the camera calculated.
     ]]--
     function CameraObj:renderTable(table)
 
@@ -90,9 +119,11 @@ do  --open
             
             for index, baseObj in pairs(table) do
                 
+                --Calculate the position on the screen based on the position on the map
                 screenX = baseObj.posX - self.pointA.X
                 screenY = baseObj.posY - self.pointA.Y
 
+                --Check if it would appear on the screen and set isOnCamera accordingly
                 if  (screenX >= (-1 - (baseObj.texture.width * baseObj.scale))) and (screenX <= self.width+1) and
                     (screenY >= (-1 - baseObj.texture.height * baseObj.scale)) and (screenY <= self.height+1)
                 then
@@ -101,6 +132,7 @@ do  --open
                     baseObj:updateIsOnCamera(false)
                 end
 
+                --Update the renderObj properties if they changed between frames (animations)
                 baseObj:updateRenderObjCommon(screenX, screenY)
 
             end
@@ -117,33 +149,15 @@ do  --open
     end
 
     --[[
-        Generate render objects the camera can see in order of posY in the currentCameraRenderItems.
-        Usually called after renderTable
-    ]]
-    function CameraObj:renderReorderPosY()
-        itemsToRender = {}
-        for i, rendObj in pairs(renderItems) do
-            if rendObj.allowRender and renderObj.isOnCamera then
-                itemsToRender[#itemsToRender+1] = rendObj
-            end
-        end
-
-        table.sort(itemsToRender, 
-            function(a,b) 
-                return (a.posY + a.referencingObj.texture.height*a.referencingObj.scale) < 
-                (b.posY + b.referencingObj.texture.height*b.referencingObj.scale)
-            end
-        )
-        currentCameraRenderItems = itemsToRender
-
-    end
-
-    --[[
         Orders based on PosY for items with the same priority, but places items with
         higher priority first.
         Mind that priority 0 is the highest priority
+
+        TODO: make this presentable, genius.
     ]]
     function CameraObj:renderReorderPriority()
+
+        --Get the items that are allowed to render
         itemsToRender = {}
         for i, rendObj in pairs(renderItems) do
             if rendObj.allowRender == true then
@@ -151,6 +165,8 @@ do  --open
             end
         end
 
+        --Sort them based on the Y position. In simple terms, items that are 'closer' to the camera
+        --  have a higher Y value, as such they should be rendered last to be on top of everything.
         table.sort(itemsToRender, 
             function(a,b) 
                 return (a.posY + a.referencingObj.texture.height*a.referencingObj.scale) < 
@@ -158,6 +174,9 @@ do  --open
             end
         )
 
+        --However some items are on top of other even if their Y positions are bigger, as such they
+        --  should be ordered. Rust recieves an array of items to render, and it will render them in
+        --  the order it recieves, it is this functions job to order them correctly.
         priority_0 = {} --Letters of said Dialogs and menus
         priority_1 = {} --Dialogs and menus
         priority_2 = {} --ForeGround
