@@ -3,7 +3,7 @@ globalIdCounter = 0     ---Used to create unique id's
 function newGlobalId()
     --print("ALERT, new item at added at frame " .. globalFrameCounter .." : " .. globalIdCounter)
     globalIdCounter = globalIdCounter + 1
-    return globalIdCounter - 1
+    return (globalIdCounter - 1)
 end
 
 globalDefaultParams = {

@@ -30,7 +30,7 @@ do
                 left = textures.bard_16_31_left,
                 right = textures.bard_16_31_right,
             },
-            onCollisionDetection = (
+            onBaseObjCollisionDetection = (
                 ---Sideways collision disbled for the test
                 function (this, directions) 
                     if directions.upHit == false then
@@ -73,6 +73,7 @@ do
             posY = 312
         })
         firstLevelMap:addNamedItemToMiddleGround("Object3", obj3)
+        obj3:debug_printBaseObj()
 
         obj4 = BaseObjAttachedObj:clone()
         obj4:defineBaseObjAttached({

@@ -34,8 +34,7 @@ do  --open
         isOnCamera
     )
 
-        self.objId = globalIdCounter
-        globalIdCounter = globalIdCounter + 1
+        self.objId = newGlobalId()
         self.texture = texture or {}
         self.textureId = texture.identifier or nil
         self.posX = posX or 0

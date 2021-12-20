@@ -19,7 +19,26 @@ do  ---open
             numFramesPerAnimationStage = ,
             localFrameCounter = ,
             allowRender = ,
-            onUpdate = (function (this) end),
+            onBaseObjUpdate = (
+                function (this) 
+
+                end
+            ),
+            onBaseObjCollisionDetection = (
+                function (this, directions) 
+
+                end
+            ),
+            onBaseObjConstructorStart = (
+                function (this) 
+                
+                end
+            ),
+            onBaseObjConstructorEnd = (
+                function (this) 
+
+                end
+            ),
         })
     ]]
 
@@ -44,9 +63,11 @@ do  ---open
             numFramesPerAnimationStage = ,      ---Every n frames, change animation frame
             localFrameCounter = ,               ---Used for the parameter above, leave it alone if ou dont know what it does
             allowRender = ,                     ---True if you want it to render,equivalento to having an alfa of 0, does not affect scripts
-            onUpdate = (function (this) end),   ---Closure, every time the baseObj's update is called, this function is called, recieves self
-            onCollisionDetection = (function (this, directions) end),       ---Closure, if the object has collision on, during every update it will be tested,
-                                                                            ---if no closure provided, standard test will be performed with the collision data
+            onBaseObjUpdate = (function (this) end),                                ---Closure, every time the baseObj's update is called, this function is called, recieves self
+            onBaseObjCollisionDetection = (function (this, directions) end),        ---Closure, if the object has collision on, during every update it will be tested,
+                                                                                    ---if no closure provided, standard test will be performed with the collision data
+            onBaseObjConstructorStart = (function (this) end),  ---Closure, called at the beggining of the 'defineBase' function
+            onBaseObjConstructorEnd = (function (this) end),    ---Closure, called at the end of the 'defineBase' function
 
         })
 
@@ -64,6 +85,11 @@ do  ---open
     function BaseObj:defineBase(params)
 
         self.globalId = newGlobalId()
+
+        ---Optional construtor closure
+        if params.onBaseObjConstructorStart then
+            params.onBaseObjConstructorStart(self)
+        end
 
         self.allowRender = params.allowRender or globalDefaultParams.allowRender
         self.animStage = params.animStage or 0
@@ -103,15 +129,15 @@ do  ---open
         end
         
         ---If no closure is provided in params, the obj will assume no function should be called
-        if params.onUpdate then
-            self.onUpdate = params.onUpdate
+        if params.onBaseObjUpdate then
+            self.onUpdate = params.onBaseObjUpdate
         else
             self.onUpdate = function (this) end
         end
 
         ---If no closure provided in params, the side that has collided will have its force nullified
-        if params.onCollisionDetection then
-            self.onCollisionDetection = params.onCollisionDetection
+        if params.onBaseObjCollisionDetection then
+            self.onCollisionDetection = params.onBaseObjCollisionDetection
         else
             self.onCollisionDetection = (
                 function (this, directions)   ---default closure
@@ -148,6 +174,11 @@ do  ---open
             self.isOnCamera
         )
         renderItems[#renderItems+1] = self.renderObj
+
+        ---Optional construtor closure
+        if params.onBaseObjConstructorEnd then
+            params.onBaseObjConstructorEnd(self)
+        end
 
     end
 
@@ -244,6 +275,21 @@ do  ---open
         self.renderObj.priority = self.priority
 
     end 
+
+    --[[
+        For debugging purposes
+    ]]
+    function BaseObj:debug_printBaseObj()
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("\tdebug_printBaseObj called at frame " .. globalFrameCounter)
+        print("\tname = " .. self.name .. " : globalId = " .. self.globalId)
+        print("\trenderObj objId = " .. self.renderObj.objId)
+        print("\ttexture id = " .. self.texture.identifier .. " : path = " .. self.texture.spritePath)
+        print("\tposition : " .. self.posX .. "  " .. self.posY .. " | scale = " .. self.scale)
+        print("\tpriority = " .. self.priority .. " | hasCollision = " .. tostring(self.hasCollision))
+        print("\tallowRender = " .. tostring(self.allowRender) .. " | numFramesPerAnimStage = " .. self.numFramesPerAnimationStage )
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    end
 
     --[[
         To be overriden, in principle this should never be called, but hey, just in case
