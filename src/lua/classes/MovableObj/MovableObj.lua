@@ -1,5 +1,7 @@
 do  --open
 
+    --MovableObj | Class Declaration
+
     MovableObj = BaseObj:clone()
 
     ---Function Declaration
