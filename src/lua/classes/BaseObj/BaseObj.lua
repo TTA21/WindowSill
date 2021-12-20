@@ -112,12 +112,11 @@ do  ---open
             self.hitBox = params.hitBoxObj
         else
             hitBox = HitBoxObj:clone()
-            hitBox:defineHitBox(
-                0, 0, 
-                self.texture.width * self.scale, 
-                self.texture.height * self.scale, 
-                self
-            )
+            hitBox:defineHitBox({
+                width = self.texture.width,
+                height = self.texture.height,
+                anchor = self ,
+            })
             self.hitBox = hitBox
         end
     

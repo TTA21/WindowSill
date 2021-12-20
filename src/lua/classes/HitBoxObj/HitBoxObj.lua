@@ -1,49 +1,57 @@
 
 do --open
 
-    ---Note Movable obj will have access to keyboard and mouse, and will have attached hitbox
-    ---will also have collision
+    --[[
+        :defineHitBox({
+            posX =  ,
+            posY =  ,
+            width =  ,
+            height =  ,
+            anchor =  ,
+        })
+    ]]
 
     --[[
-            HitBoxObj holds the more 'sophisticated' hitbox data, hitboxes serve to make the characters less flat
-            by making the bottom part, or the 'shadow' of the sprite the actual hitbox.
-            The posX, posY, hitBoxWidth, hitBoxHeight are the 'shadow'. posX and posY are relative
-            to the sprite, not the map.
+        HitBoxObj holds the more 'sophisticated' hitbox data, hitboxes serve to make the characters less flat
+        by making the bottom part, or the 'shadow' of the sprite the actual hitbox.
+        The posX, posY, hitBoxWidth, hitBoxHeight are the 'shadow'. posX and posY are relative
+        to the sprite, not the map.
 
-            sss
-            sss     s = sprite
-            sss     S = shadow, S is the hitbox, s can clip through things, S cannot
-            SSS
+        sss
+        sss     s = sprite
+        sss     S = shadow, S is the hitbox, s can clip through things, S cannot
+        SSS
+
+        :defineHitBox({
+            posX =  ,   ---Cartesian X axis position relative to the srite, works very much like BaseObjAttached
+            posY =  ,   ---Cartesian Y axis position relative to the srite, works very much like BaseObjAttached
+            width =  ,    ---The hitbox width, usually the sprite's width
+            height =  ,   ---The hitbox height, usually the sprite's height or height/3
+            anchor =  ,         ---BaseObj or its derivatives
+        })
     ]]--
 
     HitBoxObj = object:clone()
 
-    ---Data Declaration
-
-    HitBoxObj.posX = 0
-    HitBoxObj.posY = 0
-    HitBoxObj.hitBoxWidth =  0
-    HitBoxObj.hitBoxHeight = 0
-    HitBoxObj.anchor = {}
-    HitBoxObj.scale = 1
-
     ---Function Declaration
 
-    function HitBoxObj:defineHitBox(
-        posX,           ---Relative to Sprite
-        posY,           ---Relative to Sprite
-        hitBoxWidth,    ---Relative to Sprite
-        hitBoxHeight,   ---Relative to Sprite
-        anchor,          ---BaseObj or MovableObj, used to get posX and posY of this anchor
-        scale           ---Relative to Sprite
-    )
+    function HitBoxObj:defineHitBox(params)
 
-        self.posX = posX or 0
-        self.posY = posY or 0
-        self.hitBoxWidth = hitBoxWidth or 0
-        self.hitBoxHeight = hitBoxHeight or 0
-        self.anchor = anchor or {}
-        self.scale = scale or 1
+        self.globalId = newGlobalId()
+
+        if params.anchor then
+            self.anchor = params.anchor
+            self.scale = params.anchor.scale
+        else
+            print("ALERT! defineHitBox called with no anchor at frame " .. globalFrameCounter)
+            self.anchor = nil
+            self.scale = 0
+        end
+
+        self.posX = params.posX or 0
+        self.posY = params.posY or 0
+        self.hitBoxWidth = (params.width or 0) * self.scale
+        self.hitBoxHeight = (params.height or 0) * self.scale
 
     end
 

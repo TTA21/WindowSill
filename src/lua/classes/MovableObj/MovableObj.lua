@@ -50,13 +50,12 @@ do  --open
             self.hitBox = params.hitBoxObj
         else
             hitBox = HitBoxObj:clone()
-            hitBox:defineHitBox(
-                0, 
-                (self.texture.height - self.texture.height/3)*self.scale, 
-                self.texture.width*self.scale, 
-                (self.texture.height/3)*self.scale, 
-                self
-            )
+            hitBox:defineHitBox({
+                posY = (self.texture.height - self.texture.height/3)*self.scale ,
+                width = self.texture.width ,
+                height = (self.texture.height/3) ,
+                anchor = self ,
+            })
             self.hitBox = hitBox
         end
             
