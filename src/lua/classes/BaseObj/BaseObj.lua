@@ -19,6 +19,7 @@ do  ---open
             numFramesPerAnimationStage = ,
             localFrameCounter = ,
             allowRender = ,
+            onUpdate = (function (this) end),
         })
     ]]
 
@@ -43,7 +44,9 @@ do  ---open
             numFramesPerAnimationStage = ,      ---Every n frames, change animation frame
             localFrameCounter = ,               ---Used for the parameter above, leave it alone if ou dont know what it does
             allowRender = ,                     ---True if you want it to render,equivalento to having an alfa of 0, does not affect scripts
-            onUpdate = (function (this) end),   ---Closure, every time the baseObj's update is called, this function is called
+            onUpdate = (function (this) end),   ---Closure, every time the baseObj's update is called, this function is called, recieves self
+            onCollisionDetection = (function (this, directions) end),       ---Closure, if the object has collision on, during every update it will be tested,
+                                                                            ---if no closure provided, standard test will be performed with the collision data
 
         })
 
@@ -58,16 +61,27 @@ do  ---open
 
     ---Function Declaration
 
-    function BaseObj:defineBase(
-        params  ---The parameters object
-    )
-        self.texture = params.texture or textures.std_menu_background_white_10_10
+    function BaseObj:defineBase(params)
+
+        self.globalId = newGlobalId()
+
+        self.allowRender = params.allowRender or globalDefaultParams.allowRender
+        self.animStage = params.animStage or 0
+        self.alpha = params.alpha or globalDefaultParams.alpha
+        self.hasCollision = params.hasCollision or globalDefaultParams.hasCollision
+        self.isOnCamera = false
+        self.localFrameCounter = params.localFrameCounter or 0
+        self.name = params.name or globalDefaultParams.baseObjName
+        self.numFramesPerAnimationStage = params.numFramesPerAnimationStage
+            or globalDefaultParams.numFramesPerAnimationStage
+        self.pauseAnimation = params.pauseAnimation or false
         self.posX = params.posX or 1
         self.posY = params.posY or 1
+        self.priority = params.priority or 4  
         self.scale = params.scale or globalDefaultParams.scale
+        self.texture = params.texture or textures.std_menu_background_white_10_10
         
-        self.priority = params.priority or 4   
-
+        ---If hitbox not declared in params, the hitbox will be generated as the whole sprite
         if params.hitBoxObj then
             self.hitBox = params.hitBoxObj
         else
@@ -80,37 +94,45 @@ do  ---open
             )
             self.hitBox = hitBox
         end
-
-        
-        self.alpha = params.alpha or globalDefaultParams.alpha
     
-        self.globalId = newGlobalId()
-    
-        self.name = params.name or globalDefaultParams.baseObjName
-        self.hasCollision = params.hasCollision or globalDefaultParams.hasCollision
-    
+        ---If no number of animation stages not decalred in params, the obj will assume the parameter in global textures array
         if self.texture then
             self.numAnimationStages = params.numAnimationStages or self.texture.numAnimationStages
         else
             self.numAnimationStages = params.numAnimationStages or 0
         end
         
-        self.animStage = params.animStage or 0
-        self.pauseAnimation = params.pauseAnimation or false
-        self.numFramesPerAnimationStage = params.numFramesPerAnimationStage or globalDefaultParams.numFramesPerAnimationStage
-        self.localFrameCounter = params.localFrameCounter or 0
-
-        self.allowRender = params.allowRender or globalDefaultParams.allowRender
-        self.isOnCamera = false   ---For cameraObj
-
+        ---If no closure is provided in params, the obj will assume no function should be called
         if params.onUpdate then
             self.onUpdate = params.onUpdate
         else
             self.onUpdate = function (this) end
         end
 
-        self.renderObj = RenderObj:clone()
+        ---If no closure provided in params, the side that has collided will have its force nullified
+        if params.onCollisionDetection then
+            self.onCollisionDetection = params.onCollisionDetection
+        else
+            self.onCollisionDetection = (
+                function (this, directions)   ---default closure
+                    if directions.upHit == false then
+                        this.forceUp = 0
+                    end
+                    if directions.downHit == false then
+                        this.forceDown = 0
+                    end
+                    if directions.leftHit == false then
+                        this.forceLeft = 0
+                    end
+                    if directions.rightHit == false then
+                        this.forceRight = 0
+                    end
+                end
+            )
+        end
 
+        ---Render obj declaration
+        self.renderObj = RenderObj:clone()
         self.renderObj:new(
             self.texture,
             self.posX,          
@@ -139,39 +161,44 @@ do  ---open
     ]]--
     function BaseObj:updateRenderObjCommon(x,y)
 
-        --self.renderObj.textureId = self.texture.identifier
+        ---Update intrinsics
         self.renderObj:changeSprite(self.texture)
         self.renderObj.posX = x or self.posX
         self.renderObj.posY = y or self.posY
         self.renderObj.scale = self.scale
         self.renderObj.alpha = self.alpha
         self.renderObj.allowRender = self.allowRender
+
+        ---Animation handling
+        self.renderObj.animStage = self.animStage
         if self.pauseAnimation == false then
-            self.renderObj.animStage = self.animStage
-        
             if self.localFrameCounter < self.numFramesPerAnimationStage then
                 self.localFrameCounter = self.localFrameCounter + 1
             else
                 self.localFrameCounter = 0
-                
                 if self.animStage < self.numAnimationStages then
                     self.animStage = self.animStage + 1
                 else
                     self.animStage = 0
-                end
-
-            end
-        else
-            self.renderObj.animStage = self.animStage
-        end
+                end ---self.animStage < self.numAnimationStages
+            end ---self.localFrameCounter < self.numFramesPerAnimationStage
+        end ---self.pauseAnimation == false
 
     end
 
+    --[[
+        Changes the sprite and hitbox dimensions
+    ]]
     function BaseObj:changeDimensions(width, height)
-        self.renderObj.width = width or self.renderObj.width
-        self.renderObj.height = height or self.renderObj.height
+        self.renderObj.width = (width or self.renderObj.width) * self.scale
+        self.renderObj.height = (height or self.renderObj.height) * self.scale
+        self.hitBox.hitBoxWidth = (width or self.renderObj.width) * self.scale
+        self.hitBox.hitBoxHeight = (height or self.renderObj.height) * self.scale
     end
 
+    --[[
+        Used internalyy by the CameraObj
+    ]]
     function BaseObj:updateIsOnCamera(state)
         self.isOnCamera = state
         self.renderObj.isOnCamera = state
@@ -188,23 +215,10 @@ do  ---open
     end
 
     --[[
-        Directions are the returning array from checkCollisionDirection
+        Directions are the returning array from checkCollisionDirection, false if collided
     ]]
     function BaseObj:dealWithCollision(directions)
-
-        if directions.upHit == false then
-            self.forceUp = 0
-        end
-        if directions.downHit == false then
-            self.forceDown = 0
-        end
-        if directions.leftHit == false then
-            self.forceLeft = 0
-        end
-        if directions.rightHit == false then
-            self.forceRight = 0
-        end
-
+        self.onCollisionDetection(self, directions)
     end 
 
     --[[
@@ -216,7 +230,7 @@ do  ---open
         self.texture = sprite or self.texture
         self.renderObj.width = self.texture.width
         self.renderObj.height = self.texture.height
-        self.numAnimationStages = sprite.numAnimationStages
+        self.numAnimationStages = sprite.numAnimationStages or self.texture.numAnimationStages
         self.numFramesPerAnimationStage = framesPerAnim or self.numFramesPerAnimationStage
 
     end 
@@ -235,6 +249,7 @@ do  ---open
         To be overriden, in principle this should never be called, but hey, just in case
     ]]
     function BaseObj:update() 
+        print("BaseObj update called!")
         self.onUpdate(self)
     end
 

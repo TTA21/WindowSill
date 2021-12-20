@@ -29,7 +29,18 @@ do
                 down = textures.bard_18_31_down,
                 left = textures.bard_16_31_left,
                 right = textures.bard_16_31_right,
-            }
+            },
+            onCollisionDetection = (
+                ---Sideways collision disbled for the test
+                function (this, directions) 
+                    if directions.upHit == false then
+                        this.forceUp = 0
+                    end
+                    if directions.downHit == false then
+                        this.forceDown = 0
+                    end
+                end
+            )
         })
         firstLevelMap:addNamedItemToMiddleGround("Object1", obj1)
         firstLevelMap:addCameraAnchoredTo("Main Camera", obj1)
