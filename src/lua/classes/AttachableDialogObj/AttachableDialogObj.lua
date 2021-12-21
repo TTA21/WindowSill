@@ -117,6 +117,7 @@ do --open
                     offsetX = (self.font.texture.width/2)+ ((self.font.texture.width * self.fontScale)*j) + spacingAdderX,
                     offsetY = (self.font.texture.height/2)+ ((self.font.texture.height * self.fontScale)*i) + spacingAdderY
                 })
+                letter.char = line:sub(j,j)
                 spacingAdderX = spacingAdderX + self.spacingX
                 self.letters[#self.letters+1] = letter
             end

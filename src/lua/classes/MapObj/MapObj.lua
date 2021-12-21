@@ -32,7 +32,7 @@ do --open
         self.menuSprites = {}
         self.cameras = {}
         self.areas = {}
-        self.timedInsertions = {}  ---for TimedInsertions ONLY
+        self.queues = {}
 
         self:clearRenderer()
 
@@ -220,25 +220,14 @@ do --open
     function MapObj:addNamedItemToDialogs(name, obj)
         obj:changePriority(1)
         self.dialogs.backGrounds[name] = obj
-        timedInsertion = TimedInsertionObj:clone()
-        timedInsertion:defineTimedRenderer(
-            obj.framesPerLetter, 
-            obj.letters, 
-            self.dialogs.letters
-        )
-        self.timedInsertions[#self.timedInsertions+1] = timedInsertion
+        self:insertLetterQueue(obj)
+        
     end
-    
+
     function MapObj:addToDialogs(obj)
         obj:changePriority(1)
         self.dialogs.backGrounds[#self.dialogs.backGrounds + 1] = obj
-        timedInsertion = TimedInsertionObj:clone()
-        timedInsertion:defineTimedRenderer(
-            obj.framesPerLetter, 
-            obj.letters, 
-            self.dialogs.letters
-        )
-        self.timedInsertions[#self.timedInsertions+1] = timedInsertion
+        self:insertLetterQueue(obj)
     end
 
     function MapObj:removeNamedFromDialogs(name)
@@ -258,6 +247,32 @@ do --open
     function MapObj:insertLetter(obj)
         obj:changePriority(0)
         self.dialogs.letters[#self.dialogs.letters + 1] = obj
+    end
+    --[[
+        Used for dialogs
+    ]]--
+    function MapObj:insertLetterQueue(obj)
+        queue = QueueObj:clone()
+        queue:defineQueue({
+            intervalFrame = obj.framesPerLetter,
+            onConstructor = (
+                function (this)
+                    this.accumulator = 1
+                end
+            ),
+            onUpdate = (
+                function (this)
+                    self:insertLetter(obj.letters[this.accumulator]) 
+                    this.accumulator = this.accumulator + 1
+                end
+            ),
+            stopCondition = (
+                function (this) 
+                    return ( 1 + #obj.letters == this.accumulator)
+                end
+            ),
+        })
+        self.queues[#self.queues + 1] = queue
     end
 
     --[[
@@ -314,6 +329,14 @@ do --open
 
     end
 
+    function MapObj:addQueue(obj)
+        if obj:isa(QueueObj) then
+            self.queues[#self.queues+1] = obj
+        else
+            print("ALERT! Attempt to append non-queue obj to queues in map " .. self.name)
+        end
+    end
+
 
     --[[
         Main render function, called every frame
@@ -352,7 +375,6 @@ do --open
         Checks if anything in the table is colliding with the current object of interest
         if so, act accordingly
     ]]
-    testInt = 0
     function MapObj:testTableForCollisions(obj, table)
         if obj.hasCollision == true then
             for i, obj2 in pairs(table) do
@@ -503,17 +525,9 @@ do --open
 
         end --pausegame
 
-        ---Update Timed Renderers
-        for i, obj in pairs(self.timedInsertions) do
-            --obj:update()
-            ret = obj:returnObj()
-            if ret then
-                self:insertLetter(ret)
-            end
-
-            if obj.isDone then
-                self.timedInsertions[i] = nil
-            end
+        ---Update Queues
+        for i, obj in pairs(self.queues) do
+            obj:update()
         end
 
         ---Update Dialogs
