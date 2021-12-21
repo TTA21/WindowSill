@@ -228,6 +228,7 @@ do --open
         )
         self.timedInsertions[#self.timedInsertions+1] = timedInsertion
     end
+    
     function MapObj:addToDialogs(obj)
         obj:changePriority(1)
         self.dialogs.backGrounds[#self.dialogs.backGrounds + 1] = obj

@@ -1,11 +1,6 @@
 do
 
     local firstLevelMap = {}
-    --new(
-    --    1500, 1500, "First Level"
-    --)
-
-    button1 = {}
 
     function firstStageSetup()
 
@@ -80,7 +75,7 @@ do
             name = "Object4", 
             texture = textures.red_square, 
             hasCollision = false,
-            anchor = obj2,  ---Something wrong here
+            anchor = obj2,
             offsetX = 50,
             offsetY = 50
         })
