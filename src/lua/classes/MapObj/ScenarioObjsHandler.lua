@@ -2,20 +2,14 @@
     --[[
         Used for scenario objects.
         Must be a scenario object.
+
+        Can also auto attach an active camera for convinience.
         
         Returns false if something goes wrong.
     ]]--
-    function MapObj:addToScenario(obj, ground)
+    function MapObj:addToScenario(obj, ground, withCamera, cameraName)
 
-        groundTypes = {}
-        groundTypes["ForeGround"] = {table = self.foreGround , priority = globalDefaultParams.priorities.foreGround}
-        groundTypes["MiddleGround"] = {table = self.middleGround, priority = globalDefaultParams.priorities.middleGround}
-        groundTypes["BackGround"] = {table = self.backGround, priority = globalDefaultParams.priorities.backGround}
-
-        ---Simplified
-        groundTypes["F"] = {table = self.foreGround , priority = globalDefaultParams.priorities.foreGround}
-        groundTypes["M"] = {table = self.middleGround, priority = globalDefaultParams.priorities.middleGround}
-        groundTypes["B"] = {table = self.backGround, priority = globalDefaultParams.priorities.backGround}
+        groundTypes = self:groundTypes()
 
         if not groundTypes[ground] then
             print("Alert! addToScenario called with improper ground name '" .. ground .. "'")
@@ -33,6 +27,16 @@
                     if self:checkForDuplicates(obj.globalId) then
                         obj:changePriority(groundTypes[ground].priority)
                         groundTypes[ground].table[#groundTypes[ground].table + 1] = obj
+
+                        ---If withCamera is true, automatically add a camera, if no camera name provided
+                        ---camera name will be the object name + "_auto_camera"
+                        if withCamera then
+                            cameraName = cameraName or (obj.name .. "_auto_camera")
+                            cameraObj = CameraObj:clone()
+                            cameraObj:anchorTo(obj, cameraName)
+                            self:addCamera(cameraName, cameraObj)
+                            self:switchToCamera(cameraName)
+                        end
                     else
                         print("Alert! Attempt to add duplicate entry to " .. ground .. " at frame " .. globalFrameCounter .." | globalId = " .. obj.globalId)
                     end
@@ -53,35 +57,44 @@
         :removeFromForeGround({
             globalId = ,    ---only one will suffice
             object = ,
+            ground = ,
         })
     ]]
     function MapObj:removeFromScenario(params)
+        
+        groundTypes = self:groundTypes()
 
+        if type(params.ground) ~= "string" then
+            print("ALERT! removeFromScenario called with non-string 'ground' at frame " .. globalFrameCounter)
+            return false
+        end
+
+        if not groundTypes[params.ground] then
+            print("Alert! removeFromScenario called with improper ground name '" .. ground .. "'")
+            return false
+        end 
+        
+        foundObj = false
         if params.globalId then
-            foundObj = false
-            for index, object in pairs(self.foreGround) do
+            for index, object in pairs(groundTypes[params.ground].table) do
                 if object.globalId == params.globalId then
-                    self.foreGround[index] = nil
+                    self.dialogs[index] = nil
                     foundObj = true
                 end
             end
-            return foundObj
-
         elseif params.object then
-            foundObj = false
-            for index, object in pairs(self.foreGround) do
+            for index, object in pairs(groundTypes[params.ground].table) do
                 if object.globalId == params.object.globalId then
-                    self.foreGround[index] = nil
+                    self.dialogs[index] = nil
                     foundObj = true
                 end
             end
-            return foundObj
-
         else
 
             return false
         end
 
+        return foundObj
     end
 
     function isScenarioObjType(obj)
@@ -124,4 +137,18 @@
         return true
 
     end
+
+    function MapObj:groundTypes()
+        groundTypes = {}
+        groundTypes["ForeGround"] = {table = self.foreGround , priority = globalDefaultParams.priorities.foreGround}
+        groundTypes["MiddleGround"] = {table = self.middleGround, priority = globalDefaultParams.priorities.middleGround}
+        groundTypes["BackGround"] = {table = self.backGround, priority = globalDefaultParams.priorities.backGround}
+
+        ---Simplified
+        groundTypes["F"] = {table = self.foreGround , priority = globalDefaultParams.priorities.foreGround}
+        groundTypes["M"] = {table = self.middleGround, priority = globalDefaultParams.priorities.middleGround}
+        groundTypes["B"] = {table = self.backGround, priority = globalDefaultParams.priorities.backGround}
+
+        return groundTypes
+    end 
 

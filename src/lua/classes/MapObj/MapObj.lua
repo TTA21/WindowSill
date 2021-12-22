@@ -41,10 +41,10 @@ do --open
 
     end
 
-    require('classes/MapObj/ForeGroundHandler')
-    require('classes/MapObj/MiddleGroundHandler')
-    require('classes/MapObj/BackGroundHandler')
+    require('classes/MapObj/CameraObjHandler')
     require('classes/MapObj/ScenarioObjsHandler')
+    require('classes/MapObj/DialogObjHandler')
+    require('classes/MapObj/MenuObjHandler')
 
     --[[
         Expected to be called Once per map creation, but not  mandatory
@@ -53,153 +53,6 @@ do --open
         
     end
 
-    
-
-    
-    
-    --[[
-        There can be multiple cameras at any one time, but only one active.
-        As soon as the camera is added, it is disabled. Enable it after adding it.
-
-        addCameraAnchoredTo activates it immediately however.
-    ]]--
-    function MapObj:addCameraAnchoredTo(name, obj)
-
-        cameraObj = CameraObj:clone()
-        cameraObj:anchorTo(obj, name)
-        self.cameras[name] = cameraObj
-        self:switchToCamera(name)
-
-    end
-
-    function MapObj:addCamera(name, camera)
-        camera.currentCam = false
-        self.cameras[name] = camera
-    end
-
-    function MapObj:switchToCamera(name)
-        for i, cam in pairs(self.cameras) do
-                cam:disableCamera()
-        end
-
-        self.cameras[name]:enableCamera()
-
-    end
-
-    --[[
-        Used for dialogs
-    ]]--
-    function MapObj:addNamedItemToDialogs(name, obj)
-        obj:changePriority(1)
-        self.dialogs.backGrounds[name] = obj
-        self:insertLetterQueue(obj)
-        
-    end
-
-    function MapObj:addToDialogs(obj)
-        obj:changePriority(1)
-        self.dialogs.backGrounds[#self.dialogs.backGrounds + 1] = obj
-        self:insertLetterQueue(obj)
-    end
-
-    function MapObj:removeNamedFromDialogs(name)
-        self.dialogs[name] = nil
-    end
-
-    function MapObj:removeFromDialogs(globalId)
-        for index, object in pairs(self.dialogs) do
-            if object.globalId == globalId then
-                object = nil
-            end
-        end
-    end
-    --[[
-        Used for dialogs
-    ]]--
-    function MapObj:insertLetter(obj)
-        obj:changePriority(0)
-        self.dialogs.letters[#self.dialogs.letters + 1] = obj
-    end
-    --[[
-        Used for dialogs
-    ]]--
-    function MapObj:insertLetterQueue(obj)
-        queue = QueueObj:clone()
-        queue:defineQueue({
-            intervalFrame = obj.framesPerLetter,
-            onConstructor = (
-                function (this)
-                    this.accumulator = 1
-                end
-            ),
-            onUpdate = (
-                function (this)
-                    self:insertLetter(obj.letters[this.accumulator]) 
-                    this.accumulator = this.accumulator + 1
-                end
-            ),
-            stopCondition = (
-                function (this) 
-                    return ( 1 + #obj.letters == this.accumulator)
-                end
-            ),
-        })
-        self.queues[#self.queues + 1] = queue
-    end
-
-    --[[
-        Used for menus
-    ]]
-    --[[
-    function MapObj:addNamedItemToMenus(name, obj)
-        --For now just the components
-        obj:changePriority(1)
-        self.menus.sprites[name] = obj
-        self:addToDialogs(obj.attachedDialog)
-
-        if obj:isa(StringInputMenuComponentObj) then
-            self:addToDialogs(obj.attachedInputDialog)
-        end
-
-        if obj:isa(SliderMenuComponentObj) then
-            obj.slideHandler:changePriority(1)
-            self.menus.sprites[name .. "_handler"] = obj.slideHandler
-
-            if obj.displayState then
-                self:addToDialogs(obj.attachedStateDialog)
-            end
-        end
-
-    end
-    ]]
-
-    function MapObj:addNamedItemToMenus(name, obj)
-        obj:changePriority(1)
-        self.menus[name] = obj
-        obj.selectedBackground:changePriority(1)
-        self.menuSprites[name .. "_selectedBackground"] = obj.selectedBackground
-
-        accumulator = 1
-        for i, component in pairs(obj.menuComponentList) do
-            component:changePriority(1)
-            self:addToDialogs(component.attachedDialog)
-
-            if component:isa(StringInputMenuComponentObj) then
-                self:addToDialogs(component.attachedInputDialog)
-            end
-    
-            if component:isa(SliderMenuComponentObj) then
-                component.slideHandler:changePriority(1)
-                self.menuSprites[name .. "_handler_" .. accumulator] = component.slideHandler
-    
-                if component.displayState then
-                    self:addToDialogs(component.attachedStateDialog)
-                end
-            end
-            accumulator = accumulator + 1
-        end
-
-    end
 
     function MapObj:addQueue(obj)
         if obj:isa(QueueObj) then

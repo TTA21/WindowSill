@@ -167,7 +167,7 @@ do
         
         self:changeSelectedBackGroundAnchor()
 
-         self:changeDimensions(300, yAccumulator + (20 * componentTypeCount[2]) )
+        self:changeDimensions(300, yAccumulator + (20 * componentTypeCount[2]) )
 
     end
 

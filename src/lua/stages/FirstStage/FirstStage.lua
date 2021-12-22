@@ -38,8 +38,7 @@ do
                 end
             )
         })
-        firstLevelMap:addToScenario(obj1, "M")
-        firstLevelMap:addCameraAnchoredTo("Main Camera", obj1)
+        firstLevelMap:addToScenario(obj1, "M", true, "mainCamera")
 
         obj2 = MovableObj:clone()
         obj2:defineMovable({
@@ -99,7 +98,7 @@ do
             anchor = obj1,
             offsetX = 40,
             offsetY = 40,
-            text = "Test Message!\n Test Test?",
+            text = "Test Message?\n Test Test?",
             spacingX = 1,
             spacingY = 2,
             timeOnScreen = 3000,
@@ -107,7 +106,7 @@ do
             closeKey = "C",
             pauseGame = true
         })
-        firstLevelMap:addNamedItemToDialogs("Dialog1", dialog1)
+        firstLevelMap:addToDialogs(dialog1)
 
         dialog2 = AttachableDialogObj:clone()
         dialog2:defineAttachableDialog({
@@ -115,13 +114,13 @@ do
             anchor = obj2,
             offsetX = 0,
             offsetY = -80,
-            text = "Test Message!\n Test Test?",
+            text = "Test Message?\n Test Test?",
             spacingX = 1,
             spacingY = 2,
             framesPerLetter = 10,
             closeKey = "F"
         })
-        firstLevelMap:addNamedItemToDialogs("Dialog2", dialog2)
+        firstLevelMap:addToDialogs(dialog2)
         
         menuExamp = AttachableMenuObj:clone()
         menuExamp:defineAttachableMenu({
