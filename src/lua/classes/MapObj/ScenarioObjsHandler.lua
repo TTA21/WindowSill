@@ -152,3 +152,67 @@
         return groundTypes
     end 
 
+-----------------------------------LOOP
+
+    --[[
+        :scenarioObjLoop({
+            iterateTable = ,    ---Table to iterate through
+            collisionTables = {
+                
+            },
+            onMovableObjUpdate = (function (this, obj) end),
+            onLoopIteration = (function (this, obj) end),
+            onEndOfLoop = (function (this) end),
+        })
+    ]]
+    function MapObj:scenarioObjLoop(params)
+
+        for i, obj in pairs(params.iterateTable) do
+
+            --Move movable objs
+            if obj:isa(MovableObj) then
+
+                ---Helper Closure
+                if params.onMovableObjUpdate then
+                    params.onMovableObjUpdate(self, obj)
+                end
+
+                ---Update postition of attached objs
+                if obj:isa(MovableObjAttachedObj) and not obj.noBaseAttached then
+                    obj:updateForce()
+                end
+
+                obj:moveToPos()     ---Movement script of MovableObj
+
+                ---Test Collisions in selected tables if initialized
+                if params.collisionTables then
+                    for _, collTable in pairs(params.collisionTables) do
+                        self:testTableForCollisions(obj, collTable)
+                    end
+                end
+
+                ---Force arithmetic and sprite updates based on force
+                obj:exertForce()
+                obj:updateSprite()
+                obj:exertResistance()
+
+            end --if obj:isa(MovableObj)
+
+            ---Update postition of attached objs
+            if obj:isa(BaseObjAttachedObj) and not obj.noBaseAttached then
+                obj:updatePos()
+            end
+
+            ---End of iteration closure
+            if params.onLoopIteration then
+                params.onLoopIteration(self, obj)
+            end
+
+        end --for pairs(params.iterateTable)
+
+        ---End of loop closure
+        if params.onEndOfLoop then
+            params.onEndOfLoop(self)
+        end
+
+    end

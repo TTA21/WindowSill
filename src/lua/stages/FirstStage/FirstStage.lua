@@ -114,7 +114,7 @@ do
             anchor = obj2,
             offsetX = 0,
             offsetY = -80,
-            text = "Test Message?\n Test Test?",
+            text = "Test Message!\n Test Test?",
             spacingX = 1,
             spacingY = 2,
             framesPerLetter = 10,

@@ -71,22 +71,23 @@ do --open
         hasCameras = false
         for i, cam in pairs(self.cameras) do
             hasCameras = true
-            cam:updateCameraPos()
-            cam:renderTable(self.backGround)
-            cam:renderTable(self.middleGround)
-            cam:renderTable(self.foreGround)
+            cam:updateCameraPos()                       ---Move the camera
 
-            cam:renderTable(self.dialogs.backGrounds)
-            cam:renderTable(self.dialogs.letters)
+            cam:renderTable(self.backGround)            ---Render Grounds
+            cam:renderTable(self.middleGround)          ---Render Grounds
+            cam:renderTable(self.foreGround)            ---Render Grounds
 
-            cam:renderTable(self.menus)
+            cam:renderTable(self.dialogs.backGrounds)   ---Render the dialog back plate
+            cam:renderTable(self.dialogs.letters)       ---Render the letters
+
+            cam:renderTable(self.menus)                 ---Render the menu's back plate
             for i, component in pairs(self.menus) do
-                cam:renderTable(component.menuComponentList)
+                cam:renderTable(component.menuComponentList)    ---Render the menu's dialogs
             end
-            cam:renderTable(self.menuSprites)
+            cam:renderTable(self.menuSprites)           ---Render the menus buttons and handles
 
             --cam:renderReorderPosY() --old
-            cam:renderReorderPriority()
+            cam:renderReorderPriority()                 ---Make everything stay coherent
             
         end
 
@@ -147,106 +148,41 @@ do --open
     function MapObj:act()
 
         if not self.gamePausedDueToDialog and not self.gamePaused then
-            for i, obj in pairs(self.foreGround) do
-
-                --test movement
-                if obj:isa(MovableObj) or obj:isa(MovableObjAttachedObj)  then
-                    obj:keyboardMove()
-
-                    obj:moveToPos()
-
-                    ---Test for any possible collisions
-                    self:testTableForCollisions(obj, self.middleGround)
-                    self:testTableForCollisions(obj, self.backGround)
-
-                    obj:exertForce()obj:updateSprite()
-                    obj:exertResistance()
-                end
-
-                ---DO other scripts here too
-
-                ---Update postition of attached objs
-                if obj:isa(BaseObjAttachedObj) then
-                    if not obj.noBaseAttached then
-                        obj:updatePos()
+            
+            ---Foreground has no collisions
+            self:scenarioObjLoop({
+                iterateTable = self.foreGround,    ---Table to iterate through
+                onMovableObjUpdate = (
+                    function (this, obj) 
+                        obj:keyboardMove()  ---To be removed later
                     end
-                end
+                ),
+            })
 
-                ---Update postition of attached objs
-                if obj:isa(MovableObjAttachedObj) then
-                    if not obj.noBaseAttached then
-                        obj:updateForce()
+            self:scenarioObjLoop({
+                iterateTable = self.middleGround,   ---Table to iterate through
+                collisionTables = {
+                    self.middleGround, self.backGround,
+                },
+                onMovableObjUpdate = (
+                    function (this, obj) 
+                        obj:keyboardMove()  ---To be removed later
                     end
-                end
+                ),
+            })
 
-            end
-
-            for i, obj in pairs(self.middleGround) do
-
-                ----test movement
-                if obj:isa(MovableObj) or obj:isa(MovableObjAttachedObj) then
-                    obj:keyboardMove()
-
-                    obj:moveToPos()
-
-                    ---Test for any possible collisions
-                    self:testTableForCollisions(obj, self.middleGround)
-                    self:testTableForCollisions(obj, self.backGround)
-
-                    obj:exertForce()
-                    obj:updateSprite()
-                    obj:exertResistance()
-                end
-                ---DO other scripts here too
-
-                ---Update postition of attached objs
-                if obj:isa(BaseObjAttachedObj) then
-                    if not obj.noBaseAttached then
-                        obj:updatePos()
+            ---BackGround does have collisions on, might change later
+            self:scenarioObjLoop({
+                iterateTable = self.backGround,   ---Table to iterate through
+                collisionTables = {
+                    self.middleGround, self.backGround,
+                },
+                onMovableObjUpdate = (
+                    function (this, obj) 
+                        obj:keyboardMove()  ---To be removed later
                     end
-                end
-                ---Update postition of attached objs
-                if obj:isa(MovableObjAttachedObj) then
-                    if not obj.noBaseAttached then
-                        obj:updateForce()
-                    end
-                end
-
-            end
-
-            for i, obj in pairs(self.backGround) do
-
-                --test movement
-                if obj:isa(MovableObj) then
-                    obj:keyboardMove()
-
-                    obj:moveToPos()
-
-                    ---Test for any possible collisions
-                    self:testTableForCollisions(obj, self.middleGround)
-                    self:testTableForCollisions(obj, self.backGround)
-
-                    obj:exertForce()
-                    obj:updateSprite()
-                    obj:exertResistance()
-                end
-                ---DO other scripts here too
-
-                ---Update postition of attached objs
-                if obj:isa(BaseObjAttachedObj) then
-                    if not obj.noBaseAttached then
-                        obj:updatePos()
-                    end
-                end
-
-                ---Update postition of attached objs
-                if obj:isa(MovableObjAttachedObj) then
-                    if not obj.noBaseAttached then
-                        obj:updateForce()
-                    end
-                end
-
-            end
+                ),
+            })
 
         end --pausegame
 
@@ -256,24 +192,7 @@ do --open
         end
 
         ---Update Dialogs
-        for i, obj in pairs(self.dialogs.backGrounds) do
-            if obj.allowRender then
-                obj:update()
-            end
-            if obj.pauseGame then
-                self:pauseGameDueToDialog()
-            end
-            if obj.isClosed and obj.pauseGame then
-                self:unPauseGameDueToDialog()
-                self.dialogs[i] = nil
-            end
-        end
-        ---Update Dialogs
-        for i, obj in pairs(self.dialogs.letters) do
-            if obj.allowRender then
-                obj:updatePos()
-            end
-        end
+        self:dialogObjLoop()
 
         ---Update Menus
         for i, menu in pairs(self.menus) do

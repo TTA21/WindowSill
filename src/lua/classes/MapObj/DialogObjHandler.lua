@@ -85,4 +85,33 @@
         return false
     end
 
-    
+    function MapObj:dialogObjLoop()
+
+        for i, obj in pairs(self.dialogs.backGrounds) do
+
+            ---If dialog is renderable, update it, otherwise leave it alone
+            if obj.allowRender then
+                obj:update()
+            end
+
+            ---If 'pauseGame' is set, pause the game, this conditional is dealt with internally
+            ---in the dialog obj
+            if obj.pauseGame then
+                self:pauseGameDueToDialog()
+            end
+            
+            ---If the dialog paused the game, and is now closed, unpause and delete the dialog
+            if obj.isClosed and obj.pauseGame then
+                self:unPauseGameDueToDialog()
+                self.dialogs[i] = nil
+            end
+        end
+
+        ---Update Dialogs letters
+        for i, obj in pairs(self.dialogs.letters) do
+            if obj.allowRender then
+                obj:updatePos()
+            end
+        end
+
+    end

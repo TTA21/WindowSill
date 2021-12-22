@@ -307,7 +307,7 @@ do  ---open
         To be overriden, in principle this should never be called, but hey, just in case
     ]]
     function BaseObj:update() 
-        print("BaseObj update called!")
+        --print("BaseObj update called!")
         self.onUpdate(self)
     end
 
