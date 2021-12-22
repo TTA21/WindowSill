@@ -38,7 +38,7 @@ do
                 end
             )
         })
-        firstLevelMap:addNamedItemToMiddleGround("Object1", obj1)
+        firstLevelMap:addToScenario(obj1, "M")
         firstLevelMap:addCameraAnchoredTo("Main Camera", obj1)
 
         obj2 = MovableObj:clone()
@@ -58,7 +58,7 @@ do
                 right = textures.bard_16_31_right,
             }
         })
-        firstLevelMap:addNamedItemToBackGround("Object2", obj2)
+        firstLevelMap:addToScenario(obj2, "B")
         obj2:setGotoPos(444,444)
 
         obj3 = BaseObj:clone()
@@ -68,7 +68,7 @@ do
             posX = 321, 
             posY = 312
         })
-        firstLevelMap:addNamedItemToMiddleGround("Object3", obj3)
+        firstLevelMap:addToScenario(obj3, "M")
 
         obj4 = BaseObjAttachedObj:clone()
         obj4:defineBaseObjAttached({
@@ -79,7 +79,7 @@ do
             offsetX = 50,
             offsetY = 50
         })
-        firstLevelMap:addNamedItemToMiddleGround("Object4", obj4)
+        firstLevelMap:addToScenario(obj4, "M")
 
         obj5 = MovableObjAttachedObj:clone()
         obj5:defineMovableObjAttached({
@@ -91,7 +91,7 @@ do
             offsetX = 20,
             offsetY = 20
         })
-        firstLevelMap:addNamedItemToMiddleGround("Object5", obj5)
+        firstLevelMap:addToScenario(obj5, "M")
 
         dialog1 = AttachableDialogObj:clone()
         dialog1:defineAttachableDialog({

@@ -15,8 +15,22 @@ globalDefaultParams = {
     allowRender = true,
     movementMultiplier = 1,
     forceCap = 10,
-    forceResistance = 0.5
+    forceResistance = 0.5,
+    priorities = {
+        backGround = 4,
+        middleGround = 3,
+        foreGround = 2,
+        dialog = 1,
+        menu = 1,
+        letter = 0,
+    }
 }
+
+--priority_0 --Letters of Dialogs and menus
+--priority_1 --Dialogs and menus
+--priority_2 --ForeGround
+--priority_3 --Middle Ground
+--priority_4 --BackGround
 
 renderItems = {}        ---used by the engine, do not mess with it directly
 currentCameraRenderItems = {}

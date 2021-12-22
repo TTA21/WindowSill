@@ -41,6 +41,11 @@ do --open
 
     end
 
+    require('classes/MapObj/ForeGroundHandler')
+    require('classes/MapObj/MiddleGroundHandler')
+    require('classes/MapObj/BackGroundHandler')
+    require('classes/MapObj/ScenarioObjsHandler')
+
     --[[
         Expected to be called Once per map creation, but not  mandatory
     ]]--
@@ -48,143 +53,10 @@ do --open
         
     end
 
-    --[[
-        The developer should know the name of the object, for direct referencing
-        EX:
-            map:addNamedItemToForeGround("example", obj)
-            map.foreground["example"].name
-    ]]--
-    function MapObj:addNamedItemToForeGround(name, obj)
-        if  obj.posX > 0 and obj.posX < self.width and
-            obj.posY > 0 and obj.posY < self.height then
+    
 
-                obj:changePriority(2)
-                self.foreGround[name] = obj
-        else
-            print("Obj not added,  ", obj.name, " out of bounds!")
-        end
-
-        
-    end
-
-
-    --[[
-        Used for scenario objects
-    ]]--
-    function MapObj:addToForeGround(obj)
-        if  obj.posX >= 0 and obj.posX <= self.width and
-            obj.posY >= 0 and obj.posY <= self.height then
-
-                obj:changePriority(2)
-                self.foreGround[#self.foreGround + 1] = obj
-        else
-            print("Obj not added,  ", obj.name, " out of bounds!")
-        end
-        
-    end
-
-    function MapObj:removeNamedFromForeGround(name)
-        self.foreGround[name] = nil
-    end
-
-    function MapObj:removeFromForeGround(globalId)
-        for index, object in pairs(self.foreGround) do
-            if object.globalId == globalId then
-                object = nil
-            end
-        end
-    end
-
-    --[[
-        The developer should know the name of the object, for direct referencing
-        EX:
-            map:addNamedItemToMiddleGround("example", obj)
-            map.middleGround["example"].name
-    ]]--
-    function MapObj:addNamedItemToMiddleGround(name, obj)
-        if  obj.posX > 0 and obj.posX < self.width and
-            obj.posY > 0 and obj.posY < self.height then
-
-                obj:changePriority(3)
-                self.middleGround[name] = obj
-        else
-            print("Obj not added,  ", obj.name, " out of bounds!")
-        end
-        
-    end
-
-    --[[
-        Used for scenario objects
-    ]]--
-    function MapObj:addToMiddleGround(obj)
-        if  obj.posX > 0 and obj.posX < self.width and
-            obj.posY > 0 and obj.posY < self.height then
-
-                obj:changePriority(3)
-                self.middleGround[#self.middleGround + 1] = obj
-        else
-            print("Obj not added,  ", obj.name, " out of bounds!")
-        end
-        
-    end
-
-    function MapObj:removeNamedFromMiddleGround(name)
-        self.middleGround[name] = nil
-    end
-
-    function MapObj:removeFromMiddleGround(globalId)
-        for index, object in pairs(self.middleGround) do
-            if object.globalId == globalId then
-                object = nil
-            end
-        end
-    end
-
-    --[[
-        The developer should know the name of the object, for direct referencing
-        EX:
-            map:addNamedItemToBackGround("example", obj)
-            map.backGround["example"].name
-    ]]--
-    function MapObj:addNamedItemToBackGround(name, obj)
-        if  obj.posX > 0 and obj.posX < self.width and
-            obj.posY > 0 and obj.posY < self.height then
-
-                obj:changePriority(4)
-                self.backGround[name] = obj
-        else
-            print("Obj not added,  ", obj.name, " out of bounds!")
-        end
-        
-    end
-
-    --[[
-        Used for scenario objects
-    ]]--
-    function MapObj:addToBackGround(obj)
-        if  obj.posX > 0 and obj.posX < self.width and
-            obj.posY > 0 and obj.posY < self.height then
-
-                obj:changePriority(4)
-                self.backGround[#self.backGround + 1] = obj
-        else
-            print("Obj not added,  ", obj.name, " out of bounds!")
-        end
-        
-    end
-
-    function MapObj:removeNamedFromBackGround(name)
-        self.backGround[name] = nil
-    end
-
-    function MapObj:removeFromBackGround(globalId)
-        for index, object in pairs(self.backGround) do
-            if object.globalId == globalId then
-                object = nil
-            end
-        end
-    end
-
+    
+    
     --[[
         There can be multiple cameras at any one time, but only one active.
         As soon as the camera is added, it is disabled. Enable it after adding it.
