@@ -75,7 +75,7 @@
                     function (this) 
                         return ( 1 + #obj.letters == this.accumulator)
                     end
-                ),
+                )
             })
             self.queues[#self.queues + 1] = queue
             return true
@@ -115,3 +115,17 @@
         end
 
     end
+
+    function MapObj:newDialogLoop()
+        ---Update dialogs textline's base and text
+        for baseIndex, textLetterBaseObj in pairs(self.newDialogs.textLines.base) do
+            --textLetterBaseObj:debug_printBaseObjAttachedObj()
+            textLetterBaseObj:updatePos()
+        end
+        for letterIndex, letterObj in pairs(self.newDialogs.textLines.text) do
+            letterObj:updatePos()
+        end
+
+    end
+
+    

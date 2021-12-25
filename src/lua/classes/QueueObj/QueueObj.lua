@@ -5,6 +5,11 @@ do
     --[[
         :defineQueue({
             intervalFrame = ,
+            updateCondition = (         ---Begin updating if closure returns true
+                function (this) 
+                    return
+                end
+            ),
             onUpdate = (
                 function (this) 
                 
@@ -16,6 +21,11 @@ do
                 end
             ),
             stopCondition = (
+                function (this) 
+                    return 
+                end
+            ),
+            onStopCondition = (     ---Upon completion, do this
                 function (this) 
                     return 
                 end
@@ -44,6 +54,11 @@ do
                 end
             ),
             stopCondition = (       ---If true, object stops
+                function (this) 
+                    return 
+                end
+            ),
+            onStopCondition = (     ---Upon completion, do this
                 function (this) 
                     return 
                 end
@@ -101,8 +116,12 @@ do
             self.intervalFrame = 1
         end
 
+        self.updateCondition = params.updateCondition or (function (this) return true end)
         self.onUpdate = params.onUpdate or (function (this) end)
         self.stopCondition = params.stopCondition or (function (this) return false end)
+        self.onStopCondition = params.onStopCondition or (function (this) end)
+
+        self.finished = false
 
         params.onConstructor(self)
     end
@@ -111,10 +130,20 @@ do
         ***************MEANT TO BE CALLED EVERY FRAME***************
     ]]
     function QueueObj:update()
-        if not self.stopCondition(self) 
-            and ((globalFrameCounter % self.intervalFrame) == 0) then
-                self.onUpdate(self)
+
+        if self.updateCondition(self) then
+            stopCondition = self.stopCondition(self) 
+            if not self.finished and not stopCondition 
+                and ((globalFrameCounter % self.intervalFrame) == 0) then
+                    self.onUpdate(self)
+            end
+
+            if stopCondition and not self.finished then
+                self.onStopCondition(self)
+                self.finished = true
+            end
         end
+
     end
 
 end

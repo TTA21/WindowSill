@@ -65,7 +65,9 @@ do
             name = "Object3", 
             texture = textures.blue_square, 
             posX = 321, 
-            posY = 312
+            posY = 312,
+            scale = 10,
+            hasCollision = false
         })
         firstLevelMap:addToScenario(obj3, "M")
 
@@ -145,6 +147,29 @@ do
             end)
         })
         firstLevelMap:addNamedItemToMenus("menu1", menuExamp)
+
+
+        ----------------
+        line = AttachableTextLine:clone()
+        line:defineAttachableTextLine{
+            name = "line1",
+            anchor = obj1,
+            offsetX = 30,
+            offsetY = 0,
+            text = "aasdasd",
+            interval = 1,    ---Every x frames, write one letter, used on queue obj
+            size = 1.5,
+            onFullyWritten = 
+                (function (this) 
+                    print("Finished")
+                end),
+            writeCondition = 
+                (function (this) 
+                    return risingEdgeKey("T")
+                end),
+        }
+        firstLevelMap:addTextLine(line)
+        ----------------
 
         reorderRenderItems()
 

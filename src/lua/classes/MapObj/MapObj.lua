@@ -28,6 +28,14 @@ do --open
             backGrounds = {},
             letters = {}
         }
+
+        self.newDialogs={
+            textLines = {
+                base = {},
+                text = {},
+            },
+        }
+
         self.menus = {}  ---Menus use the dialogs to show letters
         self.menuSprites = {}
         self.cameras = {}
@@ -54,11 +62,46 @@ do --open
     end
 
 
+    function MapObj:insertLetter2(obj)
+        if obj:isa(BaseObjAttachedObj) then
+            obj:changePriority(globalDefaultParams.priorities.letter)
+            self.newDialogs.textLines.text[#self.newDialogs.textLines.text + 1] = obj
+            return true
+        else
+            print("ALERT! insertLetter called with improper object at frame " .. globalFrameCounter)
+        end
+        return false
+    end
+
+    ---Adds a text line to the map
+    function MapObj:addTextLine(obj)
+        ---Check if it is the correct object type
+        if obj:isa(AttachableTextLine) then
+            ---Add the base object to the base list
+            self.newDialogs.textLines.base[#self.newDialogs.textLines.base + 1] = obj
+
+            ---Get the queue for the list of letters, passing along a closure containing the 
+            --- function of the map that adds letters
+            self.queues[#self.queues + 1] = obj:getParametrizedQueue((
+                function (this)
+                    self:insertLetter2(obj.letterList[this.accumulator])  
+                end
+            ))
+            return true
+        else
+            print("ALERT! Attempt to add non textline obj to map " .. self.name .. "at frame " .. globalFrameCounter)
+            return false
+        end
+    end
+
+
     function MapObj:addQueue(obj)
         if obj:isa(QueueObj) then
             self.queues[#self.queues+1] = obj
+            return true
         else
             print("ALERT! Attempt to append non-queue obj to queues in map " .. self.name)
+            return false
         end
     end
 
@@ -79,6 +122,8 @@ do --open
 
             cam:renderTable(self.dialogs.backGrounds)   ---Render the dialog back plate
             cam:renderTable(self.dialogs.letters)       ---Render the letters
+
+            cam:renderTable(self.newDialogs.textLines.text)    ---Render dialog text
 
             cam:renderTable(self.menus)                 ---Render the menu's back plate
             for i, component in pairs(self.menus) do
@@ -102,14 +147,12 @@ do --open
         if so, act accordingly
     ]]
     function MapObj:testTableForCollisions(obj, table)
-        if obj.hasCollision == true then
-            for i, obj2 in pairs(table) do
-                if obj2.hasCollision == true then
-                    if (obj.globalId ~= obj2.globalId) and checkNearby(obj2, obj, 2) then
-                        directions = obj.hitBox:checkForDirectionalCollision(obj2.hitBox)
-                        obj:dealWithCollision(directions)
-                        obj2:dealWithCollision(directions)
-                    end
+        for i, obj2 in pairs(table) do
+            if obj2.hasCollision then
+                if (obj.globalId ~= obj2.globalId) and checkNearby(obj2, obj, 2) then
+                    directions = obj.hitBox:checkForDirectionalCollision(obj2.hitBox)
+                    obj:dealWithCollision(directions)
+                    obj2:dealWithCollision(directions)
                 end
             end
         end
@@ -189,10 +232,14 @@ do --open
         ---Update Queues
         for i, obj in pairs(self.queues) do
             obj:update()
+            if obj.finished then
+                self.queues[i] = nil
+            end
         end
 
         ---Update Dialogs
         self:dialogObjLoop()
+        self:newDialogLoop()
 
         ---Update Menus
         for i, menu in pairs(self.menus) do

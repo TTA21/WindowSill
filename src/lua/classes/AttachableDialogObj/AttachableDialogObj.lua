@@ -34,6 +34,11 @@ do --open
         })
     ]]
 
+    ----TODO:
+    ----Scale the dialogs correctly, they are mismatched
+    ----Add side images
+    ----Add simple menu to dialog
+
     function AttachableDialogObj:defineAttachableDialog(
         params
     )

@@ -11,7 +11,6 @@ globalDefaultParams = {
     numFramesPerAnimationStage = 1000,
     alpha = 100,
     scale = 1,
-    hasCollision = true,
     allowRender = true,
     movementMultiplier = 1,
     forceCap = 10,
@@ -23,7 +22,10 @@ globalDefaultParams = {
         dialog = 1,
         menu = 1,
         letter = 0,
-    }
+    },
+    attachableLineDefaultText = "Default Text",
+    attachableLineDefaultSpacing = 1,
+    attachableLineDefaultInterval = 1,
 }
 
 --priority_0 --Letters of Dialogs and menus

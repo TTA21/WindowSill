@@ -100,7 +100,7 @@ do  ---open
         self.allowRender = params.allowRender or globalDefaultParams.allowRender
         self.animStage = params.animStage or 0
         self.alpha = params.alpha or globalDefaultParams.alpha
-        self.hasCollision = params.hasCollision or globalDefaultParams.hasCollision
+        self.hasCollision = params.hasCollision or false
         self.isOnCamera = false
         self.localFrameCounter = params.localFrameCounter or 0
         self.name = params.name or globalDefaultParams.baseObjName

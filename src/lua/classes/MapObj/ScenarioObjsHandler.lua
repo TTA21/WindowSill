@@ -185,7 +185,7 @@
                 obj:moveToPos()     ---Movement script of MovableObj
 
                 ---Test Collisions in selected tables if initialized
-                if params.collisionTables then
+                if params.collisionTables and obj.hasCollision then
                     for _, collTable in pairs(params.collisionTables) do
                         self:testTableForCollisions(obj, collTable)
                     end
